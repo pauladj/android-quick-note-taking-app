@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Notes.</string>
+    <string name="loginUsername">Nombre de usuario</string>
+    <string name="loginPassword">Contraseña</string>
+    <string name="loginButton">Entrar</string>
+    <string name="signUpButton">Registrarse</string>
+    <string name="signUpText">¿No eres miembro? Regístrate</string>
+    <string name="logInText">¿Ya eres miembro? Entra</string>
+</resources>
