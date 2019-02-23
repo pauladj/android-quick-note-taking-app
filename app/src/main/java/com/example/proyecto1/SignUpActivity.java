@@ -30,6 +30,7 @@ public class SignUpActivity extends AppCompatActivity {
      * Click on sign up button
      */
     public void signUpButton(View view){
-
+        // do whatever
+        logInButton(view);
     }
 }

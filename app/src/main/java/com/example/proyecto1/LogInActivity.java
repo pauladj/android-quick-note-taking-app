@@ -21,7 +21,10 @@ public class LogInActivity extends AppCompatActivity {
      * Click on log in button
      */
     public void logInButton(View view){
-
+        //do whatever
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+        finish();
     }
 
     /**
