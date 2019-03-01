@@ -6,4 +6,7 @@
     <string name="signUpButton">Sign Up</string>
     <string name="signUpText">Not a member? Sign Up</string>
     <string name="logInText">Already a member? Log In</string>
+    <string name="menuSettings">Settings</string>
+    <string name="menuSearch">Search</string>
+    <string name="menuFilterByTag">Filter By Tag</string>
 </resources>

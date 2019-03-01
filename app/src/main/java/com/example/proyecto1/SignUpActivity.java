@@ -11,7 +11,6 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // hide title bar
-        getSupportActionBar().hide();
         setContentView(R.layout.signup);
         //focus on username field when username sees the screen
         findViewById(R.id.inputUsername).requestFocus();

@@ -37,8 +37,6 @@
         android:text="@string/app_name"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
-        android:textSize="60sp"
-        android:textStyle="bold"
         android:theme="@style/logoIntro"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="57dp" />
+        app:layout_constraintGuide_begin="50dp" />
 
     <Button
         android:id="@+id/primaryButton"

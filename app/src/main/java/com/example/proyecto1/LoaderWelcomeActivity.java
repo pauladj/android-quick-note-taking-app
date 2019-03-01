@@ -9,7 +9,6 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
         setContentView(R.layout.loader_welcome);
 
         Thread welcomeThread = new Thread() {

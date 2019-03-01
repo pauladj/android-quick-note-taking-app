@@ -6,4 +6,7 @@
     <string name="signUpButton">Registrarse</string>
     <string name="signUpText">¿No eres miembro? Regístrate</string>
     <string name="logInText">¿Ya eres miembro? Entra</string>
+    <string name="menuSettings">Configuración</string>
+    <string name="menuSearch">Buscar</string>
+    <string name="menuFilterByTag">Filtrar por Etiqueta</string>
 </resources>
