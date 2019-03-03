@@ -8,7 +8,10 @@ public class MainActivity extends MainToolbar
 {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
+        // load main activity with fragments
+        setContentView(R.layout.main_activity);
+        // load top toolbar
+        loadToolbar();
     }
 }

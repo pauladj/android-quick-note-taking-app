@@ -13,6 +13,12 @@ public class MainToolbar extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    /**
+     * Loads top toolbar
+     */
+    protected void loadToolbar(){
         Toolbar toolbar = (Toolbar)findViewById(R.id.labarra);
         setSupportActionBar(toolbar);
     }

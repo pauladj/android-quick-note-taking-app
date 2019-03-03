@@ -10,6 +10,7 @@
 
     <include android:id="@+id/labarra"
         layout="@layout/main_toolbar"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
@@ -24,13 +25,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="264dp"
-        android:text="TextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="194dp" />
+    <fragment
+        android:name="com.example.proyecto1.fragments.NotesFragment"
+        android:id="@+id/notesFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        tools:layout="@layout/notes_fragment"/>
+
 
 </android.support.constraint.ConstraintLayout>
