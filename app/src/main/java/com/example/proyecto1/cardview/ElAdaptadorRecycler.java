@@ -12,11 +12,13 @@ import com.example.proyecto1.R;
 
 import java.util.ArrayList;
 
-public class ElAdaptadorRecycler extends RecyclerView.Adapter <ElViewHolder> {
+public class ElAdaptadorRecycler extends RecyclerView.Adapter <ElViewHolder> implements View.OnClickListener{
 
     private ArrayList<String> notesTitles;
     private ArrayList<String> notesDates;
     private ArrayList<String> notesTags;
+
+    private View.OnClickListener listener;
 
     public ElAdaptadorRecycler(ArrayList<String> notesTitles, ArrayList<String> notesDates, ArrayList<String> notesTags){
         this.notesTitles = notesTitles;
@@ -26,6 +28,7 @@ public class ElAdaptadorRecycler extends RecyclerView.Adapter <ElViewHolder> {
 
     public ElViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View ellayoutdelafila= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.notes_cardview,null);
+        ellayoutdelafila.setOnClickListener(this);
         ElViewHolder evh = new ElViewHolder(ellayoutdelafila);
         return evh;
     }
@@ -42,5 +45,15 @@ public class ElAdaptadorRecycler extends RecyclerView.Adapter <ElViewHolder> {
         return notesTitles.size();
     }
 
+    public void setOnClickListener(View.OnClickListener listener){
+        this.listener = listener;
+    }
+
+    @Override
+    public void onClick(View view){
+        if (listener != null){
+            listener.onClick(view);
+        }
+    }
 
 }

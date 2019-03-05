@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ public class NotesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // load recycler view
-        RecyclerView notes = getView().findViewById(R.id.reciclerView);
+        final RecyclerView notes = getView().findViewById(R.id.reciclerView);
 
         // load notes
         String activeUser = Data.getMyData().getActiveUsername();
@@ -47,6 +48,13 @@ public class NotesFragment extends Fragment {
         ArrayList<ArrayList<String>> notesData = gestorDB.getNotesDataByUser(activeUser);
 
         ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(0), notesData.get(1), notesData.get(2));
+        eladaptador.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("paula", "pulsado el elemento " + notes.getChildAdapterPosition(v));
+                elListener.selectNote("sdfk");
+            }
+        });
         notes.setAdapter(eladaptador);
 
         LinearLayoutManager elLayoutLineal= new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
@@ -70,8 +78,4 @@ public class NotesFragment extends Fragment {
         }
     }
 
-    public void onListItemClick(RecyclerView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        elListener.selectNote(datos[position]);
-    }
 }

@@ -1,6 +1,7 @@
 package com.example.proyecto1;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.utilities.MainToolbar;
@@ -16,6 +17,6 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
     }
 
     public void selectNote(String elemento){
-
+        Log.i("paula", "bieeen" + elemento);
     }
 }
