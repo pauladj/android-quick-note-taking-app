@@ -43,7 +43,7 @@ public class MyDB extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 0)");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");
         db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('prueba', 1, 'this is the title', 'admin')");
-        db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES (' klsdfjkldf ksdjfksjdfks jdfksjdfksd fjkdfj f skdf jskjdf df kdfjskld fjkd jkdjf kdfj dfklf', 1, 'this is the title', 'admin')");
+        db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('fff', 1, 'klsdfjkldf ksdjfksjdfks jdfksjdfksd fjkdfj f skdf jskjdf df kdfjskld fjkd jkdjf kdfj dfklf', 'admin')");
 
     }
 
@@ -128,22 +128,25 @@ public class MyDB extends SQLiteOpenHelper {
     /**
      * Get notes data to show on the main screen
      * @param username - of which we have to get the notes
-     * @return titles, dates and tags of the notes
+     * @return ids, titles, dates and tags of the notes
      */
     public ArrayList<ArrayList<String>> getNotesDataByUser(String username){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT title, date, name FROM Notes INNER JOIN Tags ON Notes.labelId=Tags.id WHERE Notes.username='" + username + "'", null);
+        Cursor c = db.rawQuery("SELECT Notes.id, title, date, name FROM Notes INNER JOIN Tags ON Notes.labelId=Tags.id WHERE Notes.username='" + username + "'", null);
 
+        ArrayList<String> notesIds = new ArrayList<>();
         ArrayList<String> notesTitles = new ArrayList<>();
         ArrayList<String> notesDates = new ArrayList<>();
         ArrayList<String> notesTagsNames = new ArrayList<>();
 
         while (c.moveToNext()) {
             // there is a user with these data
-            String title = c.getString(0);
-            String date = c.getString(1);
-            String tagName = c.getString(2);
+            String id = c.getString(0);
+            String title = c.getString(1);
+            String date = c.getString(2);
+            String tagName = c.getString(3);
 
+            notesIds.add(id);
             notesTitles.add(title);
             notesDates.add(date);
             notesTagsNames.add(tagName);
@@ -152,6 +155,7 @@ public class MyDB extends SQLiteOpenHelper {
         db.close();
 
         ArrayList<ArrayList<String>> notesData = new ArrayList<>();
+        notesData.add(notesIds);
         notesData.add(notesTitles);
         notesData.add(notesDates);
         notesData.add(notesTagsNames);

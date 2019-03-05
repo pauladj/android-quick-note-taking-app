@@ -28,7 +28,7 @@ public class ElAdaptadorRecycler extends RecyclerView.Adapter <ElViewHolder> imp
 
     public ElViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View ellayoutdelafila= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.notes_cardview,null);
-        ellayoutdelafila.setOnClickListener(this);
+        ellayoutdelafila.setOnClickListener(this); // Add listener
         ElViewHolder evh = new ElViewHolder(ellayoutdelafila);
         return evh;
     }
@@ -45,6 +45,7 @@ public class ElAdaptadorRecycler extends RecyclerView.Adapter <ElViewHolder> imp
         return notesTitles.size();
     }
 
+    // Add listeners
     public void setOnClickListener(View.OnClickListener listener){
         this.listener = listener;
     }

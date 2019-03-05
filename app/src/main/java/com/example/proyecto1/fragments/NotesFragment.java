@@ -45,14 +45,18 @@ public class NotesFragment extends Fragment {
         // load notes
         String activeUser = Data.getMyData().getActiveUsername();
         MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
-        ArrayList<ArrayList<String>> notesData = gestorDB.getNotesDataByUser(activeUser);
+        final ArrayList<ArrayList<String>> notesData = gestorDB.getNotesDataByUser(activeUser);
 
-        ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(0), notesData.get(1), notesData.get(2));
+        // titles, dates, tags
+        ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(1), notesData.get(2), notesData.get(3));
+
+        // Add listeners
         eladaptador.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("paula", "pulsado el elemento " + notes.getChildAdapterPosition(v));
-                elListener.selectNote("sdfk");
+                int clickedPosition = notes.getChildAdapterPosition(v);
+                int noteIdOfPosition = Integer.valueOf(notesData.get(0).get(clickedPosition));
+                elListener.selectNote(noteIdOfPosition);
             }
         });
         notes.setAdapter(eladaptador);
@@ -63,7 +67,7 @@ public class NotesFragment extends Fragment {
 
     // Listeners
     public interface listenerDelFragment{
-        void selectNote(String elemento);
+        void selectNote(int selectedNoteId);
     }
     private listenerDelFragment elListener;
 
