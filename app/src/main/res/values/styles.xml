@@ -26,4 +26,9 @@
         <item name="android:textColor">@color/darkGrey</item>
     </style>
 
+    <style name="tag" parent="mainNotesSubtitle">
+        <item name="android:background">@color/tag</item>
+    </style>
+
+
 </resources>

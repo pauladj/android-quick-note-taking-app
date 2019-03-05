@@ -1,27 +1,26 @@
 package com.example.proyecto1.utilities;
 
-public class ActiveUser {
+public class Data {
 
-    private static ActiveUser myActiveUsername;
+    private static Data myData;
     private static String activeUsername;
 
     /**
      * Get one instance of this class
-     * @return ActiveUser
+     * @return Data
      */
-    public static ActiveUser getMyActiveUsername(){
-        if (myActiveUsername == null){
-            myActiveUsername = new ActiveUser();
+    public static Data getMyData(){
+        if (myData == null){
+            myData = new Data();
         }
-        return myActiveUsername;
+        return myData;
     }
 
     /**
      * Get the active username
      * @return active username
      */
-    public String getUsername(){
-
+    public String getActiveUsername(){
         return activeUsername;
     }
 
@@ -29,7 +28,7 @@ public class ActiveUser {
      * Set the active username
      * @param username
      */
-    public void setUsername(String username){
+    public void setActiveUsername(String username){
         activeUsername = username;
     }
 }

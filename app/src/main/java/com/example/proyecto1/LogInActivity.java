@@ -2,8 +2,6 @@ package com.example.proyecto1;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -11,13 +9,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.proyecto1.utilities.ActiveUser;
+import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MyDB;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-
-import javax.crypto.Cipher;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -48,18 +44,11 @@ public class LogInActivity extends AppCompatActivity {
             Boolean userCanBeLoggedIn = gestorDB.checkIfUserCanBeLoggedIn(username, password);
             if (userCanBeLoggedIn) {
                 // there is a user with this data
-                // save internal file saying that the user is logged in
-                try {
-                    OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput("activeUser",
-                            Context.MODE_PRIVATE));
-                    fichero.write(username);
-                    fichero.close();
-                } catch (IOException e){
-                    // do nothing
-                }
+                // save the user as active in database
+                gestorDB.setUsernameAsActive(username);
 
-                // set the active username so we don't have to read it from the file every time
-                ActiveUser.getMyActiveUsername().setUsername(username);
+                // set the active username so we don't have to read it from the database every time
+                Data.getMyData().setActiveUsername(username);
 
                 // go to the main activity
                 Intent i = new Intent(this, MainActivity.class);

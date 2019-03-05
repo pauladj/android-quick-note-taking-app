@@ -1,5 +1,6 @@
 package com.example.proyecto1.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,9 +10,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.proyecto1.R;
 import com.example.proyecto1.cardview.ElAdaptadorRecycler;
+import com.example.proyecto1.utilities.Data;
+import com.example.proyecto1.utilities.MyDB;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class NotesFragment extends Fragment {
 
@@ -34,15 +41,37 @@ public class NotesFragment extends Fragment {
         // load recycler view
         RecyclerView notes = getView().findViewById(R.id.reciclerView);
 
-        String[] nombres={"Bart Simpson","Edna Krabappel", "Homer Simpson", "Lisa Simpson",
-                "Seymour Skinner", "Bart Simpson","Edna Krabappel", "Homer Simpson", "Lisa Simpson",
-                "Seymour Skinner","Bart Simpson","Edna Krabappel", "Homer Simpson", "Lisa Simpson",
-                "Seymour Skinner","Bart Simpson","Edna Krabappel", "Homer Simpson", "Lisa Simpson",
-                "Seymour Skinner"};
-        ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(nombres,nombres, nombres);
+        // load notes
+        String activeUser = Data.getMyData().getActiveUsername();
+        MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
+        ArrayList<ArrayList<String>> notesData = gestorDB.getNotesDataByUser(activeUser);
+
+        ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(0), notesData.get(1), notesData.get(2));
         notes.setAdapter(eladaptador);
 
         LinearLayoutManager elLayoutLineal= new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
         notes.setLayoutManager(elLayoutLineal);
+    }
+
+    // Listeners
+    public interface listenerDelFragment{
+        void selectNote(String elemento);
+    }
+    private listenerDelFragment elListener;
+
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            elListener = (listenerDelFragment) context;
+        }
+        catch (ClassCastException e){
+            throw new ClassCastException("La clase " +context.toString()
+                    + " debe implementar listenerDelFragment");
+        }
+    }
+
+    public void onListItemClick(RecyclerView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        elListener.selectNote(datos[position]);
     }
 }

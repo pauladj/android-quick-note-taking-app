@@ -50,10 +50,10 @@
                 android:layout_height="wrap_content"
                 android:text="TextView"
                 android:layout_toRightOf="@+id/noteDate"
-                android:paddingLeft="10dp"
+                android:layout_marginLeft="10dp"
                 android:layout_below="@id/noteTitle"
-                android:textAppearance="@style/mainNotesSubtitle"
-                android:theme="@style/mainNotesSubtitle" />
+                android:textAppearance="@style/tag"
+                android:theme="@style/tag" />
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>
