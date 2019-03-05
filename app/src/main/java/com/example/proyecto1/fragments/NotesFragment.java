@@ -56,7 +56,7 @@ public class NotesFragment extends Fragment {
             public void onClick(View v) {
                 int clickedPosition = notes.getChildAdapterPosition(v);
                 int noteIdOfPosition = Integer.valueOf(notesData.get(0).get(clickedPosition));
-                elListener.selectNote(noteIdOfPosition);
+                elListener.clickOnNote(noteIdOfPosition);
             }
         });
         notes.setAdapter(eladaptador);
@@ -67,7 +67,7 @@ public class NotesFragment extends Fragment {
 
     // Listeners
     public interface listenerDelFragment{
-        void selectNote(int selectedNoteId);
+        void clickOnNote(int selectedNoteId);
     }
     private listenerDelFragment elListener;
 

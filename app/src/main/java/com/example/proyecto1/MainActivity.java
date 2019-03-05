@@ -16,7 +16,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         loadToolbar();
     }
 
-    public void selectNote(int selectedNoteId){
+    public void clickOnNote(int selectedNoteId){
         Log.i("paula", String.valueOf(selectedNoteId));
     }
 }

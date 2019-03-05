@@ -10,13 +10,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="939e57e5-d717-48ca-973e-c6985266bd20" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/cardview/ElAdaptadorRecycler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/cardview/ElAdaptadorRecycler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/NotesFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/NotesFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/utilities/MyDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/utilities/MyDB.java" afterDir="false" />
-    </list>
+    <list default="true" id="939e57e5-d717-48ca-973e-c6985266bd20" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +74,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="360">
-              <caret line="19" column="53" selection-start-line="19" selection-start-column="53" selection-end-line="19" selection-end-column="53" />
+              <caret line="19" column="8" lean-forward="true" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="55" />
               <folding>
                 <element signature="e#596#597#0" expanded="true" />
                 <element signature="e#642#643#0" expanded="true" />
@@ -554,10 +548,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="127" y="52" width="1710" height="923" extended-state="0" />
+    <frame x="7" y="9" width="1913" height="968" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.12259615" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.1092662" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
@@ -565,7 +560,7 @@
       <window_info id="Designer" order="6" />
       <window_info id="Capture Tool" order="7" />
       <window_info anchor="bottom" id="Run" order="0" weight="0.37931034" />
-      <window_info active="true" anchor="bottom" id="Logcat" order="1" visible="true" weight="0.39312977" />
+      <window_info active="true" anchor="bottom" id="Logcat" order="1" visible="true" weight="0.37184116" />
       <window_info anchor="bottom" id="TODO" order="2" weight="0.32988507" />
       <window_info anchor="bottom" id="Debug" order="3" />
       <window_info anchor="bottom" id="Terminal" order="4" weight="0.32988507" />
@@ -791,7 +786,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
-          <caret line="19" column="53" selection-start-line="19" selection-start-column="53" selection-end-line="19" selection-end-column="53" />
+          <caret line="19" column="8" lean-forward="true" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="55" />
           <folding>
             <element signature="e#596#597#0" expanded="true" />
             <element signature="e#642#643#0" expanded="true" />
