@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SingleNoteActivity">
+
+    <include android:id="@+id/labarra"
+        layout="@layout/main_toolbar"/>
+
+    <fragment
+        android:name="com.example.proyecto1.fragments.SingleNoteFragment"
+        android:id="@+id/singleNoteFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        tools:layout="@layout/single_note_fragment"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -8,8 +8,10 @@
     <string name="logInText">Already a member? Log In</string>
     <string name="menuSettings">Settings</string>
     <string name="menuSearch">Search</string>
+    <string name="menuEdit">Edit</string>
     <string name="menuFilterByTag">Filter By Tag</string>
     <string name="userAlreadyExists">This username already exists</string>
     <string name="incorrectPassword">Wrong username and password</string>
     <string name="userSuccessfullyRegistered">You have been successfully registered</string>
+
 </resources>

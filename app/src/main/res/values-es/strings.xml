@@ -9,6 +9,7 @@
     <string name="menuSettings">Configuración</string>
     <string name="menuSearch">Buscar</string>
     <string name="menuFilterByTag">Filtrar por Etiqueta</string>
+    <string name="menuEdit">Editar</string>
     <string name="userAlreadyExists">Este nombre de usuario existe</string>
     <string name="incorrectPassword">Usuario y contraseña incorrectos</string>
     <string name="userSuccessfullyRegistered">Te has registrado correctamente</string>

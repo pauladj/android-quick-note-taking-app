@@ -40,7 +40,7 @@ public class MyDB extends SQLiteOpenHelper {
                 "FOREIGN KEY('username') REFERENCES Users('username') ON DELETE CASCADE)");
 
         // Insert dummy data
-        db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 0)");
+        db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 1)");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");
         db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('prueba', 1, 'this is the title', 'admin')");
         db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('fff', 1, 'klsdfjkldf ksdjfksjdfks jdfksjdfksd fjkdfj f skdf jskjdf df kdfjskld fjkd jkdjf kdfj dfklf', 'admin')");

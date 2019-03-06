@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/NotesTheme">
-        <activity android:name=".utilities.MyDB"></activity>
+        <activity android:name=".SingleNoteActivity"></activity>
+        <activity android:name=".utilities.MyDB" />
         <activity android:name=".utilities.MainToolbar" />
         <activity android:name=".MainActivity" />
         <activity android:name=".LogInActivity" />
