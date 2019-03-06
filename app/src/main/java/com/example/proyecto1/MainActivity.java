@@ -3,10 +3,13 @@ package com.example.proyecto1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
 import com.example.proyecto1.utilities.MainToolbar;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends MainToolbar implements NotesFragment.listenerDelFragment {
     @Override
@@ -27,7 +30,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
             //EL OTRO FRAGMENT EXISTE
             SingleNoteFragment elotro = (SingleNoteFragment) getSupportFragmentManager().
                     findFragmentById(R.id.singleNoteFragment);
-            elotro.loadNote(selectedNoteId);
+            elotro.loadNote(selectedNoteId, (TextView) findViewById(R.id.textView));
         }
         else{
             //EL OTRO FRAGMENT NO EXISTE, HAY QUE LANZAR LA ACTIVIDAD QUE LO CONTIENE

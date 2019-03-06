@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.proyecto1.R;
 
 public class SingleNoteFragment extends Fragment {
+
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
     @Override
@@ -30,6 +31,12 @@ public class SingleNoteFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
     }
 
-
+    /**
+     * Loads a note information knowing its id
+     * @param noteId - the id of the note
+     */
+    public void loadNote(int noteId, TextView view){
+        view.setText(String.valueOf(noteId));
+    }
 
 }

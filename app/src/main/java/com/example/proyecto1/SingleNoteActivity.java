@@ -30,13 +30,10 @@ public class SingleNoteActivity extends MainToolbar {
         loadToolbar();
 
         // load the note information knowing the id
-        SingleNoteFragment fragment = new SingleNoteFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.singleNoteFragment, fragment).commit();
-        TextView a = (TextView) findViewById(R.id.textView);
-        String b = a.getText().toString();
-        Log.i("sooooo", b);
         int noteId = getIntent().getIntExtra("noteId", 1);
-        fragment.loadNote(noteId, view);
+
+        SingleNoteFragment fragmentDemo = (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
+        fragmentDemo.loadNote(noteId, (TextView) findViewById(R.id.textView));
     }
 
 }

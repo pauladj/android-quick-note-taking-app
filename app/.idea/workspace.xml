@@ -11,20 +11,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="939e57e5-d717-48ca-973e-c6985266bd20" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/SingleNoteActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_edit.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/layout/single_note_activity.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/SingleNoteActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/SingleNoteActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/SingleNoteFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/SingleNoteFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/utilities/MyDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/proyecto1/utilities/MyDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/single_note_fragment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/single_note_fragment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values-es/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values-es/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +45,7 @@
         <counts>
           <entry key="class" value="1" />
           <entry key="gradle" value="3" />
-          <entry key="java" value="52" />
+          <entry key="java" value="53" />
           <entry key="xml" value="43" />
         </counts>
       </usages-collector>
@@ -63,7 +53,7 @@
         <counts>
           <entry key="CLASS" value="1" />
           <entry key="Groovy" value="3" />
-          <entry key="JAVA" value="52" />
+          <entry key="JAVA" value="53" />
           <entry key="XML" value="43" />
         </counts>
       </usages-collector>
@@ -71,7 +61,7 @@
         <counts>
           <entry key="dummy" value="8" />
           <entry key="gradle" value="67" />
-          <entry key="java" value="10485" />
+          <entry key="java" value="10856" />
           <entry key="txt" value="18" />
           <entry key="xml" value="1710" />
         </counts>
@@ -79,7 +69,7 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Groovy" value="67" />
-          <entry key="JAVA" value="10485" />
+          <entry key="JAVA" value="10856" />
           <entry key="PLAIN_TEXT" value="26" />
           <entry key="XML" value="1710" />
         </counts>
@@ -110,36 +100,38 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="30" selection-start-column="30" selection-end-column="30" />
+            <state relative-caret-position="336">
+              <caret line="32" column="55" selection-start-line="32" selection-start-column="55" selection-end-line="32" selection-end-column="55" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/res/layout/single_note_fragment.xml">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/NotesFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="111">
-              <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+            <state relative-caret-position="-3">
+              <caret line="67" column="16" selection-start-line="67" selection-start-column="16" selection-end-line="67" selection-end-column="16" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
-          <provider editor-type-id="android-designer2" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/SingleNoteActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="552">
+              <caret line="35" column="76" selection-start-line="35" selection-start-column="76" selection-end-line="35" selection-end-column="76" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/SingleNoteActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="35" column="8" selection-start-line="35" selection-start-column="8" selection-end-line="36" selection-end-column="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/SingleNoteFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="381">
-              <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
+            <state relative-caret-position="413">
+              <caret line="38" column="34" selection-start-line="38" selection-start-column="34" selection-end-line="38" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -185,19 +177,19 @@
         <option value="$PROJECT_DIR$/src/main/res/values-es/strings.xml" />
         <option value="$PROJECT_DIR$/src/main/res/drawable/ic_edit.xml" />
         <option value="$PROJECT_DIR$/src/main/res/menu/single_note_toolbar.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/example/proyecto1/MainActivity.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout/single_note_fragment.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/single_note_activity.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/proyecto1/utilities/MyDB.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/example/proyecto1/MainActivity.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/proyecto1/SingleNoteActivity.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/SingleNoteFragment.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="217" />
-    <option name="y" value="71" />
-    <option name="width" value="1463" />
+    <option name="x" value="271" />
+    <option name="y" value="73" />
+    <option name="width" value="1549" />
     <option name="height" value="955" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -517,25 +509,25 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="217" y="71" width="1463" height="955" extended-state="0" />
+    <frame x="273" y="73" width="1549" height="955" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.20606916" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.1942781" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
       <window_info id="Image Layers" order="5" />
       <window_info id="Designer" order="6" />
       <window_info id="Capture Tool" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="0" sideWeight="0.8786168" visible="true" weight="0.32640588" />
-      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.8200424" weight="0.28850856" />
+      <window_info active="true" anchor="bottom" id="Run" order="0" sideWeight="0.87558216" visible="true" weight="0.11124694" />
+      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.81769794" weight="0.28850856" />
       <window_info anchor="bottom" id="TODO" order="2" weight="0.32988507" />
       <window_info anchor="bottom" id="Debug" order="3" />
       <window_info anchor="bottom" id="Terminal" order="4" weight="0.32988507" />
-      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.121383205" side_tool="true" visible="true" weight="0.32640588" />
+      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.124417834" side_tool="true" visible="true" weight="0.11124694" />
       <window_info anchor="bottom" id="Version Control" order="6" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.4982357" weight="0.34474328" />
+      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.49752998" weight="0.34474328" />
       <window_info anchor="bottom" id="Android Profiler" order="8" />
       <window_info anchor="bottom" id="Find" order="9" weight="0.32988507" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
@@ -614,6 +606,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
           <caret line="11" column="32" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="32" />
+          <folding>
+            <element signature="e#475#476#0" expanded="true" />
+            <element signature="e#512#513#0" expanded="true" />
+            <element signature="e#629#630#0" expanded="true" />
+            <element signature="e#670#671#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -751,30 +749,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/NotesFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1029">
-          <caret line="79" selection-start-line="79" selection-end-line="79" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/utilities/MyDB.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
           <caret line="42" column="64" selection-start-line="42" selection-start-column="64" selection-end-line="42" selection-end-column="64" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/layout/single_note_fragment.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/single_note_activity.xml">
       <provider selected="true" editor-type-id="text-editor">
@@ -784,17 +764,25 @@
       </provider>
       <provider editor-type-id="android-designer2" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/single_note_fragment.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="111">
+          <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="30" selection-start-column="30" selection-end-column="30" />
+        <state relative-caret-position="336">
+          <caret line="32" column="55" selection-start-line="32" selection-start-column="55" selection-end-line="32" selection-end-column="55" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/SingleNoteFragment.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/NotesFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="381">
-          <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
+        <state relative-caret-position="-3">
+          <caret line="67" column="16" selection-start-line="67" selection-start-column="16" selection-end-line="67" selection-end-column="16" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -803,8 +791,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/SingleNoteActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="35" column="8" selection-start-line="35" selection-start-column="8" selection-end-line="36" selection-end-column="27" />
+        <state relative-caret-position="552">
+          <caret line="35" column="76" selection-start-line="35" selection-start-column="76" selection-end-line="35" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/proyecto1/fragments/SingleNoteFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="413">
+          <caret line="38" column="34" selection-start-line="38" selection-start-column="34" selection-end-line="38" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
