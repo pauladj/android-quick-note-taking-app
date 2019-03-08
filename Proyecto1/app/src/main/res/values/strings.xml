@@ -13,5 +13,6 @@
     <string name="userAlreadyExists">This username already exists</string>
     <string name="incorrectPassword">Wrong username and password</string>
     <string name="userSuccessfullyRegistered">You have been successfully registered</string>
+    <string name="menuDelete">Delete</string>
 
 </resources>

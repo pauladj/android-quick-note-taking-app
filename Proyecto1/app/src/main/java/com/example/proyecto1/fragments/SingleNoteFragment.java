@@ -1,6 +1,7 @@
 package com.example.proyecto1.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,7 +36,10 @@ public class SingleNoteFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         View myFragmentView = inflater.inflate(R.layout.single_note_fragment, parent, false);
-        noteContent = myFragmentView.findViewById(R.id.noteContent);
+
+        noteContent = myFragmentView.findViewById(R.id.noteContent); // assign it to a variable
+        noteContent.setBackgroundColor(Color.argb(1, 255, 255, 255)); // make the background transparent
+
         return myFragmentView;
     }
 
@@ -53,24 +57,26 @@ public class SingleNoteFragment extends Fragment {
      * @param noteId - the id of the note
      */
     public void loadNote(int noteId){
-        MyDB gestorDB = new MyDB(getActivity().getApplicationContext(), "Notes", null, 1);
-        // the filename where the content of the note is
-        String noteFileName = gestorDB.getNoteFileName(noteId);
-        try {
-            if (noteFileName == null){
-                throw new FileNotFoundException();
+        if (noteContent != null){
+            MyDB gestorDB = new MyDB(getActivity().getApplicationContext(), "Notes", null, 1);
+            // the filename where the content of the note is
+            String noteFileName = gestorDB.getNoteFileName(noteId);
+            try {
+                if (noteFileName == null){
+                    throw new FileNotFoundException();
+                }
+
+                BufferedReader ficherointerno = new BufferedReader(new InputStreamReader(
+                        getActivity().openFileInput(noteFileName)));
+                String content = ficherointerno.readLine();
+                ficherointerno.close();
+
+                noteContent.loadData(content, "text/html; charset=UTF-8", null);
+            }catch (Exception e){
+                noteContent.loadData("File not found or error opening it","text/html; charset=UTF-8",
+                        null);
             }
-
-            BufferedReader ficherointerno = new BufferedReader(new InputStreamReader(
-                    getActivity().openFileInput(noteFileName)));
-            String content = ficherointerno.readLine();
-            ficherointerno.close();
-
-            noteContent.loadData(content, "text/html; charset=UTF-8", null);
-        }catch (Exception e){
-            noteContent.loadData("File not found","text/html; charset=UTF-8", null);
         }
-
     }
 
 }
