@@ -11,6 +11,8 @@ import android.os.Bundle;
 
 import com.example.proyecto1.R;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -42,7 +44,8 @@ public class MyDB extends SQLiteOpenHelper {
         // Insert dummy data
         db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 1)");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");
-        db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('prueba', 1, 'this is the title', 'admin')");
+        db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('nombrefichero.html', 1," +
+                " 'sergserg r gsdfg ', 'admin')");
         db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('fff', 1, 'klsdfjkldf ksdjfksjdfks jdfksjdfksd fjkdfj f skdf jskjdf df kdfjskld fjkd jkdjf kdfj dfklf', 'admin')");
 
     }
@@ -66,14 +69,14 @@ public class MyDB extends SQLiteOpenHelper {
     public Boolean checkIfUsernameExists(String username){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT username FROM Users WHERE username='" + username + "'", null);
-
+        boolean exists = false;
         if (c.moveToNext() != false) {
             // there is a user with these data
-            return true;
+            exists = true;
         }
         c.close();
         db.close();
-        return false;
+        return exists;
     }
 
     /**
@@ -85,14 +88,14 @@ public class MyDB extends SQLiteOpenHelper {
     public Boolean checkIfUserCanBeLoggedIn(String username, String password){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT username FROM Users WHERE username='" + username + "' AND password='"+password + "'", null);
-
+        boolean exists = false;
         if (c.moveToNext() != false) {
             // there is a user with these data
-            return true;
+            exists = true;
         }
         c.close();
         db.close();
-        return false;
+        return exists;
     }
 
     /**
@@ -115,14 +118,14 @@ public class MyDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT username FROM Users WHERE active=1", null);
 
+        String username = null;
         if (c.moveToNext() != false) {
             // there is a user with these data
-            String username = c.getString(0);
-            return username;
+            username = c.getString(0);
         }
         c.close();
         db.close();
-        return null;
+        return username;
     }
 
     /**
@@ -161,5 +164,26 @@ public class MyDB extends SQLiteOpenHelper {
         notesData.add(notesTagsNames);
 
         return notesData;
+    }
+
+    /**
+     * Get a note filename where the content is saved
+     * @param noteId
+     * @return the filename of the note
+     */
+    public String getNoteFileName(int noteId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =
+                db.rawQuery("SELECT fileContent FROM Notes WHERE id=" + String.valueOf(noteId),
+                        null);
+
+        String fileName = null;
+        if (c.moveToNext() != false) {
+            // there is a note with this data
+            fileName = c.getString(0);
+        }
+        c.close();
+        db.close();
+        return fileName;
     }
 }

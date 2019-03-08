@@ -47,19 +47,10 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
                 (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
         if (fragment != null && fragment.isInLayout() == true){
             //EL OTRO FRAGMENT EXISTE
-            if (findViewById(R.id.singleNoteFragment) != null){
-                // landscape
-                Log.i("aqui", "distinto a null");
-                SingleNoteFragment elotro = (SingleNoteFragment) getSupportFragmentManager().
-                        findFragmentById(R.id.singleNoteFragment);
-                elotro.loadNote(selectedNoteId);
-            }else{
-                // portrait
-                Log.i("aqui", "nuevo");
-                Intent i= new Intent(this, SingleNoteActivity.class);
-                i.putExtra("noteId", selectedNoteId);
-                startActivity(i);
-            }
+            Log.i("aqui", "distinto a null");
+            SingleNoteFragment elotro = (SingleNoteFragment) getSupportFragmentManager().
+                    findFragmentById(R.id.singleNoteFragment);
+            elotro.loadNote(selectedNoteId);
         }
         else{
             Log.i("aqui", "no");
