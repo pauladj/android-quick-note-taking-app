@@ -1,7 +1,9 @@
 package com.example.proyecto1.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.example.proyecto1.R;
@@ -39,6 +42,15 @@ public class SingleNoteFragment extends Fragment {
 
         noteContent = myFragmentView.findViewById(R.id.noteContent); // assign it to a variable
         noteContent.setBackgroundColor(Color.argb(1, 255, 255, 255)); // make the background transparent
+
+        noteContent.setWebViewClient(new WebViewClient() {
+            @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // the user decides with what application to open the url
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(i);
+                return true;
+            }
+        });
 
         return myFragmentView;
     }

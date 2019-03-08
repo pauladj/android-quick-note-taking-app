@@ -34,7 +34,7 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
                     "asdfasdf asdf asdf asd fasd fs f</h1><br>Normal normal " +
                     "<br><b>basdf" +
                     " asd a sa f " +
-                    "NEGRITA</b><br>");
+                    "NEGRITA</b><br><a href='http://google.com'>Click Here</a>");
             fichero.write("aDF");
             fichero.write("<br>");
             fichero.write("<br>");
