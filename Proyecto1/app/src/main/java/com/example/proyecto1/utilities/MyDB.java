@@ -186,4 +186,14 @@ public class MyDB extends SQLiteOpenHelper {
         db.close();
         return fileName;
     }
+
+    /**
+     * Delete a note by knowing the id
+     * @param noteId - the id of the note to delete
+     */
+    public void deleteANote(int noteId){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("Notes", "id=" + noteId, null);
+        db.close();
+    }
 }

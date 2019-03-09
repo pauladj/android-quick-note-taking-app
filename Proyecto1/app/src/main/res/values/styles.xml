@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
     <style name="logoIntro" parent="NotesTheme">
@@ -21,17 +22,12 @@
     </style>
 
     <style name="mainNotesSubtitle" parent="NotesTheme">
-        <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/darkGrey</item>
     </style>
 
     <style name="tag" parent="mainNotesSubtitle">
         <item name="android:background">@color/tag</item>
-    </style>
-
-    <style name="singleNoteVisualization" parent="NotesTheme">
-        <item name="android:background">@color/backgroundGrey</item>
     </style>
 
 

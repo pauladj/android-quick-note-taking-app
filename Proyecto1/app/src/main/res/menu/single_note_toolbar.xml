@@ -15,6 +15,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/menuSendEmail"
+        android:icon="@drawable/ic_email"
+        android:title="@string/menuSendEmail"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menuSettings"
         android:icon="@drawable/ic_settings"
         android:title="@string/menuSettings"

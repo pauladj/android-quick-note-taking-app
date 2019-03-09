@@ -25,21 +25,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
 
-    <fragment
-        android:id="@+id/notesFragment"
-        android:name="com.example.proyecto1.fragments.NotesFragment"
-        android:layout_width="387dp"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        tools:layout="@layout/notes_fragment" />
-
-    <fragment
-        android:id="@+id/singleNoteFragment"
-        android:name="com.example.proyecto1.fragments.SingleNoteFragment"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        tools:layout="@layout/single_note_fragment" />
+        android:layout
+        android:padding="20dp">
+
+        <fragment
+            android:id="@+id/notesFragment"
+            android:name="com.example.proyecto1.fragments.NotesFragment"
+            android:layout_width="387dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            tools:layout="@layout/notes_fragment" />
+
+        <fragment
+            android:id="@+id/singleNoteFragment"
+            android:name="com.example.proyecto1.fragments.SingleNoteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            tools:layout="@layout/single_note_fragment" />
+    </RelativeLayout>
 
 
 </android.support.constraint.ConstraintLayout>

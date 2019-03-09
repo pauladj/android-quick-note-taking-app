@@ -14,5 +14,15 @@
     <string name="incorrectPassword">Wrong username and password</string>
     <string name="userSuccessfullyRegistered">You have been successfully registered</string>
     <string name="menuDelete">Delete</string>
-
+    <string name="fileNotFound">File not found or error opening it</string>
+    <string name="menuSendEmail">Send this note</string>
+    <string name="noteSuccessfullyDeleted">The note has been successfully deleted</string>
+    <string name="chooseEmailClient">Choose email application</string>
+    <string name="noAppForThis">No app for this action can be found</string>
+    <!-- Modal delete note -->
+    <string name="deleteNote_title">Delete note</string>
+    <string name="deleteNote_body">Are you sure you want to delete this note?</string>
+    <string name="deleteNote_positive">Yes</string>
+    <string name="deleteNote_negative">Cancel</string>
+    <!-- fin -->
 </resources>

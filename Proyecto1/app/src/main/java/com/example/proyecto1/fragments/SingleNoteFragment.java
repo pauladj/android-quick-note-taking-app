@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 public class SingleNoteFragment extends Fragment {
 
     private WebView noteContent;
+    private String textOfNote;
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -42,7 +43,6 @@ public class SingleNoteFragment extends Fragment {
 
         noteContent = myFragmentView.findViewById(R.id.noteContent); // assign it to a variable
         noteContent.setBackgroundColor(Color.argb(1, 255, 255, 255)); // make the background transparent
-
         noteContent.setWebViewClient(new WebViewClient() {
             @Override public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 // the user decides with what application to open the url
@@ -77,17 +77,27 @@ public class SingleNoteFragment extends Fragment {
                 if (noteFileName == null){
                     throw new FileNotFoundException();
                 }
-
                 BufferedReader ficherointerno = new BufferedReader(new InputStreamReader(
                         getActivity().openFileInput(noteFileName)));
-                String content = ficherointerno.readLine();
+                textOfNote = ficherointerno.readLine();
                 ficherointerno.close();
-
-                noteContent.loadData(content, "text/html; charset=UTF-8", null);
             }catch (Exception e){
-                noteContent.loadData("File not found or error opening it","text/html; charset=UTF-8",
-                        null);
+                textOfNote = getResources().getString(R.string.fileNotFound);
             }
+            noteContent.loadData(textOfNote,"text/html; charset=UTF-8",
+                    null);
+        }
+    }
+
+    /**
+     * Get the note content
+     * @return - String with the content
+     */
+    public String getNoteContent(){
+        if (textOfNote != null){
+            return textOfNote;
+        }else{
+            return "Error";
         }
     }
 
