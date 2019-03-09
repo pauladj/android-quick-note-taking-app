@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.TextView;
 
 import com.example.proyecto1.fragments.NotesFragment;
@@ -22,22 +23,6 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         loadToolbar();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-        Log.i("aqui", "onconfiguration");
-        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            Log.i("aqui", "portrait");
-            SingleNoteFragment elotro =
-                    (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
-            if(elotro!=null){
-                getSupportFragmentManager().beginTransaction().remove(elotro).commit();
-            }
-        }
-    }
-
     /**
      * A note is click, this is the event that handles it
      * @param selectedNoteId - the selected note id
@@ -46,19 +31,31 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         SingleNoteFragment fragment =
                 (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
         if (fragment != null && fragment.isInLayout() == true){
-            //EL OTRO FRAGMENT EXISTE
-            Log.i("aqui", "distinto a null");
+            Log.i("aqui", "bien4");
+            // landscape
+            showMenuOption(R.id.menuDelete); // show delete button
+            showMenuOption(R.id.menuEdit); // show edit button
+            showMenuOption(R.id.menuSendEmail); // show send email button
+
             SingleNoteFragment elotro = (SingleNoteFragment) getSupportFragmentManager().
                     findFragmentById(R.id.singleNoteFragment);
             elotro.loadNote(selectedNoteId);
         }
         else{
-            Log.i("aqui", "no");
+            Log.i("aqui", "bien2");
+            // Portrait
             //EL OTRO FRAGMENT NO EXISTE, HAY QUE LANZAR LA ACTIVIDAD QUE LO CONTIENE
-            Intent i= new Intent(this, SingleNoteActivity.class);
-            i.putExtra("noteId", selectedNoteId);
-            startActivity(i);
-
+            newSingleNoteActivity(selectedNoteId);
         }
+    }
+
+    /**
+     * Creates new SingleNoteActivity knowing the noteid
+     * @param selectedNoteId - the selected noteid
+     */
+    private void newSingleNoteActivity(int selectedNoteId){
+        Intent i= new Intent(this, SingleNoteActivity.class);
+        i.putExtra("noteId", selectedNoteId);
+        startActivity(i);
     }
 }
