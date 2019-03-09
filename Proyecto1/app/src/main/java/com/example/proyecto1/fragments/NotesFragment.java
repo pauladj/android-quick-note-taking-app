@@ -1,6 +1,7 @@
 package com.example.proyecto1.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.proyecto1.R;
 import com.example.proyecto1.cardview.ElAdaptadorRecycler;
@@ -23,13 +25,17 @@ import java.util.ArrayList;
 
 public class NotesFragment extends Fragment {
 
+    private RecyclerView notes;
+    private int selectedItem = -1;
+
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent,
                              @Nullable Bundle savedInstanceState) {
         // Defines the xml file for the fragment
-        return inflater.inflate(R.layout.notes_fragment, parent, false);
+        View v = inflater.inflate(R.layout.notes_fragment, parent, false);
+        return v;
     }
 
     // This event is triggered soon after onCreateView().
@@ -38,9 +44,8 @@ public class NotesFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         // Setup any handles to view objects here
         super.onActivityCreated(savedInstanceState);
-
         // load recycler view
-        final RecyclerView notes = getView().findViewById(R.id.reciclerView);
+        notes = getView().findViewById(R.id.reciclerView);
 
         // load notes
         String activeUser = Data.getMyData().getActiveUsername();
@@ -56,13 +61,35 @@ public class NotesFragment extends Fragment {
             public void onClick(View v) {
                 int clickedPosition = notes.getChildAdapterPosition(v);
                 int noteIdOfPosition = Integer.valueOf(notesData.get(0).get(clickedPosition));
+
+                // clean the previous selected item
+                if (selectedItem != -1){
+                    TextView title =
+                            notes.getChildAt(selectedItem).findViewById(R.id.noteTitle);
+                    title.setBackgroundColor(Color.TRANSPARENT);
+                    title.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                }
+                selectedItem = clickedPosition; // set new selected item
+
                 elListener.clickOnNote(noteIdOfPosition);
+
             }
         });
         notes.setAdapter(eladaptador);
 
         LinearLayoutManager elLayoutLineal= new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
         notes.setLayoutManager(elLayoutLineal);
+    }
+
+    /**
+     * Show an element is selected by coloring the background
+     */
+    public void markAsSelected(){
+        if (notes != null){
+            TextView title = notes.getChildAt(selectedItem).findViewById(R.id.noteTitle);
+            title.setBackgroundResource(R.color.colorPrimaryDark);
+            title.setTextColor(Color.WHITE);
+        }
     }
 
     // Listeners

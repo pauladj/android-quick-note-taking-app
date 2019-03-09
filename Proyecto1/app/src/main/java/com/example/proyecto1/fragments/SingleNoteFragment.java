@@ -33,14 +33,15 @@ public class SingleNoteFragment extends Fragment {
     private WebView noteContent;
     private String textOfNote;
 
-    // The onCreateView method is called when Fragment should create its View object hierarchy,
-    // either dynamically or via XML layout inflation.
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent,
                              @Nullable Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         View myFragmentView = inflater.inflate(R.layout.single_note_fragment, parent, false);
-
+        // se han asignado aquí las variables porque si se hace en el método onActivityCreated
+        // luego son null, no se ha conseguido determinar el porqué aunque en NotesFragment funciona
+        // perfectamente
         noteContent = myFragmentView.findViewById(R.id.noteContent); // assign it to a variable
         noteContent.setBackgroundColor(Color.argb(1, 255, 255, 255)); // make the background transparent
         noteContent.setWebViewClient(new WebViewClient() {
@@ -51,16 +52,15 @@ public class SingleNoteFragment extends Fragment {
                 return true;
             }
         });
-
         return myFragmentView;
     }
 
-    // This event is triggered soon after onCreateView().
-    // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         // Setup any handles to view objects here
         super.onActivityCreated(savedInstanceState);
+
     }
 
 

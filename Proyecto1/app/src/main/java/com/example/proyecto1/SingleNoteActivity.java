@@ -29,14 +29,7 @@ import com.example.proyecto1.utilities.MyDB;
 public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.ListenerDelDialogo {
 
     int noteId;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Change the topbar options
-        getMenuInflater().inflate(R.menu.single_note_toolbar, menu);
-        return true;
-    }
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +42,13 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
         noteId = getIntent().getIntExtra("noteId", 1);
         SingleNoteFragment fragmentDemo = (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
         fragmentDemo.loadNote(noteId);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Change the topbar options
+        getMenuInflater().inflate(R.menu.single_note_toolbar, menu);
+        return true;
     }
 
     /**
@@ -69,67 +69,11 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
         noteId = savedInstanceState.getInt("noteId");
     }
 
-    // -----------  Send note as email
     /**
-     * Send the current note by email
-     */
-    public void sendNoteByEmail(){
-        SingleNoteFragment fragment = (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
-        String content = fragment.getNoteContent();
-
-        Spanned plainText = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            plainText = Html.fromHtml(content,
-                    Html.FROM_HTML_MODE_COMPACT);
-        } else {
-            plainText = Html.fromHtml(content);
-        }
-
-        String uriText = "mailto:?body=" + plainText.toString();
-        Uri uri = Uri.parse(uriText);
-
-        Intent i = new Intent(Intent.ACTION_SENDTO);
-        i.setData(uri);
-        try {
-            String chooseEmailClientText = getResources().getString(R.string.chooseEmailClient);
-            startActivity(Intent.createChooser(i,chooseEmailClientText));
-        } catch (android.content.ActivityNotFoundException ex) {
-            String noApp = getResources().getString(R.string.noAppForThis);
-            Toast.makeText(this,noApp, Toast.LENGTH_LONG).show();
-        }
-    }
-
-
-    // -----------  Delete note
-    /**
-     * Confirm if the note has to be deleted
-     */
-    public void confirmDeleteNote(){
-        // Show the dialog to confirm
-        DialogFragment confirmationDialog = new DeleteNoteDialog();
-        confirmationDialog.show(getSupportFragmentManager(), "deleteNoteDialog");
-
-    }
-
-    /**
-     * The user wants to delete the note
+     * Remove a note knowing its id
      */
     public void yesDeleteNote(){
-        MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
-        gestorDB.deleteANote(noteId);
-
-        // show toast across screens
-        int tiempo = Toast.LENGTH_SHORT;
-        Toast aviso = Toast.makeText(getApplicationContext(), R.string.noteSuccessfullyDeleted,
-                tiempo);
-        aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
-        aviso.show();
-
-        Intent i = new Intent (this, MainActivity.class);
-        // clear the activity stack
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
-        finish();
+        super.yesDeleteNote(noteId);
     }
 
 

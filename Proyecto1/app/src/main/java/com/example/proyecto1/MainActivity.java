@@ -7,13 +7,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
+import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
 import com.example.proyecto1.utilities.MainToolbar;
 
 import org.w3c.dom.Text;
 
-public class MainActivity extends MainToolbar implements NotesFragment.listenerDelFragment {
+public class MainActivity extends MainToolbar implements NotesFragment.listenerDelFragment,
+        DeleteNoteDialog.ListenerDelDialogo  {
+
+    private int noteId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +26,32 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         setContentView(R.layout.main_activity);
         // load top toolbar
         loadToolbar();
+    }
+
+
+    /**
+     * Save the noteId so it won't lose if there is a rotation of screen
+     * @param savedInstanceState
+     */
+    protected void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("noteId", noteId);
+    }
+
+    /**
+     * Restore the noteId value
+     * @param savedInstanceState
+     */
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        noteId = savedInstanceState.getInt("noteId");
+    }
+
+    /**
+     * Remove a note knowing its id (toolbar)
+     */
+    public void yesDeleteNote(){
+        super.yesDeleteNote(noteId);
     }
 
     /**
@@ -31,15 +62,22 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         SingleNoteFragment fragment =
                 (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
         if (fragment != null && fragment.isInLayout() == true){
-            Log.i("aqui", "bien4");
+            noteId = selectedNoteId;
             // landscape
-            showMenuOption(R.id.menuDelete); // show delete button
-            showMenuOption(R.id.menuEdit); // show edit button
-            showMenuOption(R.id.menuSendEmail); // show send email button
+            // add options to menu
+            showMenuOption(R.id.menuDelete);
+            showMenuOption(R.id.menuEdit);
+            showMenuOption(R.id.menuSendEmail);
 
             SingleNoteFragment elotro = (SingleNoteFragment) getSupportFragmentManager().
                     findFragmentById(R.id.singleNoteFragment);
+            // reload fragment info
             elotro.loadNote(selectedNoteId);
+
+            // Color the background to show the element is selected
+            NotesFragment notes =
+                    (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
+            notes.markAsSelected();
         }
         else{
             Log.i("aqui", "bien2");
