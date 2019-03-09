@@ -17,7 +17,7 @@ import org.w3c.dom.Text;
 public class MainActivity extends MainToolbar implements NotesFragment.listenerDelFragment,
         DeleteNoteDialog.ListenerDelDialogo  {
 
-    private int noteId;
+    private int noteId; // selected note in landscape mode
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +80,6 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
             notes.markAsSelected();
         }
         else{
-            Log.i("aqui", "bien2");
             // Portrait
             //EL OTRO FRAGMENT NO EXISTE, HAY QUE LANZAR LA ACTIVIDAD QUE LO CONTIENE
             newSingleNoteActivity(selectedNoteId);

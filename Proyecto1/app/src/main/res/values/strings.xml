@@ -15,7 +15,7 @@
     <string name="userSuccessfullyRegistered">You have been successfully registered</string>
     <string name="menuDelete">Delete</string>
     <string name="fileNotFound">File not found or error opening it</string>
-    <string name="menuSendEmail">Send this note</string>
+    <string name="menuSendEmail">Email it</string>
     <string name="noteSuccessfullyDeleted">The note has been successfully deleted</string>
     <string name="chooseEmailClient">Choose email application</string>
     <string name="noAppForThis">No app for this action can be found</string>

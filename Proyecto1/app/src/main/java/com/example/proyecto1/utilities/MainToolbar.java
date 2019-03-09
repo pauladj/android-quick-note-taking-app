@@ -102,7 +102,7 @@ public class MainToolbar extends AppCompatActivity {
         i.setData(uri);
         try {
             String chooseEmailClientText = getResources().getString(R.string.chooseEmailClient);
-            startActivity(Intent.createChooser(i,chooseEmailClientText));
+            startActivity(Intent.createChooser(i, chooseEmailClientText));
         } catch (android.content.ActivityNotFoundException ex) {
             String noApp = getResources().getString(R.string.noAppForThis);
             Toast.makeText(this,noApp, Toast.LENGTH_LONG).show();
