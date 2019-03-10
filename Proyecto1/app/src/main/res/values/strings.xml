@@ -19,10 +19,22 @@
     <string name="noteSuccessfullyDeleted">The note has been successfully deleted</string>
     <string name="chooseEmailClient">Choose email application</string>
     <string name="noAppForThis">No app for this action can be found</string>
+    <string name="failCreatingNote">The note could not be created</string>
     <!-- Modal delete note -->
     <string name="deleteNote_title">Delete note</string>
     <string name="deleteNote_body">Are you sure you want to delete this note?</string>
     <string name="deleteNote_positive">Yes</string>
     <string name="deleteNote_negative">Cancel</string>
     <!-- fin -->
+    <string name="deleteStyles_title">Format text</string>
+    <string name="deleteStyles_body">Are you sure you want to format this text?</string>
+    <string name="successCreatingNote">Note successfully created</string>
+    <string name="boldText">Bold</string>
+    <string name="italicText">Italic</string>
+    <string name="linkText">Link</string>
+    <string name="formatText">Format</string>
+    <string name="editorTitle">Title</string>
+    <string name="editorAddTag">Add Tag</string>
+    <string name="failBoldText">Select a word first</string>
+
 </resources>

@@ -19,6 +19,7 @@
         android:layout_marginBottom="28dp"
         android:clickable="true"
         android:focusable="true"
+        android:onClick="createNewNote"
         app:elevation="6dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"

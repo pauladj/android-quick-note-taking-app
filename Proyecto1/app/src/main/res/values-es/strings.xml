@@ -25,4 +25,17 @@
     <string name="deleteNote_positive">Sí</string>
     <string name="deleteNote_negative">Cancelar</string>
     <!-- fin -->
+    <string name="deleteStyles_title">Formatear texto</string>
+    <string name="deleteStyles_body">¿Estás seguro de que quieres formatear el texto?</string>
+    <string name="failCreatingNote">La nota no se creado</string>
+    <string name="successCreatingNote">La nota se ha creado correctamente</string>
+    <string name="boldText">Negrita</string>
+    <string name="italicText">Itálica</string>
+    <string name="linkText">Enlace</string>
+    <string name="editorTitle">Título</string>
+    <string name="formatText">Formatear</string>
+    <string name="editorAddTag">Añadir Etiqueta</string>
+    <string name="failBoldText">Selecciona una palabra antes</string>
+
+
 </resources>

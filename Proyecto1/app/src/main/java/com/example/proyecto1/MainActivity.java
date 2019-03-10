@@ -1,11 +1,17 @@
 package com.example.proyecto1;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.fragments.NotesFragment;
@@ -82,17 +88,62 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         else{
             // Portrait
             //EL OTRO FRAGMENT NO EXISTE, HAY QUE LANZAR LA ACTIVIDAD QUE LO CONTIENE
-            newSingleNoteActivity(selectedNoteId);
+            Intent i= new Intent(this, SingleNoteActivity.class);
+            i.putExtra("noteId", selectedNoteId);
+            startActivity(i);
         }
     }
 
     /**
-     * Creates new SingleNoteActivity knowing the noteid
-     * @param selectedNoteId - the selected noteid
+     * The user wants to create a new note
+     * @param view - the clicked on element
      */
-    private void newSingleNoteActivity(int selectedNoteId){
-        Intent i= new Intent(this, SingleNoteActivity.class);
-        i.putExtra("noteId", selectedNoteId);
-        startActivity(i);
+    public void createNewNote(View view) {
+        Intent intent= new Intent(MainActivity.this, NoteEditorActivity.class);
+        startActivityForResult(intent, 666);
+    }
+
+    /**
+     * We get the result of creating new note
+     * @param requestCode - to specify this is the callback of creating a note
+     * @param resultCode - the result code
+     * @param data - the data
+     */
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // New note result
+        if (requestCode == 666){
+            if (resultCode == RESULT_OK) {
+                // toast with ok
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(getApplicationContext(), R.string.successCreatingNote,
+                        tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+                // refresh the fragment with the notes so the new one is shown
+                NotesFragment notes =
+                        (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.detach(notes);
+                transaction.attach(notes);
+                // if it's landscape, refresh the single note fragment too if it exists
+                SingleNoteFragment singleNote =
+                        (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
+                if (findViewById(R.id.singleNoteFragment) != null && singleNote != null){
+                    transaction.detach(singleNote);
+                    transaction.attach(singleNote);
+                }
+                transaction.commit();
+            }else {
+                // toast with fail
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(getApplicationContext(), R.string.failCreatingNote,
+                        tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+            }
+        }
     }
 }

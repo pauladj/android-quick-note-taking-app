@@ -12,13 +12,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/NotesTheme">
-        <activity android:name=".SingleNoteActivity"></activity>
-        <activity android:name=".utilities.MyDB" />
+        <activity android:name=".utilities.SpanStyleHelper"></activity>
+        <activity
+            android:name=".NoteEditorActivity"
+            android:windowSoftInputMode="adjustResize">
+            >
+        </activity>
+        <activity android:name=".SingleNoteActivity" />
         <activity android:name=".utilities.MainToolbar" />
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity" />
         <activity android:name=".LogInActivity" />
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".LoaderWelcomeActivity"
+        <activity
+            android:name=".LoaderWelcomeActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
