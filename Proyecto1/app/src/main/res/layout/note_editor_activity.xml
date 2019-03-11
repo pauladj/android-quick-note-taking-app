@@ -49,6 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/titleInput"
+                    android:onClick="addTag"
                     android:text="@string/editorAddTag" />
 
                 <TextView

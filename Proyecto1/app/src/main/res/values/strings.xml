@@ -41,5 +41,11 @@
     <string name="insertLink_save">Save</string>
     <string name="insertLink_cancel">Cancel</string>
     <string name="insertLink_title">Insert a link</string>
+    <string name="addTag_title">Select a tag</string>
+    <string name="failChooseTag">You must select a tag to save it</string>
+    <string name="addTag_newTag">Add new</string>
+    <string name="confirmExit_title">Are you sure you want to exit? You will lose this note</string>
+    <string name="confirmExit_yes">Yes</string>
+    <string name="confirmExit_no">No</string>
 
 </resources>

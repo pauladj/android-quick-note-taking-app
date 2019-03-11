@@ -31,7 +31,7 @@ public class MyDB extends SQLiteOpenHelper {
 
         // Create table Tags
         db.execSQL("CREATE TABLE Tags ('id' INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " 'name' CHAR(255) NOT NULL UNIQUE, 'username' INTEGER, FOREIGN KEY('username') "+
+                " 'name' CHAR(255) NOT NULL, 'username' INTEGER, FOREIGN KEY('username') "+
                 " REFERENCES Users('username') ON DELETE CASCADE)");
 
         // Create table Notes
@@ -44,6 +44,8 @@ public class MyDB extends SQLiteOpenHelper {
         // Insert dummy data
         db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 1)");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");
+        db.execSQL("INSERT INTO Tags(id, name, username) VALUES (2, 'tagPrueba2', 'admin')");
+        db.execSQL("INSERT INTO Tags(id, name, username) VALUES (3, 'tagPrueba3', 'admin')");
         db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('nombrefichero.html', 1," +
                 " 'sergserg r gsdfg ', 'admin')");
         db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('fff', 1, 'klsdfjkldf ksdjfksjdfks jdfksjdfksd fjkdfj f skdf jskjdf df kdfjskld fjkd jkdjf kdfj dfklf', 'admin')");
@@ -195,5 +197,36 @@ public class MyDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.delete("Notes", "id=" + noteId, null);
         db.close();
+    }
+
+    /**
+     * Get tags by user
+     * @param username - of which we have to get the notes
+     * @return ids, names of the tags
+     */
+    public ArrayList<ArrayList<String>> getTagsByUser(String username){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT id, name FROM Tags WHERE username='" + username +
+                "'", null);
+
+        ArrayList<String> tagsIds = new ArrayList<>();
+        ArrayList<String> tagsNames = new ArrayList<>();
+
+        while (c.moveToNext()) {
+            // there is a user with these data
+            String id = c.getString(0);
+            String tagName = c.getString(1);
+
+            tagsIds.add(id);
+            tagsNames.add(tagName);
+        }
+        c.close();
+        db.close();
+
+        ArrayList<ArrayList<String>> data = new ArrayList<>();
+        data.add(tagsIds);
+        data.add(tagsNames);
+
+        return data;
     }
 }

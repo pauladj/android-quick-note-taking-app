@@ -31,7 +31,7 @@ public class DeleteNoteDialog extends DialogFragment {
         String deleteNote_body = getResources().getString(R.string.deleteNote_body);
         builder.setMessage(deleteNote_body);
 
-        final String positiveButton = getResources().getString(R.string.deleteNote_positive);
+        String positiveButton = getResources().getString(R.string.deleteNote_positive);
         String negativeButton = getResources().getString(R.string.deleteNote_negative);
 
         builder.setPositiveButton(positiveButton, new DialogInterface.OnClickListener() {

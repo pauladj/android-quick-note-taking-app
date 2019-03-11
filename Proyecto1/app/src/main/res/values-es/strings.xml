@@ -41,5 +41,10 @@
     <string name="insertLink_save">Guardar</string>
     <string name="insertLink_cancel">Cancelar</string>
     <string name="insertLink_title">Insertar un enlace</string>
-
+    <string name="addTag_title">Selecciona una etiqueta</string>
+    <string name="failChooseTag">Debes seleccionar una etiqueta</string>
+    <string name="addTag_newTag">Crear</string>
+    <string name="confirmExit_title">¿Estás seguro de querer irte? Perderás esta nota</string>
+    <string name="confirmExit_yes">Sí</string>
+    <string name="confirmExit_no">No</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.example.proyecto1;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.PersistableBundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +27,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.proyecto1.dialogs.AddTagEditor;
+import com.example.proyecto1.dialogs.ConfimExit;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.dialogs.DeleteTextStyles;
 import com.example.proyecto1.dialogs.InsertLinkEditor;
@@ -35,7 +39,10 @@ import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
 
-public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo {
+public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo, AddTagEditor.ListenerDelDialogo {
+
+    int choosenTagId = -1;
+    String choosenTagName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,12 +167,9 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                 "</a>";
         SpannableStringBuilder formatedLink = (SpannableStringBuilder) Html.fromHtml(link);
 
-        spannable.insert(posIni, formatedLink);
+        spannable.insert(posIni, formatedLink); // insert the link in the text
         textBody.setMovementMethod(LinkMovementMethod.getInstance());
         textBody.setText(spannable);
-        // make the links clickable
-
-
         textBody.setSelection(posIni);
     }
 
@@ -195,5 +199,68 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         // Show the dialog to confirm
         DialogFragment confirmationDialog = new DeleteTextStyles();
         confirmationDialog.show(getSupportFragmentManager(), "deleteTextStyles");
+    }
+
+    /**
+     * The user wants to add a tag to the post
+     * @param v - the element clicked
+     */
+    public void addTag(View v){
+        // Show the dialog to select one
+        DialogFragment confirmationDialog = new AddTagEditor();
+        Bundle bl = new Bundle();
+        bl.putInt("choosenTagId", choosenTagId);
+        bl.putString("choosenTagName", choosenTagName);
+        confirmationDialog.setArguments(bl);
+        confirmationDialog.show(getSupportFragmentManager(), "addTagEditor");
+    }
+
+    /**
+     * The user has selected a tag to add to the post
+     * @param tagId - the id of the selected tag
+     */
+    public void addTagToPost(int tagId, String tagName){
+        choosenTagId = tagId;
+        choosenTagName = tagName;
+        TextView a = findViewById(R.id.assignedTag);
+        if (tagId == -1){
+            // nothing selected, tag name not shown
+            a.setVisibility(View.INVISIBLE);
+        }else{
+            // a tag has been selected, show it
+            a.setVisibility(View.VISIBLE);
+            a.setVisibility(View.VISIBLE);
+            a.setText(tagName);
+        }
+    }
+
+    /**
+     * The user wants to create a new tag
+     */
+    public void createNewTag(){
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        // If the back button is pressed the user has to confirm they want to exit
+        DialogFragment confirmationDialog = new ConfimExit();
+        confirmationDialog.show(getSupportFragmentManager(), "goBack");
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        choosenTagId = savedInstanceState.getInt("choosenTagId");
+        choosenTagName = savedInstanceState.getString("choosenTagName");
+        addTagToPost(choosenTagId, choosenTagName); // show the tag if there's one like before
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("choosenTagId", choosenTagId);
+        outState.putString("choosenTagName", choosenTagName);
     }
 }
