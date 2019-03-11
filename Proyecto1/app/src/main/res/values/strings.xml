@@ -36,5 +36,10 @@
     <string name="editorTitle">Title</string>
     <string name="editorAddTag">Add Tag</string>
     <string name="failBoldText">Select a word first</string>
+    <string name="textToShowLabel">Text to show</string>
+    <string name="linkLabel">Url</string>
+    <string name="insertLink_save">Save</string>
+    <string name="insertLink_cancel">Cancel</string>
+    <string name="insertLink_title">Insert a link</string>
 
 </resources>

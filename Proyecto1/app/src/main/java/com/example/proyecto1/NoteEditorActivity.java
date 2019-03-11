@@ -3,29 +3,39 @@ package com.example.proyecto1;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.dialogs.DeleteTextStyles;
+import com.example.proyecto1.dialogs.InsertLinkEditor;
 import com.example.proyecto1.utilities.MainToolbar;
 import com.example.proyecto1.utilities.SpanStyleHelper;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Type;
 
-public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo {
+public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +142,31 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
      * @param v
      */
     public void insertUrl(View v){
+        // Show the dialog to so the user inputs the info
+        DialogFragment confirmationDialog = new InsertLinkEditor();
+        confirmationDialog.show(getSupportFragmentManager(), "insertLinkEditor");
+    }
 
+    /**
+     * Append the url to the text content
+     */
+    public void yesInsertUrl(View textToShow, View inputLink){
+        EditText textBody = findViewById(R.id.noteBody);
+        int posIni = textBody.getSelectionStart();
+
+        SpannableStringBuilder spannable = new SpannableStringBuilder(textBody.getText());
+        String link =
+                "<a href='" + ((TextView) inputLink).getText().toString() + "'>" + ((TextView) textToShow).getText().toString() +
+                "</a>";
+        SpannableStringBuilder formatedLink = (SpannableStringBuilder) Html.fromHtml(link);
+
+        spannable.insert(posIni, formatedLink);
+        textBody.setMovementMethod(LinkMovementMethod.getInstance());
+        textBody.setText(spannable);
+        // make the links clickable
+
+
+        textBody.setSelection(posIni);
     }
 
     /**
@@ -147,7 +181,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         Object[] spans = spannable.getSpans(0, spannable.length(), Object.class);
 
         for (Object span : spans) {
-            if (span instanceof CharacterStyle)
+            if (span instanceof CharacterStyle && !span.toString().contains("URL"))
                 spannable.removeSpan(span);
         }
         textBody.setText(spannable);
