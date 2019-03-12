@@ -21,7 +21,7 @@ public class ElAdaptadorRecycler extends RecyclerView.Adapter <ElViewHolder> imp
     private View.OnClickListener listener;
 
     public ElAdaptadorRecycler(ArrayList<String> notesTitles, ArrayList<String> notesDates,
-                               ArrayList<String> notesTags, boolean[] selection){
+                               ArrayList<String> notesTags){
         this.notesTitles = notesTitles;
         this.notesDates = notesDates;
         this.notesTags = notesTags;

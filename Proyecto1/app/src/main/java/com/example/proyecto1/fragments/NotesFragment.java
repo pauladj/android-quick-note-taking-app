@@ -61,7 +61,7 @@ public class NotesFragment extends Fragment {
 
         // titles, dates, tags
         final ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(1),
-                notesData.get(2), notesData.get(3), new boolean[notesData.get(1).size()]);
+                notesData.get(2), notesData.get(3));
 
         // Add listeners
         eladaptador.setOnClickListener(new View.OnClickListener() {
