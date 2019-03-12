@@ -54,6 +54,7 @@ public class ElAdaptadorRecycler extends RecyclerView.Adapter <ElViewHolder> imp
         this.listener = listener;
     }
 
+
     @Override
     public void onClick(View view){
         if (listener != null){

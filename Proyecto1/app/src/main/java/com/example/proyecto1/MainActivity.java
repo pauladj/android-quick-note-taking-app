@@ -85,7 +85,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
             // Color the background to show the element is selected
             NotesFragment notes =
                     (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
-            //notes.markAsSelected();
+            notes.markAsSelected();
         }
         else{
             // Portrait

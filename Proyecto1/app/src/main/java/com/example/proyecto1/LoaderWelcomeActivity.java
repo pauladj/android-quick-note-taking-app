@@ -28,7 +28,6 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
             OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput("nombrefichero" +
                             ".html",
                     Context.MODE_PRIVATE));
-            Log.i("aqui", getApplicationContext().getFilesDir().toString());
             fichero.write("<h1>Estoy escribiendo en el " +
                     "fichero asdfadsfa asdfsdf afasdf sdfasdf asdf asdf asdf " +
                     "asdfasdf asdf asdf asd fasd fs f</h1><br>Normal normal " +

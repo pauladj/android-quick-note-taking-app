@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.proyecto1.R;
 import com.example.proyecto1.cardview.ElAdaptadorRecycler;
+import com.example.proyecto1.cardview.ElViewHolder;
 import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MyDB;
 
@@ -57,7 +58,6 @@ public class NotesFragment extends Fragment {
         String activeUser = Data.getMyData().getActiveUsername();
         MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
         notesData = gestorDB.getNotesDataByUser(activeUser);
-        Log.i("aqui", "loaded" + String.valueOf(notesData.get(0).size()));
 
         // titles, dates, tags
         ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(1), notesData.get(2), notesData.get(3));
@@ -67,12 +67,13 @@ public class NotesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int clickedPosition = notes.getChildAdapterPosition(v);
-                Log.i("aqui2", String.valueOf(clickedPosition));
                 int noteIdOfPosition = Integer.valueOf(notesData.get(0).get(clickedPosition));
                 // clean the previous selected item
-                /*if (selectedItem != -1){
-                    TextView title =
-                            notes.getChildAt(selectedItem).findViewById(R.id.noteTitle);
+                if (selectedItem != -1){
+                    ElViewHolder viewHolder =
+                            (ElViewHolder) notes.findViewHolderForAdapterPosition(selectedItem);
+                    TextView title = viewHolder.noteTitle;
+                    //TextView title = notes.getChildAt(selectedItem).findViewById(R.id.noteTitle);
                     title.setBackgroundColor(Color.TRANSPARENT);
                     title.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 }
@@ -85,8 +86,6 @@ public class NotesFragment extends Fragment {
         notes.setAdapter(eladaptador);
         LinearLayoutManager elLayoutLineal= new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
         notes.setLayoutManager(elLayoutLineal);
-
-        Log.i("aqui3", String.valueOf(notes.getAdapter().getItemCount()));
     }
 
     /**
@@ -94,9 +93,10 @@ public class NotesFragment extends Fragment {
      */
     public void markAsSelected(){
         if (notes != null){
-            Log.i("aqui",
-                    String.valueOf(selectedItem) + "of" + String.valueOf(notes.getAdapter().getItemCount()));
-            TextView title = notes.getChildAt(selectedItem).findViewById(R.id.noteTitle);
+            ElViewHolder viewHolder =
+                    (ElViewHolder) notes.findViewHolderForAdapterPosition(selectedItem);
+            TextView title = viewHolder.noteTitle;
+            //TextView title = notes.getChildAt(selectedItem).findViewById(R.id.noteTitle);
             title.setBackgroundResource(R.color.colorPrimaryDark);
             title.setTextColor(Color.WHITE);
         }
