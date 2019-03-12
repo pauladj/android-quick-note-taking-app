@@ -302,11 +302,15 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
             return; // Exit method
         }
 
-        SpannableStringBuilder spannable = new SpannableStringBuilder(bodyElement.getText());
+        SpannableString spannable = new SpannableString(bodyElement.getText());
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String fileName = timeStamp + "_" + ".html";
         String htmlContent = Html.toHtml(spannable);
+        htmlContent = htmlContent.replace("<u>", "") // delete the tags added by the conversor
+                                .replace("</u>", "")
+                                .replace(" dir=\"ltr\"", "");
+        Log.i("aqui", htmlContent);
 
         try {
             OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput(fileName,

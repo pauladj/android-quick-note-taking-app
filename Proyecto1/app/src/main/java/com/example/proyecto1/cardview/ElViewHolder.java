@@ -1,6 +1,7 @@
 package com.example.proyecto1.cardview;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,7 +13,7 @@ public class ElViewHolder extends RecyclerView.ViewHolder {
     public TextView noteDate;
     public TextView noteTag;
 
-    public ElViewHolder(View v){
+    public ElViewHolder(View v) {
         super(v);
         noteTitle = v.findViewById(R.id.noteTitle);
         noteDate = v.findViewById(R.id.noteDate);

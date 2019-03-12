@@ -27,7 +27,6 @@ import java.util.ArrayList;
 public class NotesFragment extends Fragment {
 
     private RecyclerView notes;
-    private int selectedItem = -1;
     private ArrayList<ArrayList<String>> notesData;
 
     @Override
@@ -54,30 +53,23 @@ public class NotesFragment extends Fragment {
         // load recycler view
         notes = getView().findViewById(R.id.reciclerView);
 
+        Log.i("aqui", "loaded");
         // load notes
         String activeUser = Data.getMyData().getActiveUsername();
         MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
         notesData = gestorDB.getNotesDataByUser(activeUser);
 
         // titles, dates, tags
-        ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(1), notesData.get(2), notesData.get(3));
+        final ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(1),
+                notesData.get(2), notesData.get(3), new boolean[notesData.get(1).size()]);
 
         // Add listeners
         eladaptador.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int clickedPosition = notes.getChildAdapterPosition(v);
+
                 int noteIdOfPosition = Integer.valueOf(notesData.get(0).get(clickedPosition));
-                // clean the previous selected item
-                if (selectedItem != -1){
-                    ElViewHolder viewHolder =
-                            (ElViewHolder) notes.findViewHolderForAdapterPosition(selectedItem);
-                    TextView title = viewHolder.noteTitle;
-                    //TextView title = notes.getChildAt(selectedItem).findViewById(R.id.noteTitle);
-                    title.setBackgroundColor(Color.TRANSPARENT);
-                    title.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-                }
-                selectedItem = clickedPosition; // set new selected item*/
 
                 elListener.clickOnNote(noteIdOfPosition);
 
@@ -88,26 +80,21 @@ public class NotesFragment extends Fragment {
         notes.setLayoutManager(elLayoutLineal);
     }
 
-    /**
-     * Show an element is selected by coloring the background
-     */
-    public void markAsSelected(){
-        if (notes != null){
-            ElViewHolder viewHolder =
-                    (ElViewHolder) notes.findViewHolderForAdapterPosition(selectedItem);
-            TextView title = viewHolder.noteTitle;
-            //TextView title = notes.getChildAt(selectedItem).findViewById(R.id.noteTitle);
-            title.setBackgroundResource(R.color.colorPrimaryDark);
-            title.setTextColor(Color.WHITE);
-        }
-    }
 
+    /**
+     * Add new note to the adapter/Recyclerview
+     * @param fileName
+     */
     public void addNote(String fileName){
         MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
         ArrayList<String> noteData = gestorDB.getLastAddedNoteData(fileName);
+        // get the last
+        // added note
+        // and append the info
         for (int i=0;i<notesData.size();i++){
             notesData.get(i).add(noteData.get(i));
         }
+        // notify the adapter that the data has changed
         notes.getAdapter().notifyItemInserted(notesData.get(0).size()-1);
     }
 

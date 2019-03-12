@@ -81,11 +81,6 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
                     findFragmentById(R.id.singleNoteFragment);
             // reload fragment info
             elotro.loadNote(selectedNoteId);
-
-            // Color the background to show the element is selected
-            NotesFragment notes =
-                    (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
-            notes.markAsSelected();
         }
         else{
             // Portrait
