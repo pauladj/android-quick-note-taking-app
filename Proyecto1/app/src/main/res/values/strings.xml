@@ -44,8 +44,13 @@
     <string name="addTag_title">Select a tag</string>
     <string name="failChooseTag">You must select a tag to save it</string>
     <string name="addTag_newTag">Add new</string>
-    <string name="confirmExit_title">Are you sure you want to exit? You will lose this note</string>
+    <string name="confirmExit_title">Are you sure you want to exit?\nYou will lose any unsaved changes</string>
     <string name="confirmExit_yes">Yes</string>
     <string name="confirmExit_no">No</string>
-
+    <string name="tagNameLabel">Tag name</string>
+    <string name="newTag_title">Add new tag</string>
+    <string name="menuSave">Save</string>
+    <string name="failSavingNote">There was an error saving this note</string>
+    <string name="failSavingNote_titleEmpty">The title of the note cannot be empty</string>
+    <string name="failSavingNote_bodyEmpty">The body of the note cannot be empty</string>
 </resources>

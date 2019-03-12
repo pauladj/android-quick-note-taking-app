@@ -30,6 +30,6 @@
         android:id="@+id/inputLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:layout_below="@+id/linkLabel"/>
+        android:layout_below="@+id/linkLabel"
+        android:inputType="textUri" />
 </RelativeLayout>

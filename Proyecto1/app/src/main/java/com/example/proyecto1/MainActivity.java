@@ -1,10 +1,10 @@
 package com.example.proyecto1;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,6 +19,8 @@ import com.example.proyecto1.fragments.SingleNoteFragment;
 import com.example.proyecto1.utilities.MainToolbar;
 
 import org.w3c.dom.Text;
+
+import java.util.List;
 
 public class MainActivity extends MainToolbar implements NotesFragment.listenerDelFragment,
         DeleteNoteDialog.ListenerDelDialogo  {
@@ -83,7 +85,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
             // Color the background to show the element is selected
             NotesFragment notes =
                     (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
-            notes.markAsSelected();
+            //notes.markAsSelected();
         }
         else{
             // Portrait
@@ -122,20 +124,11 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
                         tiempo);
                 aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
                 aviso.show();
-                // refresh the fragment with the notes so the new one is shown
-                NotesFragment notes =
+                // add it to recycler view
+                NotesFragment fragment =
                         (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.detach(notes);
-                transaction.attach(notes);
-                // if it's landscape, refresh the single note fragment too if it exists
-                SingleNoteFragment singleNote =
-                        (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
-                if (findViewById(R.id.singleNoteFragment) != null && singleNote != null){
-                    transaction.detach(singleNote);
-                    transaction.attach(singleNote);
-                }
-                transaction.commit();
+                String fileName = data.getStringExtra("fileName"); //filename of the created note, it's unique
+                fragment.addNote(fileName); // add just created note
             }else {
                 // toast with fail
                 int tiempo = Toast.LENGTH_SHORT;

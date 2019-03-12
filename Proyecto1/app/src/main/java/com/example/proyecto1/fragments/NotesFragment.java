@@ -27,6 +27,12 @@ public class NotesFragment extends Fragment {
 
     private RecyclerView notes;
     private int selectedItem = -1;
+    private ArrayList<ArrayList<String>> notesData;
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -50,7 +56,8 @@ public class NotesFragment extends Fragment {
         // load notes
         String activeUser = Data.getMyData().getActiveUsername();
         MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
-        final ArrayList<ArrayList<String>> notesData = gestorDB.getNotesDataByUser(activeUser);
+        notesData = gestorDB.getNotesDataByUser(activeUser);
+        Log.i("aqui", "loaded" + String.valueOf(notesData.get(0).size()));
 
         // titles, dates, tags
         ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(1), notesData.get(2), notesData.get(3));
@@ -60,25 +67,26 @@ public class NotesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int clickedPosition = notes.getChildAdapterPosition(v);
+                Log.i("aqui2", String.valueOf(clickedPosition));
                 int noteIdOfPosition = Integer.valueOf(notesData.get(0).get(clickedPosition));
-
                 // clean the previous selected item
-                if (selectedItem != -1){
+                /*if (selectedItem != -1){
                     TextView title =
                             notes.getChildAt(selectedItem).findViewById(R.id.noteTitle);
                     title.setBackgroundColor(Color.TRANSPARENT);
                     title.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 }
-                selectedItem = clickedPosition; // set new selected item
+                selectedItem = clickedPosition; // set new selected item*/
 
                 elListener.clickOnNote(noteIdOfPosition);
 
             }
         });
         notes.setAdapter(eladaptador);
-
         LinearLayoutManager elLayoutLineal= new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
         notes.setLayoutManager(elLayoutLineal);
+
+        Log.i("aqui3", String.valueOf(notes.getAdapter().getItemCount()));
     }
 
     /**
@@ -86,10 +94,21 @@ public class NotesFragment extends Fragment {
      */
     public void markAsSelected(){
         if (notes != null){
+            Log.i("aqui",
+                    String.valueOf(selectedItem) + "of" + String.valueOf(notes.getAdapter().getItemCount()));
             TextView title = notes.getChildAt(selectedItem).findViewById(R.id.noteTitle);
             title.setBackgroundResource(R.color.colorPrimaryDark);
             title.setTextColor(Color.WHITE);
         }
+    }
+
+    public void addNote(String fileName){
+        MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
+        ArrayList<String> noteData = gestorDB.getLastAddedNoteData(fileName);
+        for (int i=0;i<notesData.size();i++){
+            notesData.get(i).add(noteData.get(i));
+        }
+        notes.getAdapter().notifyItemInserted(notesData.get(0).size()-1);
     }
 
     // Listeners

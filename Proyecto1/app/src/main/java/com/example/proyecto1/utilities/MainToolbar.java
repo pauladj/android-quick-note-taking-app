@@ -46,6 +46,20 @@ public class MainToolbar extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * It adds a back arrow to the option menu
+     */
+    public void showBackButtonOption(){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id=item.getItemId();
@@ -64,6 +78,8 @@ public class MainToolbar extends AppCompatActivity {
 
         }else if(id == R.id.menuSettings){
 
+        }else if(id == R.id.menuSave){
+            saveNote();
         }
 
         return super.onOptionsItemSelected(item);
@@ -141,6 +157,11 @@ public class MainToolbar extends AppCompatActivity {
         startActivity(i);
         finish();
     }
+
+    /**
+     * The user wants to save an edited note
+     */
+    public void saveNote(){}
 
 
 }

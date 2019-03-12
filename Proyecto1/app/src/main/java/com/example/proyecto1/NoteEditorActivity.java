@@ -1,6 +1,8 @@
 package com.example.proyecto1;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.PersistableBundle;
@@ -21,6 +23,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -32,17 +35,32 @@ import com.example.proyecto1.dialogs.ConfimExit;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.dialogs.DeleteTextStyles;
 import com.example.proyecto1.dialogs.InsertLinkEditor;
+import com.example.proyecto1.dialogs.NewTag;
+import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MainToolbar;
+import com.example.proyecto1.utilities.MyDB;
 import com.example.proyecto1.utilities.SpanStyleHelper;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo, AddTagEditor.ListenerDelDialogo {
+public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo, AddTagEditor.ListenerDelDialogo, NewTag.ListenerDelDialogo {
 
     int choosenTagId = -1;
     String choosenTagName = "";
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Change the topbar options
+        getMenuInflater().inflate(R.menu.editor_toolbar, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +68,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         setContentView(R.layout.note_editor_activity);
         // load top toolbar
         loadToolbar();
-
+        showBackButtonOption();
         // add listeners
         final EditText noteBody = findViewById(R.id.noteBody);
         noteBody.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -173,6 +191,17 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         textBody.setSelection(posIni);
     }
 
+
+    /**
+     * The user wants to remove all the styles
+     * @param v
+     */
+    public void formatText(View v){
+        // Show the dialog to confirm
+        DialogFragment confirmationDialog = new DeleteTextStyles();
+        confirmationDialog.show(getSupportFragmentManager(), "deleteTextStyles");
+    }
+
     /**
      * The user confirms that wants to delete the text styles
      */
@@ -191,15 +220,6 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         textBody.setText(spannable);
     }
 
-    /**
-     * The user wants to remove all the styles
-     * @param v
-     */
-    public void formatText(View v){
-        // Show the dialog to confirm
-        DialogFragment confirmationDialog = new DeleteTextStyles();
-        confirmationDialog.show(getSupportFragmentManager(), "deleteTextStyles");
-    }
 
     /**
      * The user wants to add a tag to the post
@@ -207,12 +227,12 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
      */
     public void addTag(View v){
         // Show the dialog to select one
-        DialogFragment confirmationDialog = new AddTagEditor();
+        DialogFragment dialog = new AddTagEditor();
         Bundle bl = new Bundle();
         bl.putInt("choosenTagId", choosenTagId);
         bl.putString("choosenTagName", choosenTagName);
-        confirmationDialog.setArguments(bl);
-        confirmationDialog.show(getSupportFragmentManager(), "addTagEditor");
+        dialog.setArguments(bl);
+        dialog.show(getSupportFragmentManager(), "addTagEditor");
     }
 
     /**
@@ -238,7 +258,78 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
      * The user wants to create a new tag
      */
     public void createNewTag(){
+        // open dialog
+        DialogFragment dialog = new NewTag();
+        dialog.show(getSupportFragmentManager(), "newTag");
+    }
 
+    /**
+     * The user has entered a name for the new tag, save it for the current user
+     * @param tagName - the choosen name
+     */
+    public void yesNewTag(String tagName){
+        MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
+        gestorDB.addTag(Data.getMyData().getActiveUsername(), tagName);
+    }
+
+    /**
+     * The user wants to save an edited note
+     */
+    @Override
+    public void saveNote() {
+        EditText titleElement = findViewById(R.id.titleInput);
+        String title = titleElement.getText().toString();
+
+        if (title.trim().isEmpty()){
+            // The title is empty
+            int tiempo = Toast.LENGTH_SHORT;
+            Toast aviso = Toast.makeText(getApplicationContext(),
+                    R.string.failSavingNote_titleEmpty, tiempo);
+            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+            aviso.show();
+            return; // Exit method
+        }
+
+        EditText bodyElement = findViewById(R.id.noteBody);
+
+        if (bodyElement.getText().toString().trim().isEmpty()){
+            // The note body is empty
+            int tiempo = Toast.LENGTH_SHORT;
+            Toast aviso = Toast.makeText(getApplicationContext(), R.string.failSavingNote_bodyEmpty,
+                    tiempo);
+            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+            aviso.show();
+            return; // Exit method
+        }
+
+        SpannableStringBuilder spannable = new SpannableStringBuilder(bodyElement.getText());
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String fileName = timeStamp + "_" + ".html";
+        String htmlContent = Html.toHtml(spannable);
+
+        try {
+            OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput(fileName,
+                    Context.MODE_PRIVATE));
+            fichero.write(htmlContent);
+            fichero.close();
+
+            MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
+            gestorDB.insertNewNote(title, fileName, choosenTagId,
+                    Data.getMyData().getActiveUsername());
+
+            // Note created
+            Intent i = new Intent();
+            i.putExtra("fileName", fileName);
+            setResult(RESULT_OK, i);
+            finish();
+        } catch (IOException e){
+            // show toast if error saving the file
+            int tiempo = Toast.LENGTH_SHORT;
+            Toast aviso = Toast.makeText(getApplicationContext(), R.string.failSavingNote, tiempo);
+            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+            aviso.show();
+        }
     }
 
     @Override

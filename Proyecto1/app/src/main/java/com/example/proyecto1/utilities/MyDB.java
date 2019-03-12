@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.proyecto1.R;
 
@@ -36,8 +37,10 @@ public class MyDB extends SQLiteOpenHelper {
 
         // Create table Notes
         db.execSQL("CREATE TABLE Notes ('id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "'title' CHAR(255) NOT NULL, 'fileContent' CHAR(255) NOT NULL, 'date' DATETIME " +
-                "NOT NULL DEFAULT CURRENT_TIMESTAMP, 'labelId' INTEGER, 'username' CHAR(255), " +
+                "'title' CHAR(255) NOT NULL, 'fileContent' CHAR(255) NOT NULL UNIQUE, 'date' " +
+                "DATETIME " +
+                "NOT NULL DEFAULT CURRENT_TIMESTAMP, 'labelId' INTEGER, 'username' CHAR(255)" +
+                ", " +
                 "FOREIGN KEY('labelId') REFERENCES Tags('id') ON DELETE SET NULL, " +
                 "FOREIGN KEY('username') REFERENCES Users('username') ON DELETE CASCADE)");
 
@@ -46,7 +49,10 @@ public class MyDB extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (2, 'tagPrueba2', 'admin')");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (3, 'tagPrueba3', 'admin')");
-        db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('nombrefichero.html', 1," +
+        db.execSQL("INSERT INTO Notes(fileContent, title, username) VALUES ('nombrefichero.html'," +
+                " 'sergsehhhhhhhhhhhhrg r gsdfg ', 'admin')");
+        db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES " +
+                "('nombrefichero2.html', 1," +
                 " 'sergserg r gsdfg ', 'admin')");
         db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('fff', 1, 'klsdfjkldf ksdjfksjdfks jdfksjdfksd fjkdfj f skdf jskjdf df kdfjskld fjkd jkdjf kdfj dfklf', 'admin')");
 
@@ -137,7 +143,8 @@ public class MyDB extends SQLiteOpenHelper {
      */
     public ArrayList<ArrayList<String>> getNotesDataByUser(String username){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT Notes.id, title, date, name FROM Notes INNER JOIN Tags ON Notes.labelId=Tags.id WHERE Notes.username='" + username + "'", null);
+        Cursor c = db.rawQuery("SELECT Notes.id, title, date, name FROM Notes LEFT JOIN Tags ON " +
+                "Notes.labelId=Tags.id WHERE Notes.username='" + username + "'", null);
 
         ArrayList<String> notesIds = new ArrayList<>();
         ArrayList<String> notesTitles = new ArrayList<>();
@@ -149,7 +156,10 @@ public class MyDB extends SQLiteOpenHelper {
             String id = c.getString(0);
             String title = c.getString(1);
             String date = c.getString(2);
-            String tagName = c.getString(3);
+            String tagName = null;
+            if (c.getColumnCount() == 4){
+                tagName = c.getString(3);
+            }
 
             notesIds.add(id);
             notesTitles.add(title);
@@ -226,6 +236,74 @@ public class MyDB extends SQLiteOpenHelper {
         ArrayList<ArrayList<String>> data = new ArrayList<>();
         data.add(tagsIds);
         data.add(tagsNames);
+
+        return data;
+    }
+
+    /**
+     * Add new tag for user
+     * @param username - the user that the new tag belongs to
+     * @param nameTag - the name of the new tag
+     */
+    public void addTag(String username, String nameTag){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO Tags ('name', 'username') VALUES ('" + nameTag + "', '"+ username +
+                "')");
+        db.close();
+    }
+
+    /**
+     * Insert new note
+     * @param title - title of the new note
+     * @param fileContent - the filename where the new note content is
+     * @param labelId - the label id
+     * @param username - the user who has created the note
+     */
+    public void insertNewNote(String title, String fileContent, int labelId, String username){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String label = String.valueOf(labelId);
+        if (labelId == -1) {
+            label = null;
+        }
+        db.execSQL("INSERT INTO Notes ('title', 'fileContent', 'labelId', 'username') VALUES ('" + title +
+                "', '"+ fileContent +"', "+ label +", '"+ username +"')");
+
+        db.close();
+
+    }
+
+    /**
+     * Get last inserted note data knowing the filename (it's unique)
+     * @return - list with id, title, date, tag
+     */
+    public ArrayList<String> getLastAddedNoteData(String fileName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =
+                db.rawQuery("SELECT Notes.id, title, date, name FROM Notes LEFT JOIN Tags ON " +
+                        "Notes.labelId=Tags.id WHERE Notes.fileContent='" + fileName + "'", null);
+
+
+        ArrayList<String> data = new ArrayList<>();
+
+        if (c.moveToFirst()){
+            do {
+                String id = c.getString(0);
+                String title = c.getString(1);
+                String date = c.getString(2);
+                String tagName = null;
+                if (c.getColumnCount() == 4){
+                    tagName = c.getString(3);
+                }
+
+                data.add(id);
+                data.add(title);
+                data.add(date);
+                data.add(tagName);
+            }while(c.moveToNext());
+        }
+
+        c.close();
+        db.close();
 
         return data;
     }

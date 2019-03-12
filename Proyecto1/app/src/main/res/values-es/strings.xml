@@ -44,7 +44,14 @@
     <string name="addTag_title">Selecciona una etiqueta</string>
     <string name="failChooseTag">Debes seleccionar una etiqueta</string>
     <string name="addTag_newTag">Crear</string>
-    <string name="confirmExit_title">¿Estás seguro de querer irte? Perderás esta nota</string>
+    <string name="confirmExit_title">¿Estás seguro de querer irte?\nPerderás los cambios no guardados</string>
     <string name="confirmExit_yes">Sí</string>
     <string name="confirmExit_no">No</string>
+    <string name="tagNameLabel">Nombre etiqueta</string>
+    <string name="newTag_title">Añadir Etiqueta</string>
+    <string name="menuSave">Guardar</string>
+    <string name="failSavingNote">Se ha producido un error al intentar guardar esta nota</string>
+    <string name="failSavingNote_titleEmpty">El título no puede estar vacío</string>
+    <string name="failSavingNote_bodyEmpty">El contenido de la nota no puede estar vacío</string>
+
 </resources>
