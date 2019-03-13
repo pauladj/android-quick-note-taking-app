@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.CharacterStyle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -119,16 +120,19 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                 }
 
                 // set the body
-                String Linea;
+                String text = "";
                 try {
                     BufferedReader ficherointerno = new BufferedReader(new InputStreamReader(
                             openFileInput(noteData[1])));
-                    Linea = ficherointerno.readLine();
+                    String line;
+                    while ((line = ficherointerno.readLine()) != null) {
+                        text += line;
+                    }
                     ficherointerno.close();
                 } catch (IOException e) {
-                    Linea = getResources().getString(R.string.fileNotFound);
+                    text = getResources().getString(R.string.fileNotFound);
                 }
-                SpannableString string = new SpannableString(Html.fromHtml(Linea));
+                SpannableString string = new SpannableString(Html.fromHtml(text));
                 TextView noteBody = findViewById(R.id.noteBody);
                 noteBody.setText(string);
             }
@@ -338,6 +342,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         htmlContent = htmlContent.replace("<u>", "") // delete the tags added by the conversor
                                 .replace("</u>", "")
                                 .replace(" dir=\"ltr\"", "");
+        Log.i("aquiContenido", htmlContent);
 
         try {
             if (noteId == -1){
@@ -367,6 +372,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                 OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput(fileName,
                         Context.MODE_PRIVATE));
                 fichero.write(htmlContent);
+                fichero.flush();
                 fichero.close();
 
                 gestorDB.updateNote(noteId, title, choosenTagId); // update note in the database

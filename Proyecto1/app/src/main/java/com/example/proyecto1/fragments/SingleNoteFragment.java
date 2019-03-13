@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class SingleNoteFragment extends Fragment {
 
@@ -79,7 +80,11 @@ public class SingleNoteFragment extends Fragment {
                 }
                 BufferedReader ficherointerno = new BufferedReader(new InputStreamReader(
                         getActivity().openFileInput(noteFileName)));
-                textOfNote = ficherointerno.readLine();
+                textOfNote = "";
+                String line;
+                while ((line = ficherointerno.readLine()) != null) {
+                    textOfNote += line;
+                }
                 ficherointerno.close();
             }catch (Exception e){
                 textOfNote = getResources().getString(R.string.fileNotFound);

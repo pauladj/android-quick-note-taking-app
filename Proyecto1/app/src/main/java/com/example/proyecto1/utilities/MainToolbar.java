@@ -201,13 +201,12 @@ public class MainToolbar extends AppCompatActivity {
                         tiempo);
                 aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
                 aviso.show();
-                // add it to recycler view
-                NotesFragment fragment =
-                        (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
-                int id = data.getIntExtra("noteId", -1); // id of the edited note, it's unique
-                if (id != -1){
-                    fragment.changeNote(id); // change the just edited note data
-                }
+
+                Intent i = new Intent (this, MainActivity.class);
+                // clear the activity stack
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                finish();
             }else {
                 // toast with fail
                 int tiempo = Toast.LENGTH_SHORT;
