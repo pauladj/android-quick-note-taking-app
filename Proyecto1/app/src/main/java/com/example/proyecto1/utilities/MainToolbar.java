@@ -205,7 +205,7 @@ public class MainToolbar extends AppCompatActivity {
                 Intent i = new Intent (this, MainActivity.class);
                 // clear the activity stack
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
+                startActivity(i); 
                 finish();
             }else {
                 // toast with fail
