@@ -39,9 +39,12 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
         loadToolbar();
 
         // load the note information knowing the id
-        noteId = getIntent().getIntExtra("noteId", 1);
+        noteId = getIntent().getIntExtra("noteId", -1);
         SingleNoteFragment fragmentDemo = (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
-        fragmentDemo.loadNote(noteId);
+        if (noteId != -1){
+            fragmentDemo.loadNote(noteId);
+        }
+
     }
 
     @Override
@@ -76,5 +79,11 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
         super.yesDeleteNote(noteId);
     }
 
+    /**
+     * Edit a note
+     */
+    public void editNote(){
+        super.editNote(noteId);
+    }
 
 }

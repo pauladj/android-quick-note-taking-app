@@ -1,7 +1,6 @@
 package com.example.proyecto1.fragments;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,16 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.proyecto1.R;
 import com.example.proyecto1.cardview.ElAdaptadorRecycler;
-import com.example.proyecto1.cardview.ElViewHolder;
 import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MyDB;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class NotesFragment extends Fragment {
@@ -57,7 +52,7 @@ public class NotesFragment extends Fragment {
         // load notes
         String activeUser = Data.getMyData().getActiveUsername();
         MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
-        notesData = gestorDB.getNotesDataByUser(activeUser);
+        notesData = gestorDB.getNotesDataByUser(activeUser); // id, titles, dates, tags
 
         // titles, dates, tags
         final ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(1),
@@ -97,6 +92,24 @@ public class NotesFragment extends Fragment {
         // notify the adapter that the data has changed
         notes.getAdapter().notifyItemInserted(notesData.get(0).size()-1);
     }
+
+    public void changeNote(int id){
+        MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
+        String[] noteData = gestorDB.getNoteData(id);
+        // get the changed note data
+        // and append the info
+        int indexOfChangedNote = notesData.get(0).indexOf(String.valueOf(id));
+        if (indexOfChangedNote != -1){
+
+            notesData.get(0).set(indexOfChangedNote, String.valueOf(id)); // noteid
+            notesData.get(1).set(indexOfChangedNote, noteData[0]); // title
+            notesData.get(2).set(indexOfChangedNote, noteData[4]); // date
+            notesData.get(3).set(indexOfChangedNote, noteData[2]); // tag, if it doesn't have one, it's null
+            // notify the adapter that the data has changed
+            notes.getAdapter().notifyItemChanged(indexOfChangedNote);
+        }
+    }
+
 
     // Listeners
     public interface listenerDelFragment{

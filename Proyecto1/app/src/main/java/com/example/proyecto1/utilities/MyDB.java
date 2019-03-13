@@ -200,6 +200,55 @@ public class MyDB extends SQLiteOpenHelper {
     }
 
     /**
+     * Update note after editing it
+     * @param noteId - the id of the note to update
+     * @param title - the new title of the note
+     * @param choosenTagId - the choosen tag id
+     */
+    public void updateNote(int noteId, String title, int choosenTagId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues modification = new ContentValues();
+        modification.put("title", title);
+        modification.put("labelId", choosenTagId);
+        db.update("Notes", modification, "id=" + noteId, null);
+        db.close();
+    }
+
+    /**
+     * Get a note data so the user can see it on the editor
+     * @param noteId
+     * @return
+     */
+    public String[] getNoteData(int noteId){
+        String[] data = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =
+                db.rawQuery("SELECT title, fileContent, name, Tags.id, date FROM Notes LEFT JOIN " +
+                                "Tags " +
+                                "ON " +
+                        "Notes.labelId=Tags.id WHERE Notes.id=" + String.valueOf(noteId),
+                        null);
+
+        if (c.moveToNext() != false) {
+            data = new String[5];
+            // there is a note with this data
+            data[0] = c.getString(0); // note title
+            data[1] = c.getString(1); // note fileContent
+            data[2] = null;
+            data[3] = null;
+            if (c.getColumnCount() == 5){
+                // there's a tag
+                data[2] = c.getString(2); // tag name
+                data[3] = c.getString(3); // tag id
+            }
+            data[4] = c.getString(4); // date
+        }
+        c.close();
+        db.close();
+        return data;
+    }
+
+    /**
      * Delete a note by knowing the id
      * @param noteId - the id of the note to delete
      */

@@ -53,4 +53,6 @@
     <string name="failSavingNote">There was an error saving this note</string>
     <string name="failSavingNote_titleEmpty">The title of the note cannot be empty</string>
     <string name="failSavingNote_bodyEmpty">The body of the note cannot be empty</string>
+    <string name="successEditingNote">The note was successfully modified</string>
+
 </resources>

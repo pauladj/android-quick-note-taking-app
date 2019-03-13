@@ -1,28 +1,15 @@
 package com.example.proyecto1;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.os.PersistableBundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.CharacterStyle;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,7 +19,6 @@ import android.widget.Toast;
 
 import com.example.proyecto1.dialogs.AddTagEditor;
 import com.example.proyecto1.dialogs.ConfimExit;
-import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.dialogs.DeleteTextStyles;
 import com.example.proyecto1.dialogs.InsertLinkEditor;
 import com.example.proyecto1.dialogs.NewTag;
@@ -41,16 +27,16 @@ import com.example.proyecto1.utilities.MainToolbar;
 import com.example.proyecto1.utilities.MyDB;
 import com.example.proyecto1.utilities.SpanStyleHelper;
 
-import org.w3c.dom.Text;
-
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo, AddTagEditor.ListenerDelDialogo, NewTag.ListenerDelDialogo {
+
+    int noteId = -1; // If we are editing an existing note
 
     int choosenTagId = -1;
     String choosenTagName = "";
@@ -105,6 +91,49 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
             }
         });
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null){
+            if (extras.containsKey("noteId")){
+                noteId = extras.getInt("noteId");
+                loadExistingNoteContent();
+            }
+        }
+
+    }
+
+    /**
+     * If we are editing an existing note we load the data into the editor
+     */
+    private void loadExistingNoteContent(){
+        if (noteId != 1){
+            MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
+            String[] noteData = gestorDB.getNoteData(noteId);
+            if (noteData != null){
+                // there's no errors, load data
+                TextView title = findViewById(R.id.titleInput);
+                title.setText(noteData[0]); // set title
+
+                if (noteData[2] != null){
+                    // there's a tag, set the tag
+                    addTagToPost(Integer.valueOf(noteData[3]), noteData[2]);
+                }
+
+                // set the body
+                String Linea;
+                try {
+                    BufferedReader ficherointerno = new BufferedReader(new InputStreamReader(
+                            openFileInput(noteData[1])));
+                    Linea = ficherointerno.readLine();
+                    ficherointerno.close();
+                } catch (IOException e) {
+                    Linea = getResources().getString(R.string.fileNotFound);
+                }
+                SpannableString string = new SpannableString(Html.fromHtml(Linea));
+                TextView noteBody = findViewById(R.id.noteBody);
+                noteBody.setText(string);
+            }
+
+        }
     }
 
 
@@ -304,28 +333,51 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
 
         SpannableString spannable = new SpannableString(bodyElement.getText());
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String fileName = timeStamp + "_" + ".html";
+
         String htmlContent = Html.toHtml(spannable);
         htmlContent = htmlContent.replace("<u>", "") // delete the tags added by the conversor
                                 .replace("</u>", "")
                                 .replace(" dir=\"ltr\"", "");
-        Log.i("aqui", htmlContent);
 
         try {
-            OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput(fileName,
-                    Context.MODE_PRIVATE));
-            fichero.write(htmlContent);
-            fichero.close();
+            if (noteId == -1){
+                // new note
+                // generate random unique filename
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                String fileName = timeStamp + "_" + ".html";
 
-            MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
-            gestorDB.insertNewNote(title, fileName, choosenTagId,
-                    Data.getMyData().getActiveUsername());
+                OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput(fileName,
+                        Context.MODE_PRIVATE));
+                fichero.write(htmlContent);
+                fichero.close();
 
-            // Note created
-            Intent i = new Intent();
-            i.putExtra("fileName", fileName);
-            setResult(RESULT_OK, i);
+                MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
+                gestorDB.insertNewNote(title, fileName, choosenTagId,
+                        Data.getMyData().getActiveUsername());
+
+                // Note created
+                Intent i = new Intent();
+                i.putExtra("fileName", fileName);
+                setResult(RESULT_OK, i);
+            }else{
+                // editing existing note
+                MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
+                String fileName = gestorDB.getNoteFileName(noteId);
+
+                OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput(fileName,
+                        Context.MODE_PRIVATE));
+                fichero.write(htmlContent);
+                fichero.close();
+
+                gestorDB.updateNote(noteId, title, choosenTagId); // update note in the database
+
+                // Note updated
+                Intent i = new Intent();
+                i.putExtra("noteId", noteId);
+                setResult(RESULT_OK, i);
+
+            }
+
             finish();
         } catch (IOException e){
             // show toast if error saving the file
@@ -335,6 +387,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
             aviso.show();
         }
     }
+
 
     @Override
     public void onBackPressed() {

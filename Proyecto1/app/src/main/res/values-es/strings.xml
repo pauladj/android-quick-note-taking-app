@@ -53,5 +53,6 @@
     <string name="failSavingNote">Se ha producido un error al intentar guardar esta nota</string>
     <string name="failSavingNote_titleEmpty">El título no puede estar vacío</string>
     <string name="failSavingNote_bodyEmpty">El contenido de la nota no puede estar vacío</string>
+    <string name="successEditingNote">La nota se ha modificado correctamente</string>
 
 </resources>

@@ -17,9 +17,11 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.proyecto1.MainActivity;
+import com.example.proyecto1.NoteEditorActivity;
 import com.example.proyecto1.R;
 import com.example.proyecto1.SingleNoteActivity;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
+import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
 
 public class MainToolbar extends AppCompatActivity {
@@ -65,7 +67,8 @@ public class MainToolbar extends AppCompatActivity {
         int id=item.getItemId();
 
         if (id == R.id.menuEdit){
-
+            // Edit a note
+            editNote();
         }else if(id == R.id.menuSendEmail){
             // Send note by email
             sendNoteByEmail();
@@ -79,6 +82,7 @@ public class MainToolbar extends AppCompatActivity {
         }else if(id == R.id.menuSettings){
 
         }else if(id == R.id.menuSave){
+            // Save note when editing it
             saveNote();
         }
 
@@ -163,5 +167,56 @@ public class MainToolbar extends AppCompatActivity {
      */
     public void saveNote(){}
 
+    /**
+     * The user wants to edit a note
+     */
+    public void editNote(){}
+
+    /**
+     * Call the activity to edit a note
+     * @param noteId - the id of the note to edit
+     */
+    public void editNote(int noteId){
+        Intent intent= new Intent(this, NoteEditorActivity.class);
+        intent.putExtra("noteId", noteId);
+        startActivityForResult(intent, 333);
+    }
+
+    /**
+     * We get the result of editing a note
+     * @param requestCode - to specify this is the callback of editing a note
+     * @param resultCode - the result code
+     * @param data - the data
+     */
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // New note result
+        if (requestCode == 333){
+            if (resultCode == RESULT_OK) {
+                // toast with ok
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(getApplicationContext(), R.string.successEditingNote,
+                        tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+                // add it to recycler view
+                NotesFragment fragment =
+                        (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
+                int id = data.getIntExtra("noteId", -1); // id of the edited note, it's unique
+                if (id != -1){
+                    fragment.changeNote(id); // change the just edited note data
+                }
+            }else {
+                // toast with fail
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(getApplicationContext(), R.string.failSavingNote,
+                        tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+            }
+        }
+    }
 
 }

@@ -63,6 +63,14 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
     }
 
     /**
+     * Edit a note
+     */
+    public void editNote(){
+        super.editNote(noteId);
+    }
+
+
+    /**
      * A note is click, this is the event that handles it
      * @param selectedNoteId - the selected note id
      */
