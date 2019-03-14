@@ -8,7 +8,7 @@
     <string name="logInText">¿Ya eres miembro? Entra</string>
     <string name="menuSettings">Configuración</string>
     <string name="menuSearch">Buscar</string>
-    <string name="menuFilterByTag">Filtrar por Etiqueta</string>
+    <string name="menuTag">Etiquetas</string>
     <string name="menuEdit">Editar</string>
     <string name="userAlreadyExists">Este nombre de usuario existe</string>
     <string name="incorrectPassword">Usuario y contraseña incorrectos</string>
@@ -54,5 +54,8 @@
     <string name="failSavingNote_titleEmpty">El título no puede estar vacío</string>
     <string name="failSavingNote_bodyEmpty">El contenido de la nota no puede estar vacío</string>
     <string name="successEditingNote">La nota se ha modificado correctamente</string>
+    <string name="addRemoveTag_remove">Borrar</string>
+    <string name="addRemoveTag_title">Borrar etiquetas</string>
+
 
 </resources>

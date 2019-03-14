@@ -77,6 +77,8 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
      */
     public void yesDeleteNote(){
         super.yesDeleteNote(noteId);
+
+        
     }
 
     /**

@@ -17,17 +17,21 @@ import com.example.proyecto1.cardview.ElAdaptadorRecycler;
 import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MyDB;
 
+import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class NotesFragment extends Fragment {
 
     private RecyclerView notes;
-    private ArrayList<ArrayList<String>> notesData;
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
+    private ArrayList<String> notesIds = new ArrayList<>();
+    private ArrayList<String> notesTitles = new ArrayList<>();
+    private ArrayList<String> notesDates = new ArrayList<>();
+    private ArrayList<String> notesTags = new ArrayList<>();
+
+
+
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
@@ -48,15 +52,32 @@ public class NotesFragment extends Fragment {
         // load recycler view
         notes = getView().findViewById(R.id.reciclerView);
 
-        Log.i("aqui", "loaded");
-        // load notes
-        String activeUser = Data.getMyData().getActiveUsername();
-        MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
-        notesData = gestorDB.getNotesDataByUser(activeUser); // id, titles, dates, tags
+        if (savedInstanceState != null){
+            if (savedInstanceState.containsKey("notesIds")){
+                notesIds = savedInstanceState.getStringArrayList("notesIds");
+                notesTitles = savedInstanceState.getStringArrayList("notesTitles");
+                notesDates = savedInstanceState.getStringArrayList("notesDates");
+                notesTags = savedInstanceState.getStringArrayList("notesTags");
+            }
+        }
+
+        if (notesIds.isEmpty()){
+            // load notes
+            String activeUser = Data.getMyData().getActiveUsername();
+            MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
+            ArrayList<ArrayList<String>> notesData = gestorDB.getNotesDataByUser(activeUser); // id,
+            // titles, dates, tags
+
+            notesIds = notesData.get(0);
+            notesTitles = notesData.get(1);
+            notesDates = notesData.get(2);
+            notesTags = notesData.get(3);
+        }
+
 
         // titles, dates, tags
-        final ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesData.get(1),
-                notesData.get(2), notesData.get(3));
+        final ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesTitles,
+                notesDates, notesTags);
 
         // Add listeners
         eladaptador.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +85,7 @@ public class NotesFragment extends Fragment {
             public void onClick(View v) {
                 int clickedPosition = notes.getChildAdapterPosition(v);
 
-                int noteIdOfPosition = Integer.valueOf(notesData.get(0).get(clickedPosition));
+                int noteIdOfPosition = Integer.valueOf(notesIds.get(clickedPosition));
 
                 elListener.clickOnNote(noteIdOfPosition);
 
@@ -74,6 +95,7 @@ public class NotesFragment extends Fragment {
         LinearLayoutManager elLayoutLineal= new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
         notes.setLayoutManager(elLayoutLineal);
     }
+
 
 
     /**
@@ -86,28 +108,45 @@ public class NotesFragment extends Fragment {
         // get the last
         // added note
         // and append the info
-        for (int i=0;i<notesData.size();i++){
-            notesData.get(i).add(noteData.get(i));
-        }
+        notesIds.add(noteData.get(0));
+        notesTitles.add(noteData.get(1));
+        notesDates.add(noteData.get(2));
+        notesTags.add(noteData.get(3));
+
         // notify the adapter that the data has changed
-        notes.getAdapter().notifyItemInserted(notesData.get(0).size()-1);
+        notes.getAdapter().notifyItemInserted(notesIds.size()-1);
     }
 
+
+    /**
+     * Notify the adapter that a note has been change
+     * @param id
+     */
     public void changeNote(int id){
         MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
         String[] noteData = gestorDB.getNoteData(id);
         // get the changed note data
-        // and append the info
-        int indexOfChangedNote = notesData.get(0).indexOf(String.valueOf(id));
+        // and change the info
+        int indexOfChangedNote = notesIds.indexOf(String.valueOf(id));
         if (indexOfChangedNote != -1){
 
-            notesData.get(0).set(indexOfChangedNote, String.valueOf(id)); // noteid
-            notesData.get(1).set(indexOfChangedNote, noteData[0]); // title
-            notesData.get(2).set(indexOfChangedNote, noteData[4]); // date
-            notesData.get(3).set(indexOfChangedNote, noteData[2]); // tag, if it doesn't have one, it's null
+            notesIds.set(indexOfChangedNote, String.valueOf(id)); // noteid
+            notesTitles.set(indexOfChangedNote, noteData[0]); // title
+            notesDates.set(indexOfChangedNote, noteData[4]); // date
+            notesTags.set(indexOfChangedNote, noteData[2]); // tag, if it doesn't have one, it's
+            // null
             // notify the adapter that the data has changed
             notes.getAdapter().notifyItemChanged(indexOfChangedNote);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("notesIds", notesIds);
+        outState.putStringArrayList("notesTitles", notesTitles);
+        outState.putStringArrayList("notesDates", notesDates);
+        outState.putStringArrayList("notesTags", notesTags);
     }
 
 

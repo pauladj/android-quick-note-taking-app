@@ -21,6 +21,7 @@ import com.example.proyecto1.NoteEditorActivity;
 import com.example.proyecto1.R;
 import com.example.proyecto1.SingleNoteActivity;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
+import com.example.proyecto1.dialogs.NewTag;
 import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
 
@@ -75,10 +76,9 @@ public class MainToolbar extends AppCompatActivity {
         }else if(id == R.id.menuDelete){
             // Confirm with user that they want to delete the note
             confirmDeleteNote();
-        }else if(id == R.id.menuFilter){
-
-        }else if(id == R.id.menuSearch){
-
+        }else if(id == R.id.menuTags){
+            // Manage tags, add and remove
+            manageTags();
         }else if(id == R.id.menuSettings){
 
         }else if(id == R.id.menuSave){
@@ -160,6 +160,7 @@ public class MainToolbar extends AppCompatActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         finish();
+
     }
 
     /**
@@ -171,6 +172,11 @@ public class MainToolbar extends AppCompatActivity {
      * The user wants to edit a note
      */
     public void editNote(){}
+
+    /**
+     * The user wants to manage the tags
+     */
+    public void manageTags(){}
 
     /**
      * Call the activity to edit a note
@@ -205,7 +211,7 @@ public class MainToolbar extends AppCompatActivity {
                 Intent i = new Intent (this, MainActivity.class);
                 // clear the activity stack
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i); 
+                startActivity(i);
                 finish();
             }else {
                 // toast with fail
@@ -216,6 +222,24 @@ public class MainToolbar extends AppCompatActivity {
                 aviso.show();
             }
         }
+    }
+
+    /**
+     * The user wants to create a new tag
+     */
+    public void createNewTag(){
+        // open dialog
+        DialogFragment dialog = new NewTag();
+        dialog.show(getSupportFragmentManager(), "newTag");
+    }
+
+    /**
+     * The user has entered a name for the new tag, save it for the current user
+     * @param tagName - the choosen name
+     */
+    public void yesNewTag(String tagName){
+        MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
+        gestorDB.addTag(Data.getMyData().getActiveUsername(), tagName);
     }
 
 }

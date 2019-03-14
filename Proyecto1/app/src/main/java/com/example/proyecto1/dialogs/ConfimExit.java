@@ -13,12 +13,6 @@ import com.example.proyecto1.R;
 
 public class ConfimExit extends DialogFragment {
 
-    DeleteNoteDialog.ListenerDelDialogo miListener;
-
-    public interface ListenerDelDialogo {
-        void yesExit();
-    }
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

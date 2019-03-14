@@ -9,7 +9,7 @@
     <string name="menuSettings">Settings</string>
     <string name="menuSearch">Search</string>
     <string name="menuEdit">Edit</string>
-    <string name="menuFilterByTag">Filter By Tag</string>
+    <string name="menuTag">Tags</string>
     <string name="userAlreadyExists">This username already exists</string>
     <string name="incorrectPassword">Wrong username and password</string>
     <string name="userSuccessfullyRegistered">You have been successfully registered</string>
@@ -54,5 +54,6 @@
     <string name="failSavingNote_titleEmpty">The title of the note cannot be empty</string>
     <string name="failSavingNote_bodyEmpty">The body of the note cannot be empty</string>
     <string name="successEditingNote">The note was successfully modified</string>
-
+    <string name="addRemoveTag_remove">Delete</string>
+    <string name="addRemoveTag_title">Delete tags</string>
 </resources>

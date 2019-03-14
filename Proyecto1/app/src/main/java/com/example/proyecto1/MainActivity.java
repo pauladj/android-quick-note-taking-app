@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -13,17 +14,23 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.proyecto1.dialogs.AddRemoveTag;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
+import com.example.proyecto1.dialogs.NewTag;
 import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
+import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MainToolbar;
+import com.example.proyecto1.utilities.MyDB;
 
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends MainToolbar implements NotesFragment.listenerDelFragment,
-        DeleteNoteDialog.ListenerDelDialogo  {
+        DeleteNoteDialog.ListenerDelDialogo, AddRemoveTag.ListenerDelDialogo, NewTag.ListenerDelDialogo {
 
     private int noteId; // selected note in landscape mode
 
@@ -68,6 +75,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
     public void editNote(){
         super.editNote(noteId);
     }
+
 
 
     /**
@@ -142,4 +150,38 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
             }
         }
     }
+
+
+    /**
+     * Manage tags, add and remove them, open dialog
+     */
+    public void manageTags(){
+        // Show the dialog
+        DialogFragment addRemoveTag = new AddRemoveTag();
+        addRemoveTag.show(getSupportFragmentManager(), "addRemoveDialog");
+    }
+
+    /**
+     * The user has selected the tags to delete, delete them
+     * @param tagsId - the ids of the tags to delete
+     */
+    @Override
+    public void yesRemoveTags(ArrayList<Integer> tagsId) {
+        MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
+        for (int id : tagsId){
+            ArrayList<Integer> noteIds = gestorDB.removeTag(id); // remove tag
+
+            // update recycler view
+            NotesFragment fragment =
+                    (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
+            for (int noteId : noteIds){
+                fragment.changeNote(noteId);
+            }
+
+        }
+
+
+    }
+
+
 }

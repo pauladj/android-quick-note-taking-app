@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.proyecto1.dialogs.AddTagEditor;
+import com.example.proyecto1.dialogs.SelectTagEditor;
 import com.example.proyecto1.dialogs.ConfimExit;
 import com.example.proyecto1.dialogs.DeleteTextStyles;
 import com.example.proyecto1.dialogs.InsertLinkEditor;
@@ -35,7 +35,7 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo, AddTagEditor.ListenerDelDialogo, NewTag.ListenerDelDialogo {
+public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo, SelectTagEditor.ListenerDelDialogo, NewTag.ListenerDelDialogo {
 
     int noteId = -1; // If we are editing an existing note
 
@@ -260,7 +260,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
      */
     public void addTag(View v){
         // Show the dialog to select one
-        DialogFragment dialog = new AddTagEditor();
+        DialogFragment dialog = new SelectTagEditor();
         Bundle bl = new Bundle();
         bl.putInt("choosenTagId", choosenTagId);
         bl.putString("choosenTagName", choosenTagName);
@@ -287,23 +287,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         }
     }
 
-    /**
-     * The user wants to create a new tag
-     */
-    public void createNewTag(){
-        // open dialog
-        DialogFragment dialog = new NewTag();
-        dialog.show(getSupportFragmentManager(), "newTag");
-    }
 
-    /**
-     * The user has entered a name for the new tag, save it for the current user
-     * @param tagName - the choosen name
-     */
-    public void yesNewTag(String tagName){
-        MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
-        gestorDB.addTag(Data.getMyData().getActiveUsername(), tagName);
-    }
 
     /**
      * The user wants to save an edited note

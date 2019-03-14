@@ -302,6 +302,30 @@ public class MyDB extends SQLiteOpenHelper {
     }
 
     /**
+     * Remove tag by id
+     * @param tagId - the id of the tag to delete
+     * @return - list of post id with that tag
+     */
+    public ArrayList<Integer> removeTag(int tagId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor c = db.rawQuery("SELECT id FROM Notes WHERE labelId=" + tagId, null);
+
+        ArrayList<Integer> tagsIds = new ArrayList<>();
+
+        while (c.moveToNext()) {
+            // there is a note with this tag id
+            int id = c.getInt(0);
+            tagsIds.add(id);
+        }
+        c.close();
+
+        db.execSQL("DELETE FROM Tags WHERE id=" + tagId);
+        db.close();
+
+        return tagsIds;
+    }
+
+    /**
      * Insert new note
      * @param title - title of the new note
      * @param fileContent - the filename where the new note content is
