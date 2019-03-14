@@ -10,6 +10,7 @@
     <string name="menuSearch">Buscar</string>
     <string name="menuTag">Etiquetas</string>
     <string name="menuEdit">Editar</string>
+    <string name="menuLogout">Cerrar sesión</string>
     <string name="userAlreadyExists">Este nombre de usuario existe</string>
     <string name="incorrectPassword">Usuario y contraseña incorrectos</string>
     <string name="userSuccessfullyRegistered">Te has registrado correctamente</string>

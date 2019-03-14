@@ -119,6 +119,18 @@ public class MyDB extends SQLiteOpenHelper {
     }
 
     /**
+     * Sets the username as active
+     * @param username
+     */
+    public void setUsernameAsInactive(String username){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues modification = new ContentValues();
+        modification.put("active", 0);
+        db.update("Users", modification, "username='" + username + "'", null);
+        db.close();
+    }
+
+    /**
      * Gets the active username if there's one
      * @return the active username or null
      */

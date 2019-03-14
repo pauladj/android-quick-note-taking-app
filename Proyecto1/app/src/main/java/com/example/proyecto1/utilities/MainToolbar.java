@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.proyecto1.LogInActivity;
 import com.example.proyecto1.MainActivity;
 import com.example.proyecto1.NoteEditorActivity;
 import com.example.proyecto1.R;
@@ -81,6 +82,9 @@ public class MainToolbar extends AppCompatActivity {
             manageTags();
         }else if(id == R.id.menuSettings){
 
+        }else if(id == R.id.menuLogout){
+            // The user wants to log out
+            logOut();
         }else if(id == R.id.menuSave){
             // Save note when editing it
             saveNote();
@@ -242,4 +246,18 @@ public class MainToolbar extends AppCompatActivity {
         gestorDB.addTag(Data.getMyData().getActiveUsername(), tagName);
     }
 
+    /**
+     * The user wants to log out
+     */
+    private void logOut(){
+        MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
+        gestorDB.setUsernameAsInactive(Data.getMyData().getActiveUsername()); // remove active user
+        Data.getMyData().setActiveUsername(null); // remove active user
+
+        // start login screen
+        Intent i = new Intent(this, LogInActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);// Limpiar pila de actividades
+        startActivity(i);
+        finish();
+    }
 }

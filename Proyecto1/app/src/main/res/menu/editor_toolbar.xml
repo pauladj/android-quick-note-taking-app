@@ -14,4 +14,9 @@
         android:title="@string/menuSettings"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menuLogout"
+        android:title="@string/menuLogout"
+        app:showAsAction="never" />
+
 </menu>
