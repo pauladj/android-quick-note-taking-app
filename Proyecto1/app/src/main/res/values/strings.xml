@@ -57,4 +57,11 @@
     <string name="successEditingNote">The note was successfully modified</string>
     <string name="addRemoveTag_remove">Delete</string>
     <string name="addRemoveTag_title">Delete tags</string>
+    <string name="preferences_basicConfiguration">Basic configuration</string>
+    <string name="preferences_notificationsTitle">Notifications</string>
+    <string name="preferences_notificationsSummary">Receive a notification when creating a new note</string>
+    <string name="preferences_ordenTitle">Show recent first</string>
+    <string name="preferences_ordenSummary">Show first the most recent notes</string>
+    <string name="preferences_saved">The new configuration has been saved</string>
+
 </resources>

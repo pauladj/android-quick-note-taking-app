@@ -1,10 +1,12 @@
 package com.example.proyecto1.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +22,7 @@ import com.example.proyecto1.utilities.MyDB;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class NotesFragment extends Fragment {
 
@@ -72,6 +75,17 @@ public class NotesFragment extends Fragment {
             notesTitles = notesData.get(1);
             notesDates = notesData.get(2);
             notesTags = notesData.get(3);
+
+            // Show the recent notes first?
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            boolean showRecentFirst = prefs.getBoolean("orden", false);
+
+            if (showRecentFirst){
+                Collections.reverse(notesIds);
+                Collections.reverse(notesTitles);
+                Collections.reverse(notesDates);
+                Collections.reverse(notesTags);
+            }
         }
 
 
@@ -108,13 +122,27 @@ public class NotesFragment extends Fragment {
         // get the last
         // added note
         // and append the info
-        notesIds.add(noteData.get(0));
-        notesTitles.add(noteData.get(1));
-        notesDates.add(noteData.get(2));
-        notesTags.add(noteData.get(3));
+
+        // Show the recent notes first?
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean showRecentFirst = prefs.getBoolean("orden", false);
+        int posChanged;
+        if (showRecentFirst){
+            notesIds.add(0, noteData.get(0));
+            notesTitles.add(0, noteData.get(1));
+            notesDates.add(0, noteData.get(2));
+            notesTags.add(0, noteData.get(3));
+            posChanged = 0;
+        }else{
+            notesIds.add(noteData.get(0));
+            notesTitles.add(noteData.get(1));
+            notesDates.add(noteData.get(2));
+            notesTags.add(noteData.get(3));
+            posChanged = notesIds.size()-1;
+        }
 
         // notify the adapter that the data has changed
-        notes.getAdapter().notifyItemInserted(notesIds.size()-1);
+        notes.getAdapter().notifyItemInserted(posChanged);
     }
 
 

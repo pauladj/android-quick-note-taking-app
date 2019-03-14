@@ -19,11 +19,13 @@ import android.widget.Toast;
 import com.example.proyecto1.LogInActivity;
 import com.example.proyecto1.MainActivity;
 import com.example.proyecto1.NoteEditorActivity;
+import com.example.proyecto1.PreferencesActivity;
 import com.example.proyecto1.R;
 import com.example.proyecto1.SingleNoteActivity;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.dialogs.NewTag;
 import com.example.proyecto1.fragments.NotesFragment;
+import com.example.proyecto1.fragments.PreferencesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
 
 public class MainToolbar extends AppCompatActivity {
@@ -81,7 +83,7 @@ public class MainToolbar extends AppCompatActivity {
             // Manage tags, add and remove
             manageTags();
         }else if(id == R.id.menuSettings){
-
+            settings();
         }else if(id == R.id.menuLogout){
             // The user wants to log out
             logOut();
@@ -164,7 +166,11 @@ public class MainToolbar extends AppCompatActivity {
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         finish();
+    }
 
+    private void settings(){
+        Intent i = new Intent (this, PreferencesActivity.class);
+        startActivity(i);
     }
 
     /**

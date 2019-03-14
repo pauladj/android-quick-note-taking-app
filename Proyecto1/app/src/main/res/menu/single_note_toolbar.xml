@@ -20,14 +20,4 @@
         android:title="@string/menuSendEmail"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/menuSettings"
-        android:icon="@drawable/ic_settings"
-        android:title="@string/menuSettings"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/menuLogout"
-        android:title="@string/menuLogout"
-        app:showAsAction="never" />
 </menu>

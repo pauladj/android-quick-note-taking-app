@@ -57,6 +57,11 @@
     <string name="successEditingNote">La nota se ha modificado correctamente</string>
     <string name="addRemoveTag_remove">Borrar</string>
     <string name="addRemoveTag_title">Borrar etiquetas</string>
-
+    <string name="preferences_basicConfiguration">Configuración básica</string>
+    <string name="preferences_notificationsTitle">Notificaciones</string>
+    <string name="preferences_notificationsSummary">Recibir una notificación por cada nueva nota</string>
+    <string name="preferences_ordenTitle">Mostrar recientes primero</string>
+    <string name="preferences_ordenSummary">Mostrar las notas más recientes arriba</string>
+    <string name="preferences_saved">La nueva configuración se ha guardado</string>
 
 </resources>

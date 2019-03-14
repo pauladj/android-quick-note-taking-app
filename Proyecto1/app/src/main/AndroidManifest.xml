@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/NotesTheme">
-        <activity android:name=".utilities.SpanStyleHelper"></activity>
+        <activity android:name=".PreferencesActivity"></activity>
+        <activity android:name=".fragments.PreferencesFragment" />
+        <activity android:name=".utilities.SpanStyleHelper" />
         <activity
             android:name=".NoteEditorActivity"
             android:windowSoftInputMode="adjustResize">

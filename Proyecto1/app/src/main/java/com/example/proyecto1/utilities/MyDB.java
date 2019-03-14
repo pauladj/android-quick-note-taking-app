@@ -156,7 +156,8 @@ public class MyDB extends SQLiteOpenHelper {
     public ArrayList<ArrayList<String>> getNotesDataByUser(String username){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT Notes.id, title, date, name FROM Notes LEFT JOIN Tags ON " +
-                "Notes.labelId=Tags.id WHERE Notes.username='" + username + "'", null);
+                "Notes.labelId=Tags.id WHERE Notes.username='" + username + "' ORDER BY date ASC",
+                null);
 
         ArrayList<String> notesIds = new ArrayList<>();
         ArrayList<String> notesTitles = new ArrayList<>();
