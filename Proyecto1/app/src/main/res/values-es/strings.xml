@@ -67,5 +67,7 @@
     <string name="notifications_preferencesNotifications_text">Recibirás notificaciones de las nuevas notas creadas</string>
     <string name="notifications_newNote_title">Nueva nota</string>
     <string name="notifications_newNote_seeNote">Ver</string>
+    <string name="failTagExists">Esta etiqueta ya existe</string>
+
 
 </resources>

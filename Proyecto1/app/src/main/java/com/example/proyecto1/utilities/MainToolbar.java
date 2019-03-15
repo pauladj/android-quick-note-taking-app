@@ -168,6 +168,9 @@ public class MainToolbar extends AppCompatActivity {
         finish();
     }
 
+    /**
+     * The user wants to change the preferences
+     */
     private void settings(){
         Intent i = new Intent (this, PreferencesActivity.class);
         startActivity(i);
@@ -249,7 +252,18 @@ public class MainToolbar extends AppCompatActivity {
      */
     public void yesNewTag(String tagName){
         MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
-        gestorDB.addTag(Data.getMyData().getActiveUsername(), tagName);
+        boolean exists = gestorDB.tagExists(Data.getMyData().getActiveUsername(), tagName);
+        if (exists){
+            // the tag exists, alert the user
+            int tiempo = Toast.LENGTH_SHORT;
+            Toast aviso = Toast.makeText(getApplicationContext(), R.string.failTagExists,
+                    tiempo);
+            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+            aviso.show();
+        }else {
+            gestorDB.addTag(Data.getMyData().getActiveUsername(), tagName);
+        }
+
     }
 
     /**

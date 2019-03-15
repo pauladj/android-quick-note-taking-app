@@ -178,7 +178,6 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
             for (int noteId : noteIds){
                 fragment.changeNote(noteId);
             }
-
         }
 
 

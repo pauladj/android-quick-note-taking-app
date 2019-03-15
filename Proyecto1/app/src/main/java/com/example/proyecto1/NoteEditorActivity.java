@@ -1,5 +1,6 @@
 package com.example.proyecto1;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -387,18 +388,19 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                                     .addParentStack(SingleNoteActivity.class)
                                     .addNextIntent(i)
                                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                    
+
                     elBuilder.setSmallIcon(android.R.drawable.ic_dialog_info)
                             .setContentTitle(getResources().getString(R.string.notifications_newNote_title))
                             .setContentText(titleToShow)
                             .setAutoCancel(true)
+                            .setPriority(NotificationCompat.PRIORITY_MAX)
                             .addAction(android.R.drawable.ic_menu_view,
                                     getResources().getString(R.string.notifications_newNote_seeNote),
                                     intentEnNot);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         NotificationChannel elCanal = new NotificationChannel("newNote",
                                 "newNote",
-                                NotificationManager.IMPORTANCE_DEFAULT);
+                                NotificationManager.IMPORTANCE_HIGH);
                         elCanal.setDescription("newNote");
                         elCanal.enableLights(true);
                         elCanal.setLightColor(Color.BLUE);

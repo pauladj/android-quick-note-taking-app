@@ -315,6 +315,25 @@ public class MyDB extends SQLiteOpenHelper {
     }
 
     /**
+     * Check if the tag exists
+     * @param username - the user
+     * @param nameTag - the name of the tag
+     * @return - True if the user has this tag, false if he doesn't
+     */
+    public boolean tagExists(String username, String nameTag){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c =
+                db.rawQuery("SELECT id FROM Tags WHERE name='"+ nameTag+"' AND username='" + username + "'", null);
+        boolean exists = false;
+        if (c.moveToNext()){
+            // the tag exists
+            exists = true;
+        }
+        db.close();
+        return exists;
+    }
+
+    /**
      * Remove tag by id
      * @param tagId - the id of the tag to delete
      * @return - list of post id with that tag
