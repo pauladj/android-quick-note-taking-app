@@ -63,5 +63,8 @@
     <string name="preferences_ordenTitle">Show recent first</string>
     <string name="preferences_ordenSummary">Show first the most recent notes</string>
     <string name="preferences_saved">The new configuration has been saved</string>
-
+    <string name="notifications_preferencesNotifications_title">Notifications are enabled</string>
+    <string name="notifications_preferencesNotifications_text">You will receive notifications for new notes</string>
+    <string name="notifications_newNote_title">New note</string>
+    <string name="notifications_newNote_seeNote">See it</string>
 </resources>

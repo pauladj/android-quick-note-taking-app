@@ -41,6 +41,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         setContentView(R.layout.main_activity);
         // load top toolbar
         loadToolbar();
+        Log.i("aqui", "bieeeeeen");
     }
 
 

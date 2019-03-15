@@ -1,11 +1,13 @@
 package com.example.proyecto1;
 
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,8 +23,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.proyecto1.dialogs.ConfimExit;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.fragments.SingleNoteFragment;
+import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MainToolbar;
 import com.example.proyecto1.utilities.MyDB;
 
@@ -39,7 +43,23 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
         loadToolbar();
 
         // load the note information knowing the id
-        noteId = getIntent().getIntExtra("noteId", -1);
+        Bundle extras = getIntent().getExtras();
+        if (extras.containsKey("id")){
+            // it's from a notification
+            Log.i("aqui", "bien2");
+            NotificationManager elManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            elManager.cancel(extras.getInt("id"));
+
+            // load again the current user
+            MyDB gestorDB = new MyDB(this, "Notes", null, 1);
+            String activeUsername = gestorDB.getActiveUsername();
+            Data.getMyData().setActiveUsername(activeUsername);
+
+        }
+        noteId = extras.getInt("noteId", -1);
+
+
         SingleNoteFragment fragmentDemo = (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
         if (noteId != -1){
             fragmentDemo.loadNote(noteId);
@@ -87,5 +107,6 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
     public void editNote(){
         super.editNote(noteId);
     }
+
 
 }

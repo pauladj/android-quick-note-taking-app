@@ -2,8 +2,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/preferences_basicConfiguration">
         <SwitchPreference
-            android:defaultValue="true"
             android:key="notifications"
+            android:defaultValue="false"
             android:title="@string/preferences_notificationsTitle"
             android:summary="@string/preferences_notificationsSummary" />
         <CheckBoxPreference

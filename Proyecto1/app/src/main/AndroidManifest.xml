@@ -13,16 +13,20 @@
         android:supportsRtl="true"
         android:theme="@style/NotesTheme">
         <activity android:name=".PreferencesActivity"></activity>
-        <activity android:name=".fragments.PreferencesFragment" />
-        <activity android:name=".utilities.SpanStyleHelper" />
         <activity
             android:name=".NoteEditorActivity"
             android:windowSoftInputMode="adjustResize">
             >
         </activity>
-        <activity android:name=".SingleNoteActivity" />
         <activity android:name=".utilities.MainToolbar" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".SingleNoteActivity"
+            android:parentActivityName="com.example.proyecto1.MainActivity" >
+            <meta-data
+                android:name="android:support.PARENT"
+                android:value="com.example.proyecto1.MainActivity"
+                ></meta-data>
+        </activity>
         <activity android:name=".LogInActivity" />
         <activity android:name=".SignUpActivity" />
         <activity

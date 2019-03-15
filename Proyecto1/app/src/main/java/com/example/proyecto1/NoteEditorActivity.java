@@ -1,9 +1,19 @@
 package com.example.proyecto1;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.preference.PreferenceManager;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -33,6 +43,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo, SelectTagEditor.ListenerDelDialogo, NewTag.ListenerDelDialogo {
@@ -236,7 +247,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
     }
 
     /**
-     * The user confirms that wants to delete the text styles
+     * The user confirms he wants to delete the text styles
      */
     public void yesDeleteTextStyles(){
         EditText textBody = findViewById(R.id.noteBody);
@@ -340,14 +351,66 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                 fichero.write(htmlContent);
                 fichero.close();
 
-                MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
+                MyDB gestorDB = new MyDB(this, "Notes", null, 1);
                 gestorDB.insertNewNote(title, fileName, choosenTagId,
                         Data.getMyData().getActiveUsername());
+                ArrayList<String> noteData = gestorDB.getLastAddedNoteData(fileName);
+                int idNote = Integer.valueOf(noteData.get(0));
 
                 // Note created
-                Intent i = new Intent();
-                i.putExtra("fileName", fileName);
-                setResult(RESULT_OK, i);
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                boolean notifications = prefs.getBoolean("notifications", false);
+                Log.i("aqui2", String.valueOf(notifications));
+                if (notifications){
+                    // The user wants to be notified
+                    // notify with intent
+                    NotificationManager elManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    NotificationCompat.Builder elBuilder = new NotificationCompat.Builder(this,
+                            "newNote");
+                    // configure it
+                    String titleToShow = title.substring(0, Math.min(title.length(), 25)) + "...";
+
+                    // if the user clicks on "read" the note will open
+                    Intent i = new Intent(this, SingleNoteActivity.class);
+                    i.putExtra("id", 2);
+                    i.putExtra("noteId", idNote);
+
+                    // limpiamos el stack porque si la abrimos por ejemplo cuando estamos editando
+                    // una nota fastidiamos el flow de las actividades, se utiliza el
+                    // taskstackbuilder para crear el stack de la actividad
+                    PendingIntent intentEnNot =
+                            TaskStackBuilder.create(this)
+                                    // add all of DetailsActivity's parents to the stack,
+                                    // followed by DetailsActivity itself
+                                    .addParentStack(SingleNoteActivity.class)
+                                    .addNextIntent(i)
+                                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    
+                    elBuilder.setSmallIcon(android.R.drawable.ic_dialog_info)
+                            .setContentTitle(getResources().getString(R.string.notifications_newNote_title))
+                            .setContentText(titleToShow)
+                            .setAutoCancel(true)
+                            .addAction(android.R.drawable.ic_menu_view,
+                                    getResources().getString(R.string.notifications_newNote_seeNote),
+                                    intentEnNot);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        NotificationChannel elCanal = new NotificationChannel("newNote",
+                                "newNote",
+                                NotificationManager.IMPORTANCE_DEFAULT);
+                        elCanal.setDescription("newNote");
+                        elCanal.enableLights(true);
+                        elCanal.setLightColor(Color.BLUE);
+                        elManager.createNotificationChannel(elCanal);
+                    }
+                    elManager.notify(2, elBuilder.build()); // start notification
+                }
+
+                // return
+                Intent intent = new Intent();
+                intent.putExtra("fileName", fileName);
+                setResult(RESULT_OK, intent);
             }else{
                 // editing existing note
                 MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);

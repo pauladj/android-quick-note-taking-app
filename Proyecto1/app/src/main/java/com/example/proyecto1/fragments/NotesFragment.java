@@ -42,6 +42,7 @@ public class NotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent,
                              @Nullable Bundle savedInstanceState) {
         // Defines the xml file for the fragment
+
         View v = inflater.inflate(R.layout.notes_fragment, parent, false);
         return v;
     }
@@ -76,6 +77,9 @@ public class NotesFragment extends Fragment {
             notesDates = notesData.get(2);
             notesTags = notesData.get(3);
 
+            Log.i("aqui", String.valueOf(notesIds.size()));
+
+
             // Show the recent notes first?
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean showRecentFirst = prefs.getBoolean("orden", false);
@@ -108,6 +112,7 @@ public class NotesFragment extends Fragment {
         notes.setAdapter(eladaptador);
         LinearLayoutManager elLayoutLineal= new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
         notes.setLayoutManager(elLayoutLineal);
+        eladaptador.notifyDataSetChanged();
     }
 
 
