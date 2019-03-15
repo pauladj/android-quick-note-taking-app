@@ -2,6 +2,8 @@ package com.example.proyecto1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,28 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 
 public class LoaderWelcomeActivity extends AppCompatActivity {
+
+    private boolean shownAlready = false; // if we change the orientation while
+                                            // the thread is running, it will duplicate the
+                                            // activity MainClass
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("shownAlready", shownAlready);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null){
+            if (savedInstanceState.containsKey("shownAlready")){
+                shownAlready = savedInstanceState.getBoolean("shownAlready");
+            }
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -361,7 +385,7 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
                         Data.getMyData().setActiveUsername(loggedInUsername);
 
                         // go to main activity
-                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent i = new Intent(LoaderWelcomeActivity.this, MainActivity.class);
                         startActivity(i);
                         finish();
                     }else{
@@ -371,7 +395,10 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
                 }
             }
         };
-        welcomeThread.start();
+        if (shownAlready == false){
+            welcomeThread.start();
+        }
+
     }
 
     /**
@@ -384,4 +411,10 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        shownAlready = true; // if the orientation changes while being on the thread
+                              // mark it and if so, don't start again the MainActivity
+    }
 }

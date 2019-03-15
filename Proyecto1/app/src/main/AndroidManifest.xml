@@ -27,10 +27,13 @@
                 android:value="com.example.proyecto1.MainActivity"
                 ></meta-data>
         </activity>
-        <activity android:name=".LogInActivity" />
-        <activity android:name=".SignUpActivity" />
+        <activity android:name=".LogInActivity"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".SignUpActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".LoaderWelcomeActivity"
+            android:configChanges="orientation|screenSize"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

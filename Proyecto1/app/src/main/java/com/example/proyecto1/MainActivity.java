@@ -1,5 +1,7 @@
 package com.example.proyecto1;
 
+import android.app.UiModeManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -42,6 +44,8 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         // load top toolbar
         loadToolbar();
         Log.i("aqui", "bieeeeeen");
+        UiModeManager uiManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+        uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
     }
 
 
