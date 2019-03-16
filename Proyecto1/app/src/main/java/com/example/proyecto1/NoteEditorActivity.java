@@ -44,6 +44,7 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EventListener;
 
 public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo, SelectTagEditor.ListenerDelDialogo, NewTag.ListenerDelDialogo {
 
@@ -388,12 +389,25 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                             (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     NotificationCompat.Builder elBuilder = new NotificationCompat.Builder(this,
                             "newNote");
+
                     // configure it
+                    // max 25 title characters to show
                     String titleToShow = title.substring(0, Math.min(title.length(), 25)) + "...";
+
+                    SharedPreferences prefs_especiales= getSharedPreferences("preferencias_especiales",
+                            Context.MODE_PRIVATE);
+
+                    // the initial value is 2 if it's the first time
+                    int id = prefs_especiales.getInt("id", 1) + 1;
+
+                    SharedPreferences.Editor editor2= prefs_especiales.edit();
+                    // the initial value is 2, but we have to add one to this
+                    editor2.putInt("id",id);
+                    editor2.apply();
 
                     // if the user clicks on "read" the note will open
                     Intent i = new Intent(this, SingleNoteActivity.class);
-                    i.putExtra("id", 2);
+                    i.putExtra("id", id);
                     i.putExtra("noteId", idNote);
 
                     // limpiamos el stack porque si la abrimos por ejemplo cuando estamos editando
@@ -405,8 +419,10 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                                     // followed by DetailsActivity itself
                                     .addParentStack(SingleNoteActivity.class)
                                     .addNextIntent(i)
-                                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                    
+                                    .getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    // el código de petición es diferente para que los intents no
+                                    // se sobreescriban y funcionen
+
                     elBuilder.setSmallIcon(android.R.drawable.ic_dialog_info)
                             .setContentTitle(getResources().getString(R.string.notifications_newNote_title))
                             .setContentText(titleToShow)
@@ -415,6 +431,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                             .addAction(android.R.drawable.ic_menu_view,
                                     getResources().getString(R.string.notifications_newNote_seeNote),
                                     intentEnNot);
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         NotificationChannel elCanal = new NotificationChannel("newNote",
                                 "newNote",
@@ -424,7 +441,8 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                         elCanal.setLightColor(Color.BLUE);
                         elManager.createNotificationChannel(elCanal);
                     }
-                    elManager.notify(2, elBuilder.build()); // start notification
+
+                    elManager.notify(id, elBuilder.build()); // start notification
                 }
 
                 // return
