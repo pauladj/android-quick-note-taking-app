@@ -6,20 +6,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
 
-import com.example.proyecto1.MainActivity;
-import com.example.proyecto1.R;
-
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MyDB extends SQLiteOpenHelper {
@@ -50,17 +38,12 @@ public class MyDB extends SQLiteOpenHelper {
                 "FOREIGN KEY('username') REFERENCES Users('username') ON DELETE CASCADE)");
 
         // Insert dummy data
-        db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 1)");
+        db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 0)");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (2, 'tagPrueba2', 'admin')");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (3, 'tagPrueba3', 'admin')");
-        db.execSQL("INSERT INTO Notes(fileContent, title, username) VALUES ('nombrefichero.html'," +
-                " 'sergsehhhhhhhhhhhhrg r gsdfg ', 'admin')");
-        db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES " +
-                "('nombrefichero2.html', 1," +
-                " 'sergserg r gsdfg ', 'admin')");
-        db.execSQL("INSERT INTO Notes(fileContent, labelId, title, username) VALUES ('fff', 1, 'klsdfjkldf ksdjfksjdfks jdfksjdfksd fjkdfj f skdf jskjdf df kdfjskld fjkd jkdjf kdfj dfklf', 'admin')");
-
+        db.execSQL("INSERT INTO Notes(fileContent, title, username) VALUES ('dummyNote.html'," +
+                " 'Curabitur lobortis aliquet nulla, non cursus purus pellentesque et.', 'admin')");
     }
 
     @Override

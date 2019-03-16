@@ -85,8 +85,11 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
             }
         });
 
-        // Scroll available even with scrollview
-        // https://stackoverflow.com/a/24428854/11002531
+        /***
+         * Extraído de Stack Overflow
+         * Pregunta: https://stackoverflow.com/questions/24428808/how-to-scroll-the-edittext-inside-the-scrollview/
+         * Autor: https://stackoverflow.com/users/1761003/mave%c5%88%e3%83%84
+         **/
         noteBody.setOnTouchListener(new View.OnTouchListener() {
 
             public boolean onTouch(View v, MotionEvent event) {
@@ -104,6 +107,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
 
         // if it's an existing note load its content
         Bundle extras = getIntent().getExtras();
+
         if (extras != null){
             if (extras.containsKey("noteId")){
                 noteId = extras.getInt("noteId");
@@ -117,7 +121,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
      * If we are editing an existing note we load the data into the editor
      */
     private void loadExistingNoteContent(){
-        if (noteId != 1){
+        if (noteId != -1){
             MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
             String[] noteData = gestorDB.getNoteData(noteId);
             if (noteData != null){
@@ -183,7 +187,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
      */
     public void boldClicked(View v){
         boolean selection = checkIfSelection();
-        if (selection){
+        if (selection){ // Si el usuario ha seleccionado algún texto
             EditText noteBody = findViewById(R.id.noteBody);
             int end = noteBody.getSelectionEnd();
             SpanStyleHelper spanStyleHelper = new SpanStyleHelper(noteBody);
@@ -200,7 +204,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
      */
     public void italicClicked(View v){
         boolean selection = checkIfSelection();
-        if (selection) {
+        if (selection) { // Si el usuario ha seleccionado algún texto
             EditText noteBody = findViewById(R.id.noteBody);
             int end = noteBody.getSelectionEnd();
 
@@ -227,18 +231,21 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
      */
     public void yesInsertUrl(View textToShow, View inputLink){
         EditText textBody = findViewById(R.id.noteBody);
-        int posIni = textBody.getSelectionStart();
+        int posIni = textBody.getSelectionStart(); // obtener posición del cursor en el texto
 
+        // obtener texto con estilos
         SpannableStringBuilder spannable = new SpannableStringBuilder(textBody.getText());
+        // crear cadena html con link
         String link =
                 "<a href='" + ((TextView) inputLink).getText().toString() + "'>" + ((TextView) textToShow).getText().toString() +
                 "</a>";
+        // convertir html a texto spannable (estilos)
         SpannableStringBuilder formatedLink = (SpannableStringBuilder) Html.fromHtml(link);
 
         spannable.insert(posIni, formatedLink); // insert the link in the text
-        textBody.setMovementMethod(LinkMovementMethod.getInstance());
+        textBody.setMovementMethod(LinkMovementMethod.getInstance()); // los links con clickables
         textBody.setText(spannable);
-        textBody.setSelection(posIni);
+        textBody.setSelection(posIni); // dejar el cursor en el mismo sitio
     }
 
 
@@ -279,6 +286,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         // Show the dialog to select one
         DialogFragment dialog = new SelectTagEditor();
         Bundle bl = new Bundle();
+        // la etiqueta elegida actual
         bl.putInt("chosenTagId", chosenTagId);
         bl.putString("chosenTagName", chosenTagName);
         dialog.setArguments(bl);
@@ -336,9 +344,10 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
             return; // Exit method
         }
 
+        // obtener el texto con estilos
         SpannableString spannable = new SpannableString(bodyElement.getText());
 
-
+        // texto con estilos a html
         String htmlContent = Html.toHtml(spannable);
         htmlContent = htmlContent.replace("<u>", "") // delete the tags added by the conversor
                                 .replace("</u>", "")
@@ -397,7 +406,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                                     .addParentStack(SingleNoteActivity.class)
                                     .addNextIntent(i)
                                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
+                    
                     elBuilder.setSmallIcon(android.R.drawable.ic_dialog_info)
                             .setContentTitle(getResources().getString(R.string.notifications_newNote_title))
                             .setContentText(titleToShow)
@@ -492,5 +501,6 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         super.onSaveInstanceState(outState);
         outState.putInt("chosenTagId", chosenTagId);
         outState.putString("chosenTagName", chosenTagName);
+        outState.putInt("noteId", noteId);
     }
 }

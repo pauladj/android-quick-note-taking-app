@@ -43,8 +43,6 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         setContentView(R.layout.main_activity);
         // load top toolbar
         loadToolbar();
-        UiModeManager uiManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
-        uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
     }
 
 
@@ -83,7 +81,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
 
 
     /**
-     * A note is click, this is the event that handles it
+     * A note is clicked, this is the event that handles it
      * @param selectedNoteId - the selected note id
      */
     public void clickOnNote(int selectedNoteId){

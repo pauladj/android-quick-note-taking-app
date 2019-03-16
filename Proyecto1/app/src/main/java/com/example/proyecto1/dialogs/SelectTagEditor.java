@@ -47,7 +47,7 @@ public class SelectTagEditor extends DialogFragment {
             selectedTagId = savedInstanceState.getInt("selectedTagId");
             selectedTagName = savedInstanceState.getString("selectedTagName");
         }else if (getArguments() != null) {
-            // just created the dialog, editing an existing note
+            // just created the dialog, the user has previously selected a tag
             Bundle bundle = getArguments();
             selectedTagName = bundle.getString("chosenTagName");
             selectedTagId = bundle.getInt("chosenTagId");

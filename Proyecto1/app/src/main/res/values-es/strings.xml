@@ -11,7 +11,7 @@
     <string name="menuTag">Etiquetas</string>
     <string name="menuEdit">Editar</string>
     <string name="menuLogout">Cerrar sesión</string>
-    <string name="userAlreadyExists">Este nombre de usuario existe</string>
+    <string name="userAlreadyExists">Este nombre de usuario ya existe</string>
     <string name="incorrectPassword">Usuario y contraseña incorrectos</string>
     <string name="userSuccessfullyRegistered">Te has registrado correctamente</string>
     <string name="menuDelete">Eliminar</string>
@@ -69,7 +69,8 @@
     <string name="notifications_newNote_seeNote">Ver</string>
     <string name="failTagExists">Esta etiqueta ya existe</string>
     <string name="databaseError">Se ha producido un error con la base de datos</string>
-    <string name="emptyTag">El campo de la etiqueta no puede estar vacío.</string>
+    <string name="emptyTag">El campo de la etiqueta no puede estar vacío</string>
+    <string name="failDeletingNote">Se ha producido un error al intentar borrar la nota</string>
 
 
 </resources>

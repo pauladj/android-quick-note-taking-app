@@ -46,321 +46,15 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loader_welcome);
 
-
-        // fichero interno nota de prueba, luego esto quitar
+        // dummy note
         try {
-            OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput("nombrefichero" +
-                            ".html",
+            OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput("dummyNote.html",
                     Context.MODE_PRIVATE));
-            fichero.write("<h1>Estoy escribiendo en el " +
-                    "fichero asdfadsfa asdfsdf afasdf sdfasdf asdf asdf asdf " +
-                    "asdfasdf asdf asdf asd fasd fs f</h1><br>Normal normal " +
-                    "<br><b>basdf" +
-                    " asd a sa f " +
-                    "NEGRITA</b><br><a href='http://google.com'>Click Here</a>");
-            fichero.write("aDF");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("<br>");
-            fichero.write("adfasdf");
-
+            fichero.write("Lorem <b>ipsum</b> dolor sit <i>amet</i>, consectetur " +
+                    "<b><i>adipiscing</i></b> " +
+                    "elit.<br><br>Integer " +
+                    "est mauris, <a href='http://google.com'>faucibus</a> id nunc nec, bibendum " +
+                    "dictum nibh. Praesent varius molestie sem, quis dapibus magna malesuada vitae. Aenean a placerat nisi. Aliquam ut lectus orci. Etiam mollis orci nec lectus mattis vehicula. Nulla feugiat tempor lectus, id facilisis arcu maximus ac. In leo diam, imperdiet ut lectus at, tempor mollis turpis. Sed ut massa mi. Sed ipsum odio, interdum ac pulvinar id, pretium vel mauris. <br><br>Duis tincidunt dolor ut est semper, vel porttitor ex placerat. Sed lobortis magna sit amet libero blandit, id iaculis est semper. Vivamus viverra purus at nulla pellentesque, ac porta purus faucibus. Duis consequat nec sem sit amet porta. ");
             fichero.close();
         } catch (IOException e){
 
@@ -371,11 +65,11 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
             public void run() {
                 try {
                     super.run();
-                    sleep(1500);  //Delay of 2 seconds
+                    sleep(1500);  //Delay of 1.5 seconds
                 } catch (Exception e) {
                     // do nothing
                 } finally {
-                    // After 2 seconds
+                    // After 1.5 seconds
                     // check if a user is already logged in
                     MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
                     String loggedInUsername = gestorDB.getActiveUsername();
@@ -389,7 +83,7 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
                         startActivity(i);
                         finish();
                     }else{
-                        // user has yet to log in
+                        // user has yet to log in or error in database
                         logIn();
                     }
                 }

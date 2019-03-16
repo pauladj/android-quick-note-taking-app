@@ -8,7 +8,13 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.widget.EditText;
 
-// https://stackoverflow.com/questions/36290847/edit-spanned-text/36310586#36310586
+/***
+ * Basado en el código extraído de Stack Overflow
+ * Pregunta: https://stackoverflow.com/questions/36290847/edit-spanned-text/
+ * Autor: https://stackoverflow.com/users/1621977/mostafa-lavaei
+ * Modificado por Paula de Jaime para evitar que si un texto anterior al seleccionado
+ * no tiene ningún estilo esto siga así.
+ **/
 public class SpanStyleHelper {
     protected EditText mEditText;
     protected Spannable mSpannable;
@@ -46,19 +52,6 @@ public class SpanStyleHelper {
                 int spanStart = mSpannable.getSpanStart(styleSpan);
                 int spanEnd = mSpannable.getSpanEnd(styleSpan);
 
-                /**
-                 * Before bold this span, we check if any unspanned
-                 * text between this span and last span remains. if any
-                 * unspanned text exist, we should bold it
-
-                if (spanStart > lastSpanEnd) {
-                    mSpannable.setSpan(
-                            new StyleSpan(Typeface.BOLD),
-                            lastSpanEnd,
-                            spanStart,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    );
-                }*/
 
                 /**
                  * Update last span end
@@ -267,22 +260,6 @@ public class SpanStyleHelper {
                  */
                 int spanStart = mSpannable.getSpanStart(styleSpan);
                 int spanEnd = mSpannable.getSpanEnd(styleSpan);
-
-
-                /**
-                 * Before italic this span, we check if any unspanned
-                 * text between this span and last span remains. if any
-                 * unspanned text exist, we should italic it
-
-                if (spanStart > lastSpanEnd) {
-                    mSpannable.setSpan(
-                            new StyleSpan(Typeface.ITALIC),
-                            lastSpanEnd,
-                            spanStart,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    );
-                }*/
-
 
                 /**
                  * Update last span end

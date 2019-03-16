@@ -28,6 +28,9 @@ import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.PreferencesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
 
+import java.io.File;
+import java.io.IOException;
+
 public class MainToolbar extends AppCompatActivity {
 
     Menu menu;
@@ -158,28 +161,55 @@ public class MainToolbar extends AppCompatActivity {
      */
     public void yesDeleteNote(int noteId){
         MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
-        boolean deleted = gestorDB.deleteANote(noteId);
-
-        if (deleted){
-            // show toast across screens
-            int tiempo = Toast.LENGTH_SHORT;
-            Toast aviso = Toast.makeText(getApplicationContext(), R.string.noteSuccessfullyDeleted,
-                    tiempo);
-            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
-            aviso.show();
-
-            Intent i = new Intent (this, MainActivity.class);
-            // clear the activity stack
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-            finish();
-        }else {
+        String fileName = gestorDB.getNoteFileName(noteId);
+        if (fileName == null){
             // database error
             int tiempo = Toast.LENGTH_SHORT;
             Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
             aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
             aviso.show();
+            return;
         }
+        try {
+            // delete the note file
+            File dir = getFilesDir();
+            File file = new File(dir, fileName);
+            boolean deleted = file.delete();
+
+            if (deleted == false){
+                throw new IOException();
+            }
+
+            deleted = gestorDB.deleteANote(noteId);
+
+            if (deleted){
+                // show toast across screens
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(getApplicationContext(), R.string.noteSuccessfullyDeleted,
+                        tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+
+                Intent i = new Intent (this, MainActivity.class);
+                // clear the activity stack
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                finish();
+            }else {
+                // database error
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+            }
+
+        } catch (IOException e) {
+            int tiempo = Toast.LENGTH_SHORT;
+            Toast aviso = Toast.makeText(this, R.string.failDeletingNote, tiempo);
+            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+            aviso.show();
+        }
+
 
 
     }

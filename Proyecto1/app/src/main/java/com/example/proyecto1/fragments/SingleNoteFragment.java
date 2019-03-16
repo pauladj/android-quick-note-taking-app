@@ -61,12 +61,17 @@ public class SingleNoteFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         // Setup any handles to view objects here
         super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null){
+            if (savedInstanceState.containsKey("textOfNote")){
+                textOfNote = savedInstanceState.getString("textOfNote");
+            }
+        }
 
     }
 
 
     /**
-     * Loads a note information knowing its id
+     * Loads a note information and content knowing its id
      * @param noteId - the id of the note
      */
     public void loadNote(int noteId){
@@ -106,4 +111,9 @@ public class SingleNoteFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("textOfNote", textOfNote);
+    }
 }

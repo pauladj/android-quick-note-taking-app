@@ -70,5 +70,6 @@
     <string name="failTagExists">This tag already exists</string>
     <string name="databaseError">There was an error with the database</string>
     <string name="emptyTag">The tag field cannot be empty</string>
+    <string name="failDeletingNote">There was an error deleting the note</string>
 
 </resources>

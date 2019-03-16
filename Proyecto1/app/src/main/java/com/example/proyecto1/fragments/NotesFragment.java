@@ -172,7 +172,7 @@ public class NotesFragment extends Fragment {
 
 
     /**
-     * Notify the adapter that a note has been changed
+     * Notify the adapter that a note has changed
      * @param id
      */
     public void changeNote(int id){
