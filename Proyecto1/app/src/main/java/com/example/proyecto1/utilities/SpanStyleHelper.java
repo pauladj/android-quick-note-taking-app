@@ -16,10 +16,10 @@ import android.widget.EditText;
  * no tiene ningún estilo esto siga así.
  **/
 public class SpanStyleHelper {
-    protected EditText mEditText;
-    protected Spannable mSpannable;
-    protected int mSelectedTextStart;
-    protected int mSelectedTextEnd;
+    private EditText mEditText;
+    private Spannable mSpannable;
+    private int mSelectedTextStart;
+    private int mSelectedTextEnd;
 
     public SpanStyleHelper(EditText editText) {
         mEditText = editText;
@@ -28,7 +28,7 @@ public class SpanStyleHelper {
         mSelectedTextEnd = mEditText.getSelectionEnd();
     }
 
-    public Spannable boldSelectedText() {
+    private Spannable boldSelectedText() {
         Log.d("Ramansoft", "Try to bold selected text..");
 
         StyleSpan[] styleSpans = mEditText.getText().getSpans(
@@ -133,7 +133,7 @@ public class SpanStyleHelper {
         return mSpannable;
     }
 
-    public Spannable unBoldSelectedText() {
+    private Spannable unBoldSelectedText() {
         Log.d("Ramansoft", "Try to unbold selected text..");
 
         StyleSpan[] styleSpans = mEditText.getText().getSpans(
@@ -236,7 +236,7 @@ public class SpanStyleHelper {
 
     }
 
-    public Spannable italicSelectedText() {
+    private Spannable italicSelectedText() {
         Log.d("Ramansoft", "Try to italic selected text..");
 
         StyleSpan[] styleSpans = mEditText.getText().getSpans(
@@ -343,7 +343,7 @@ public class SpanStyleHelper {
         return mSpannable;
     }
 
-    public Spannable unItalicSelectedText() {
+    private Spannable unItalicSelectedText() {
         Log.d("Ramansoft", "Try to un-italic selected text..");
 
         StyleSpan[] styleSpans = mEditText.getText().getSpans(
