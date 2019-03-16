@@ -15,7 +15,7 @@ import com.example.proyecto1.utilities.MyDB;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public class LogInActivity extends AppCompatActivity {
+public class LogInActivity extends LanguageActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

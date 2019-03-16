@@ -1,13 +1,9 @@
 package com.example.proyecto1;
 
 import android.content.Intent;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 
-import com.example.proyecto1.dialogs.ConfimExit;
 import com.example.proyecto1.fragments.PreferencesFragment;
 import com.example.proyecto1.utilities.MainToolbar;
 
@@ -34,19 +30,11 @@ public class PreferencesActivity extends MainToolbar {
     @Override
     public void onBackPressed() {
         // If the back button is pressed
-        // check if the order of the notes has changed
-        PreferencesFragment fragment =
-                (PreferencesFragment) getSupportFragmentManager().findFragmentById(R.id.preferencesFragment);
-        boolean noteOrderChanged = fragment.noteOrderChanged();
-        if (noteOrderChanged){
-            Intent i = new Intent (this, MainActivity.class);
-            // clear the activity stack, so the recycler view is recreated
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-            finish();
-        }else {
-            //we don't need to recreate the recycler view, so just go back
-            super.onBackPressed();
-        }
+        Intent i = new Intent (this, MainActivity.class);
+        // clear the activity stack, so the mainactivity view is recreated
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+        finish();
+
     }
 }

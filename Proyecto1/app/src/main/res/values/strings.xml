@@ -63,6 +63,8 @@
     <string name="preferences_ordenTitle">Show recent first</string>
     <string name="preferences_ordenSummary">Show first the most recent notes</string>
     <string name="preferences_saved">The new configuration has been saved</string>
+    <string name="preferences_LanguageTitle">Select the language</string>
+    <string name="preferences_LanguageSummary">Change the app language</string>
     <string name="notifications_preferencesNotifications_title">Notifications are enabled</string>
     <string name="notifications_preferencesNotifications_text">You will receive notifications for new notes</string>
     <string name="notifications_newNote_title">New note</string>
@@ -71,5 +73,9 @@
     <string name="databaseError">There was an error with the database</string>
     <string name="emptyTag">The tag field cannot be empty</string>
     <string name="failDeletingNote">There was an error deleting the note</string>
+    <string name="preferences_languagesOptionSystem">System</string>
+    <string name="preferences_languagesOptionEnglish">English</string>
+    <string name="preferences_languagesOptionSpanish">Spanish</string>
+
 
 </resources>

@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.proyecto1.LanguageActivity;
 import com.example.proyecto1.LogInActivity;
 import com.example.proyecto1.MainActivity;
 import com.example.proyecto1.NoteEditorActivity;
@@ -31,7 +32,7 @@ import com.example.proyecto1.fragments.SingleNoteFragment;
 import java.io.File;
 import java.io.IOException;
 
-public class MainToolbar extends AppCompatActivity {
+public class MainToolbar extends LanguageActivity {
 
     Menu menu;
 

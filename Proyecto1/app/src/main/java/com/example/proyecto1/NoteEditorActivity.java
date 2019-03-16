@@ -1,5 +1,6 @@
 package com.example.proyecto1;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -397,11 +398,11 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                     SharedPreferences prefs_especiales= getSharedPreferences("preferencias_especiales",
                             Context.MODE_PRIVATE);
 
-                    // the initial value is 2 if it's the first time
-                    int id = prefs_especiales.getInt("id", 1) + 1;
+                    // the initial value is 3 if it's the first time
+                    int id = prefs_especiales.getInt("id", 2) + 1;
 
                     SharedPreferences.Editor editor2= prefs_especiales.edit();
-                    // the initial value is 2, but we have to add one to this
+                    // the initial value is 3, but we have to add one to this
                     editor2.putInt("id",id);
                     editor2.apply();
 
@@ -427,7 +428,9 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                             .setContentTitle(getResources().getString(R.string.notifications_newNote_title))
                             .setContentText(titleToShow)
                             .setAutoCancel(true)
+                            .setGroup("newNoteGroup") // notificaciones anidadas
                             .setPriority(NotificationCompat.PRIORITY_MAX)
+                            .setContentIntent(intentEnNot)
                             .addAction(android.R.drawable.ic_menu_view,
                                     getResources().getString(R.string.notifications_newNote_seeNote),
                                     intentEnNot);
@@ -438,10 +441,26 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                                 NotificationManager.IMPORTANCE_HIGH);
                         elCanal.setDescription("newNote");
                         elCanal.enableLights(true);
+                        elCanal.setGroup("newNoteGroup"); // notificaciones anidadas
                         elCanal.setLightColor(Color.BLUE);
                         elManager.createNotificationChannel(elCanal);
                     }
 
+                    // notificación anidada principal
+                    Notification summaryNotification =
+                            new NotificationCompat.Builder(this, "newNote")
+                                    .setContentTitle(getResources().getString(R.string.notifications_newNote_title))
+                                    //set content text to support devices running API level < 24
+                                    .setContentText(getResources().getString(R.string.notifications_newNote_title))
+                                    .setSmallIcon(android.R.drawable.ic_dialog_info)
+                                    //specify which group this notification belongs to
+                                    .setGroup("newNoteGroup")
+                                    //set this notification as the summary for the group
+                                    .setGroupSummary(true)
+                                    .setAutoCancel(true)
+                                    .build();
+
+                    elManager.notify(2, summaryNotification);
                     elManager.notify(id, elBuilder.build()); // start notification
                 }
 

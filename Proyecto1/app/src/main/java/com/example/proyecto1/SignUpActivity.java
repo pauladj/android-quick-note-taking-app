@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.example.proyecto1.utilities.MyDB;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends LanguageActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

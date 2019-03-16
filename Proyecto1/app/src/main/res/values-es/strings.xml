@@ -63,6 +63,8 @@
     <string name="preferences_ordenTitle">Mostrar recientes primero</string>
     <string name="preferences_ordenSummary">Mostrar las notas más recientes arriba</string>
     <string name="preferences_saved">La nueva configuración se ha guardado</string>
+    <string name="preferences_LanguageTitle">Elige el lenguaje</string>
+    <string name="preferences_LanguageSummary">Cambia el lenguaje de la aplicación</string>
     <string name="notifications_preferencesNotifications_title">Notificaciones habilitadas</string>
     <string name="notifications_preferencesNotifications_text">Recibirás notificaciones de las nuevas notas creadas</string>
     <string name="notifications_newNote_title">Nueva nota</string>
@@ -71,6 +73,7 @@
     <string name="databaseError">Se ha producido un error con la base de datos</string>
     <string name="emptyTag">El campo de la etiqueta no puede estar vacío</string>
     <string name="failDeletingNote">Se ha producido un error al intentar borrar la nota</string>
-
-
+    <string name="preferences_languagesOptionSystem">Sistema</string>
+    <string name="preferences_languagesOptionEnglish">Inglés</string>
+    <string name="preferences_languagesOptionSpanish">Español</string>
 </resources>

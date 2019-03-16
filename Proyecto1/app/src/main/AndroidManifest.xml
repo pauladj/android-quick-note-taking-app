@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/NotesTheme">
-        <activity android:name=".PreferencesActivity"></activity>
+        <activity android:name=".LanguageActivity"></activity>
+        <activity android:name=".PreferencesActivity" />
         <activity
             android:name=".NoteEditorActivity"
             android:windowSoftInputMode="adjustResize">
@@ -20,17 +21,19 @@
         </activity>
         <activity android:name=".utilities.MainToolbar" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".SingleNoteActivity"
-            android:parentActivityName="com.example.proyecto1.MainActivity" >
+        <activity
+            android:name=".SingleNoteActivity"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android:support.PARENT"
-                android:value="com.example.proyecto1.MainActivity"
-                ></meta-data>
+                android:value="com.example.proyecto1.MainActivity" />
         </activity>
-        <activity android:name=".LogInActivity"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".SignUpActivity"
-            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".LogInActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".SignUpActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".LoaderWelcomeActivity"
             android:configChanges="orientation|screenSize"
