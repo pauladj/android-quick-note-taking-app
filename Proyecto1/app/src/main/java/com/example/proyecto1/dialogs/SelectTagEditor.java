@@ -9,9 +9,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.example.proyecto1.R;
 import com.example.proyecto1.utilities.Data;
@@ -25,8 +27,8 @@ public class SelectTagEditor extends DialogFragment {
 
     ListenerDelDialogo miListener;
 
-    int selectedTagId = -1;
-    String selectedTagName = "";
+    int selectedTagId = -1; // selected tag id
+    String selectedTagName = ""; // selected tag name
 
 
     public interface ListenerDelDialogo {
@@ -45,10 +47,10 @@ public class SelectTagEditor extends DialogFragment {
             selectedTagId = savedInstanceState.getInt("selectedTagId");
             selectedTagName = savedInstanceState.getString("selectedTagName");
         }else if (getArguments() != null) {
-            // just created the dialog
+            // just created the dialog, editing an existing note
             Bundle bundle = getArguments();
-            selectedTagName = bundle.getString("choosenTagName");
-            selectedTagId = bundle.getInt("choosenTagId");
+            selectedTagName = bundle.getString("chosenTagName");
+            selectedTagId = bundle.getInt("chosenTagId");
         }
 
         miListener = (ListenerDelDialogo) getActivity();
@@ -61,29 +63,37 @@ public class SelectTagEditor extends DialogFragment {
         final ArrayList<ArrayList<String>> data =
                 gestorDB.getTagsByUser(Data.getMyData().getActiveUsername());
 
-        CharSequence[] tagNames = data.get(1).toArray(new CharSequence[data.get(1).size()]);
+        if (data == null){
+            // database error
+            int tiempo = Toast.LENGTH_SHORT;
+            Toast aviso = Toast.makeText(getActivity(), R.string.databaseError, tiempo);
+            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+            aviso.show();
+        }else {
+            CharSequence[] tagNames = data.get(1).toArray(new CharSequence[data.get(1).size()]);
 
-        int pos = -1;
-        if (selectedTagId != -1){
-            // A tag has been chosen previously, select it again
-            pos = data.get(0).indexOf(String.valueOf(selectedTagId));
-        }
-
-        builder.setSingleChoiceItems(tagNames, pos, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // The user has selected a tag & we save its id
-                int newSelectedTagId = Integer.valueOf(data.get(0).get(which));
-                if (newSelectedTagId == selectedTagId){
-                    ((AlertDialog) dialog).getListView().setItemChecked(which, false);
-                    selectedTagId = -1;
-                    selectedTagName = "";
-                }else{
-                    selectedTagId = newSelectedTagId;
-                    selectedTagName = data.get(1).get(which);
-                }
+            int pos = -1;
+            if (selectedTagId != -1) {
+                // A tag has been chosen previously, select it again
+                pos = data.get(0).indexOf(String.valueOf(selectedTagId));
             }
-        });
+
+            builder.setSingleChoiceItems(tagNames, pos, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // The user has selected a tag & we save its id
+                    int newSelectedTagId = Integer.valueOf(data.get(0).get(which));
+                    if (newSelectedTagId == selectedTagId) {
+                        ((AlertDialog) dialog).getListView().setItemChecked(which, false);
+                        selectedTagId = -1;
+                        selectedTagName = "";
+                    } else {
+                        selectedTagId = newSelectedTagId;
+                        selectedTagName = data.get(1).get(which);
+                    }
+                }
+            });
+        }
 
         String positiveButton = getResources().getString(R.string.insertLink_save);
         String negativeButton = getResources().getString(R.string.insertLink_cancel);

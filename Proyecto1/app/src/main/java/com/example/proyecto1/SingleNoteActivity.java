@@ -46,7 +46,6 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
         Bundle extras = getIntent().getExtras();
         if (extras.containsKey("id")){
             // it's from a notification
-            Log.i("aqui", "bien2");
             NotificationManager elManager =
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             elManager.cancel(extras.getInt("id"));

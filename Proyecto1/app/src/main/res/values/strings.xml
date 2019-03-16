@@ -68,4 +68,7 @@
     <string name="notifications_newNote_title">New note</string>
     <string name="notifications_newNote_seeNote">See it</string>
     <string name="failTagExists">This tag already exists</string>
+    <string name="databaseError">There was an error with the database</string>
+    <string name="emptyTag">The tag field cannot be empty</string>
+
 </resources>

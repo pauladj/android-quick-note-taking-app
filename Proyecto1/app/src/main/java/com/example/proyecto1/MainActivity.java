@@ -43,7 +43,6 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         setContentView(R.layout.main_activity);
         // load top toolbar
         loadToolbar();
-        Log.i("aqui", "bieeeeeen");
         UiModeManager uiManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
         uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
     }
@@ -175,13 +174,22 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
         for (int id : tagsId){
             ArrayList<Integer> noteIds = gestorDB.removeTag(id); // remove tag
-
-            // update recycler view
-            NotesFragment fragment =
-                    (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
-            for (int noteId : noteIds){
-                fragment.changeNote(noteId);
+            if (noteIds == null){
+                // database error
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+                break;
+            }else{
+                // update recycler view
+                NotesFragment fragment =
+                        (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
+                for (int noteId : noteIds){
+                    fragment.changeNote(noteId);
+                }
             }
+
         }
 
 

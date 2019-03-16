@@ -7,9 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.proyecto1.R;
 
@@ -40,7 +42,16 @@ public class NewTag extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 TextView tagNameInput = elaspecto.findViewById(R.id.inputTextTag);
-                miListener.yesNewTag(tagNameInput.getText().toString());
+                String text = tagNameInput.getText().toString();
+                if (text.trim().isEmpty()){
+                    // tag name empty
+                    int tiempo = Toast.LENGTH_SHORT;
+                    Toast aviso = Toast.makeText(getActivity(), R.string.emptyTag, tiempo);
+                    aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                    aviso.show();
+                }else{
+                    miListener.yesNewTag(tagNameInput.getText().toString());
+                }
             }
         });
 

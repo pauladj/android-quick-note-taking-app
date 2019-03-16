@@ -10,9 +10,11 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.proyecto1.R;
 import com.example.proyecto1.cardview.ElAdaptadorRecycler;
@@ -65,33 +67,42 @@ public class NotesFragment extends Fragment {
             }
         }
 
-        if (notesIds.isEmpty()){
+        if (notesIds.isEmpty()){ // first time loading the activity, get the data
             // load notes
             String activeUser = Data.getMyData().getActiveUsername();
             MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
             ArrayList<ArrayList<String>> notesData = gestorDB.getNotesDataByUser(activeUser); // id,
             // titles, dates, tags
 
-            notesIds = notesData.get(0);
-            notesTitles = notesData.get(1);
-            notesDates = notesData.get(2);
-            notesTags = notesData.get(3);
+            if (notesData == null){
+                // database error
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(getActivity(), R.string.databaseError, tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
 
-            Log.i("aqui", String.valueOf(notesIds.size()));
+                notesIds = new ArrayList<>();
+                notesTitles = new ArrayList<>();
+                notesDates = new ArrayList<>();
+                notesTags = new ArrayList<>();
+            }else {
+                notesIds = notesData.get(0);
+                notesTitles = notesData.get(1);
+                notesDates = notesData.get(2);
+                notesTags = notesData.get(3);
 
+                // Show the recent notes first?
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                boolean showRecentFirst = prefs.getBoolean("orden", false);
 
-            // Show the recent notes first?
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            boolean showRecentFirst = prefs.getBoolean("orden", false);
-
-            if (showRecentFirst){
-                Collections.reverse(notesIds);
-                Collections.reverse(notesTitles);
-                Collections.reverse(notesDates);
-                Collections.reverse(notesTags);
+                if (showRecentFirst){
+                    Collections.reverse(notesIds);
+                    Collections.reverse(notesTitles);
+                    Collections.reverse(notesDates);
+                    Collections.reverse(notesTags);
+                }
             }
         }
-
 
         // titles, dates, tags
         final ElAdaptadorRecycler eladaptador = new ElAdaptadorRecycler(notesTitles,
@@ -128,6 +139,15 @@ public class NotesFragment extends Fragment {
         // added note
         // and append the info
 
+        if (noteData == null){
+            // database error
+            int tiempo = Toast.LENGTH_SHORT;
+            Toast aviso = Toast.makeText(getActivity(), R.string.databaseError, tiempo);
+            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+            aviso.show();
+            return; //exit method
+        }
+
         // Show the recent notes first?
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean showRecentFirst = prefs.getBoolean("orden", false);
@@ -152,25 +172,29 @@ public class NotesFragment extends Fragment {
 
 
     /**
-     * Notify the adapter that a note has been change
+     * Notify the adapter that a note has been changed
      * @param id
      */
     public void changeNote(int id){
         MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
         String[] noteData = gestorDB.getNoteData(id);
-        // get the changed note data
-        // and change the info
-        int indexOfChangedNote = notesIds.indexOf(String.valueOf(id));
-        if (indexOfChangedNote != -1){
 
-            notesIds.set(indexOfChangedNote, String.valueOf(id)); // noteid
-            notesTitles.set(indexOfChangedNote, noteData[0]); // title
-            notesDates.set(indexOfChangedNote, noteData[4]); // date
-            notesTags.set(indexOfChangedNote, noteData[2]); // tag, if it doesn't have one, it's
-            // null
-            // notify the adapter that the data has changed
-            notes.getAdapter().notifyItemChanged(indexOfChangedNote);
+        if (noteData != null){
+            // get the changed note data
+            // and change the info
+            int indexOfChangedNote = notesIds.indexOf(String.valueOf(id));
+            if (indexOfChangedNote != -1){
+
+                notesIds.set(indexOfChangedNote, String.valueOf(id)); // noteid
+                notesTitles.set(indexOfChangedNote, noteData[0]); // title
+                notesDates.set(indexOfChangedNote, noteData[4]); // date
+                notesTags.set(indexOfChangedNote, noteData[2]); // tag, if it doesn't have one, it's
+                // null
+                // notify the adapter that the data has changed
+                notes.getAdapter().notifyItemChanged(indexOfChangedNote);
+            }
         }
+
     }
 
     @Override

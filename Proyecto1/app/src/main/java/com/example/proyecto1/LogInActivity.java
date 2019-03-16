@@ -41,19 +41,29 @@ public class LogInActivity extends AppCompatActivity {
             // empty username or password, do nothing
         } else {
             MyDB gestorDB = new MyDB(this, "Notes", null, 1);
-            Boolean userCanBeLoggedIn = gestorDB.checkIfUserCanBeLoggedIn(username, password);
+            boolean userCanBeLoggedIn = gestorDB.checkIfUserCanBeLoggedIn(username, password);
             if (userCanBeLoggedIn) {
                 // there is a user with this data
                 // save the user as active in database
-                gestorDB.setUsernameAsActive(username);
+                boolean changed = gestorDB.setUsernameAsActive(username);
 
-                // set the active username so we don't have to read it from the database every time
-                Data.getMyData().setActiveUsername(username);
+                if (changed){
+                    // set the active username so we don't have to read it from the database every time
+                    Data.getMyData().setActiveUsername(username);
 
-                // go to the main activity
-                Intent i = new Intent(this, MainActivity.class);
-                startActivity(i);
-                finish();
+                    // go to the main activity
+                    Intent i = new Intent(this, MainActivity.class);
+                    startActivity(i);
+                    finish();
+                }else {
+                    // database error
+                    int tiempo = Toast.LENGTH_SHORT;
+                    Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
+                    aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                    aviso.show();
+                }
+
+
             } else {
                 int tiempo = Toast.LENGTH_SHORT;
                 Toast aviso = Toast.makeText(this, R.string.incorrectPassword, tiempo);

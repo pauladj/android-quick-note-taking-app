@@ -56,12 +56,14 @@ public class MainToolbar extends AppCompatActivity {
      * It adds a back arrow to the option menu
      */
     public void showBackButtonOption(){
+        // Mostrar flecha para ir para atrás si se quiere
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
+        // Si se pulsa en la flecha del toolbar se va para atrás
         onBackPressed();
         return true;
     }
@@ -83,6 +85,7 @@ public class MainToolbar extends AppCompatActivity {
             // Manage tags, add and remove
             manageTags();
         }else if(id == R.id.menuSettings){
+            // The user wants to change the settings
             settings();
         }else if(id == R.id.menuLogout){
             // The user wants to log out
@@ -105,13 +108,13 @@ public class MainToolbar extends AppCompatActivity {
     }
 
 
-    // -----------  Send note as email
     /**
      * Send the current note by email
      */
     public void sendNoteByEmail(){
         SingleNoteFragment fragment = (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
-        String content = fragment.getNoteContent();
+        String content = fragment.getNoteContent(); // se obtiene el contenido de la nota en
+        // texto plano
 
         Spanned plainText = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -121,12 +124,15 @@ public class MainToolbar extends AppCompatActivity {
             plainText = Html.fromHtml(content);
         }
 
+        // el mensaje se configura
         String uriText = "mailto:?body=" + plainText.toString();
         Uri uri = Uri.parse(uriText);
-
+        // se crea el intent
         Intent i = new Intent(Intent.ACTION_SENDTO);
         i.setData(uri);
         try {
+            // el usuario puede elegir la aplicación, si no tiene ninguna se le muestra mensaje
+            // de error
             String chooseEmailClientText = getResources().getString(R.string.chooseEmailClient);
             startActivity(Intent.createChooser(i, chooseEmailClientText));
         } catch (android.content.ActivityNotFoundException ex) {
@@ -152,20 +158,30 @@ public class MainToolbar extends AppCompatActivity {
      */
     public void yesDeleteNote(int noteId){
         MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
-        gestorDB.deleteANote(noteId);
+        boolean deleted = gestorDB.deleteANote(noteId);
 
-        // show toast across screens
-        int tiempo = Toast.LENGTH_SHORT;
-        Toast aviso = Toast.makeText(getApplicationContext(), R.string.noteSuccessfullyDeleted,
-                tiempo);
-        aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
-        aviso.show();
+        if (deleted){
+            // show toast across screens
+            int tiempo = Toast.LENGTH_SHORT;
+            Toast aviso = Toast.makeText(getApplicationContext(), R.string.noteSuccessfullyDeleted,
+                    tiempo);
+            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+            aviso.show();
 
-        Intent i = new Intent (this, MainActivity.class);
-        // clear the activity stack
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
-        finish();
+            Intent i = new Intent (this, MainActivity.class);
+            // clear the activity stack
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+            finish();
+        }else {
+            // database error
+            int tiempo = Toast.LENGTH_SHORT;
+            Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
+            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+            aviso.show();
+        }
+
+
     }
 
     /**
@@ -192,7 +208,7 @@ public class MainToolbar extends AppCompatActivity {
     public void manageTags(){}
 
     /**
-     * Call the activity to edit a note
+     * Call the activity to edit a note and wait for the result
      * @param noteId - the id of the note to edit
      */
     public void editNote(int noteId){
@@ -248,7 +264,7 @@ public class MainToolbar extends AppCompatActivity {
 
     /**
      * The user has entered a name for the new tag, save it for the current user
-     * @param tagName - the choosen name
+     * @param tagName - the chosen name
      */
     public void yesNewTag(String tagName){
         MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
@@ -261,7 +277,14 @@ public class MainToolbar extends AppCompatActivity {
             aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
             aviso.show();
         }else {
-            gestorDB.addTag(Data.getMyData().getActiveUsername(), tagName);
+            boolean added = gestorDB.addTag(Data.getMyData().getActiveUsername(), tagName);
+            if (added == false){
+                // database error
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+            }
         }
 
     }
@@ -271,13 +294,22 @@ public class MainToolbar extends AppCompatActivity {
      */
     private void logOut(){
         MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
-        gestorDB.setUsernameAsInactive(Data.getMyData().getActiveUsername()); // remove active user
-        Data.getMyData().setActiveUsername(null); // remove active user
-
-        // start login screen
-        Intent i = new Intent(this, LogInActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);// Limpiar pila de actividades
-        startActivity(i);
-        finish();
+        boolean changed = gestorDB.setUsernameAsInactive(Data.getMyData().getActiveUsername()); //
+        // remove active
+        // user
+        if (changed){
+            Data.getMyData().setActiveUsername(null); // remove active user
+            // start login screen
+            Intent i = new Intent(this, LogInActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);// Limpiar pila de actividades
+            startActivity(i);
+            finish();
+        }else{
+            // database error
+            int tiempo = Toast.LENGTH_SHORT;
+            Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
+            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+            aviso.show();
+        }
     }
 }

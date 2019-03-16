@@ -41,7 +41,7 @@ public class ElAdaptadorRecycler extends RecyclerView.Adapter <ElViewHolder> imp
         elViewHolder.noteTag.setText(notesTags.get(i));
         if (notesTags.get(i) == null){
             // if there's no tag don't show space for it
-            elViewHolder.noteTag.setVisibility(View.GONE);
+            elViewHolder.noteTag.setVisibility(View.GONE); // esta propiedad actúa como display:none
         }
     }
 

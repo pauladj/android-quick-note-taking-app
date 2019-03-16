@@ -1,13 +1,11 @@
 package com.example.proyecto1;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.DialogFragment;
@@ -51,8 +49,8 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
 
     int noteId = -1; // If we are editing an existing note
 
-    int choosenTagId = -1;
-    String choosenTagName = "";
+    int chosenTagId = -1; // the selected tag by the user
+    String chosenTagName = "";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,6 +102,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
             }
         });
 
+        // if it's an existing note load its content
         Bundle extras = getIntent().getExtras();
         if (extras != null){
             if (extras.containsKey("noteId")){
@@ -147,6 +146,12 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                 SpannableString string = new SpannableString(Html.fromHtml(text));
                 TextView noteBody = findViewById(R.id.noteBody);
                 noteBody.setText(string);
+            }else{
+                // database error
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
             }
 
         }
@@ -274,8 +279,8 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         // Show the dialog to select one
         DialogFragment dialog = new SelectTagEditor();
         Bundle bl = new Bundle();
-        bl.putInt("choosenTagId", choosenTagId);
-        bl.putString("choosenTagName", choosenTagName);
+        bl.putInt("chosenTagId", chosenTagId);
+        bl.putString("chosenTagName", chosenTagName);
         dialog.setArguments(bl);
         dialog.show(getSupportFragmentManager(), "addTagEditor");
     }
@@ -285,8 +290,8 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
      * @param tagId - the id of the selected tag
      */
     public void addTagToPost(int tagId, String tagName){
-        choosenTagId = tagId;
-        choosenTagName = tagName;
+        chosenTagId = tagId;
+        chosenTagName = tagName;
         TextView a = findViewById(R.id.assignedTag);
         if (tagId == -1){
             // nothing selected, tag name not shown
@@ -338,8 +343,6 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         htmlContent = htmlContent.replace("<u>", "") // delete the tags added by the conversor
                                 .replace("</u>", "")
                                 .replace(" dir=\"ltr\"", "");
-        Log.i("aquiContenido", htmlContent);
-
         try {
             if (noteId == -1){
                 // new note
@@ -353,16 +356,22 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                 fichero.close();
 
                 MyDB gestorDB = new MyDB(this, "Notes", null, 1);
-                gestorDB.insertNewNote(title, fileName, choosenTagId,
+                boolean inserted = gestorDB.insertNewNote(title, fileName, chosenTagId,
                         Data.getMyData().getActiveUsername());
                 ArrayList<String> noteData = gestorDB.getLastAddedNoteData(fileName);
-                int idNote = Integer.valueOf(noteData.get(0));
 
-                // Note created
+                if (inserted == false || noteData == null){
+                    // database error
+                    int tiempo = Toast.LENGTH_SHORT;
+                    Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
+                    aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                    aviso.show();
+                    return; // exit method
+                }
+                int idNote = Integer.valueOf(noteData.get(0));
 
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 boolean notifications = prefs.getBoolean("notifications", false);
-                Log.i("aqui2", String.valueOf(notifications));
                 if (notifications){
                     // The user wants to be notified
                     // notify with intent
@@ -413,27 +422,45 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                 Intent intent = new Intent();
                 intent.putExtra("fileName", fileName);
                 setResult(RESULT_OK, intent);
+                finish();
             }else{
                 // editing existing note
                 MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
                 String fileName = gestorDB.getNoteFileName(noteId);
+                if (fileName != null){
+                    OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput(fileName,
+                            Context.MODE_PRIVATE));
+                    fichero.write(htmlContent);
+                    fichero.flush();
+                    fichero.close();
 
-                OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput(fileName,
-                        Context.MODE_PRIVATE));
-                fichero.write(htmlContent);
-                fichero.flush();
-                fichero.close();
-
-                gestorDB.updateNote(noteId, title, choosenTagId); // update note in the database
-
-                // Note updated
-                Intent i = new Intent();
-                i.putExtra("noteId", noteId);
-                setResult(RESULT_OK, i);
+                    boolean updated = gestorDB.updateNote(noteId, title, chosenTagId); // update note
+                    // in the database
+                    if (updated) {
+                        // Note updated
+                        Intent i = new Intent();
+                        i.putExtra("noteId", noteId);
+                        setResult(RESULT_OK, i);
+                        finish();
+                    }else{
+                        // database error
+                        int tiempo = Toast.LENGTH_SHORT;
+                        Toast aviso = Toast.makeText(this
+                                , R.string.databaseError, tiempo);
+                        aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                        aviso.show();
+                    }
+                }else {
+                    // database error
+                    int tiempo = Toast.LENGTH_SHORT;
+                    Toast aviso = Toast.makeText(this
+                            , R.string.databaseError, tiempo);
+                    aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                    aviso.show();
+                }
 
             }
 
-            finish();
         } catch (IOException e){
             // show toast if error saving the file
             int tiempo = Toast.LENGTH_SHORT;
@@ -455,15 +482,15 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        choosenTagId = savedInstanceState.getInt("choosenTagId");
-        choosenTagName = savedInstanceState.getString("choosenTagName");
-        addTagToPost(choosenTagId, choosenTagName); // show the tag if there's one like before
+        chosenTagId = savedInstanceState.getInt("chosenTagId");
+        chosenTagName = savedInstanceState.getString("chosenTagName");
+        addTagToPost(chosenTagId, chosenTagName); // show the tag if there's one like before
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("choosenTagId", choosenTagId);
-        outState.putString("choosenTagName", choosenTagName);
+        outState.putInt("chosenTagId", chosenTagId);
+        outState.putString("chosenTagName", chosenTagName);
     }
 }

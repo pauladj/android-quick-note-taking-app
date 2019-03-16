@@ -35,7 +35,6 @@ public class PreferencesActivity extends MainToolbar {
     public void onBackPressed() {
         // If the back button is pressed
         // check if the order of the notes has changed
-        Log.i("aqui", "dd");
         PreferencesFragment fragment =
                 (PreferencesFragment) getSupportFragmentManager().findFragmentById(R.id.preferencesFragment);
         boolean noteOrderChanged = fragment.noteOrderChanged();

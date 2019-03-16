@@ -68,6 +68,8 @@
     <string name="notifications_newNote_title">Nueva nota</string>
     <string name="notifications_newNote_seeNote">Ver</string>
     <string name="failTagExists">Esta etiqueta ya existe</string>
+    <string name="databaseError">Se ha producido un error con la base de datos</string>
+    <string name="emptyTag">El campo de la etiqueta no puede estar vacío.</string>
 
 
 </resources>

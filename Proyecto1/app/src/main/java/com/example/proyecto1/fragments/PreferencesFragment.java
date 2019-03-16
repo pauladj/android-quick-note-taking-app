@@ -40,15 +40,10 @@ public class PreferencesFragment extends PreferenceFragmentCompat implements
     }
 
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key){
-
-        Log.i("aqui", key);
-       if (key.equals("orden")){
+        if (key.equals("orden")){
            changedNotesOrder = true;
-           Log.i("aqui", "kfkjf");
        }else if(key.equals("notifications")){
-            Log.i("aqui", "biene");
             boolean notificationsActive = prefs.getBoolean("notifications", false);
-            Log.i("aqui", String.valueOf(notificationsActive));
             if (notificationsActive){
                 // notify the user with a notification
                 NotificationManager elManager =
