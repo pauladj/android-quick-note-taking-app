@@ -12,6 +12,7 @@ import android.os.Build;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.preference.PreferenceManager;
 import android.text.Html;
@@ -429,7 +430,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                             .setContentText(titleToShow)
                             .setAutoCancel(true)
                             .setGroup("newNoteGroup") // notificaciones anidadas
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setContentIntent(intentEnNot)
                             .addAction(android.R.drawable.ic_menu_view,
                                     getResources().getString(R.string.notifications_newNote_seeNote),
@@ -438,7 +439,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         NotificationChannel elCanal = new NotificationChannel("newNote",
                                 "newNote",
-                                NotificationManager.IMPORTANCE_DEFAULT);
+                                NotificationManager.IMPORTANCE_HIGH);
                         elCanal.setDescription("newNote");
                         elCanal.enableLights(true);
                         elCanal.setGroup("newNoteGroup"); // notificaciones anidadas
@@ -446,21 +447,23 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                         elManager.createNotificationChannel(elCanal);
                     }
 
-                    // notificación anidada principal
-                    Notification summaryNotification =
-                            new NotificationCompat.Builder(this, "newNote")
-                                    .setContentTitle(getResources().getString(R.string.notifications_newNote_title))
-                                    //set content text to support devices running API level < 24
-                                    .setContentText(getResources().getString(R.string.notifications_newNote_title))
-                                    .setSmallIcon(android.R.drawable.ic_dialog_info)
-                                    //specify which group this notification belongs to
-                                    .setGroup("newNoteGroup")
-                                    //set this notification as the summary for the group
-                                    .setGroupSummary(true)
-                                    .setAutoCancel(true)
-                                    .build();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        // notificación anidada principal
+                        Notification summaryNotification =
+                                new NotificationCompat.Builder(this, "newNote")
+                                        .setContentTitle(getResources().getString(R.string.notifications_newNote_title))
+                                        //set content text to support devices running API level < 24
+                                        .setContentText(getResources().getString(R.string.notifications_newNote_title))
+                                        .setSmallIcon(android.R.drawable.ic_dialog_info)
+                                        //specify which group this notification belongs to
+                                        .setGroup("newNoteGroup")
+                                        //set this notification as the summary for the group
+                                        .setGroupSummary(true)
+                                        .setAutoCancel(true)
+                                        .build();
+                        elManager.notify(2, summaryNotification);
+                    }
 
-                    elManager.notify(2, summaryNotification);
                     elManager.notify(id, elBuilder.build()); // start notification
                 }
 
