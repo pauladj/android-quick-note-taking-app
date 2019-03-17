@@ -398,11 +398,11 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                     SharedPreferences prefs_especiales= getSharedPreferences("preferencias_especiales",
                             Context.MODE_PRIVATE);
 
-                    // the initial value is 3 if it's the first time
+                    // the initial value is 3 if it's the first time, but we have to add one to this
                     int id = prefs_especiales.getInt("id", 2) + 1;
 
                     SharedPreferences.Editor editor2= prefs_especiales.edit();
-                    // the initial value is 3, but we have to add one to this
+                    // the initial value is 3
                     editor2.putInt("id",id);
                     editor2.apply();
 
@@ -429,7 +429,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                             .setContentText(titleToShow)
                             .setAutoCancel(true)
                             .setGroup("newNoteGroup") // notificaciones anidadas
-                            .setPriority(NotificationCompat.PRIORITY_MAX)
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                             .setContentIntent(intentEnNot)
                             .addAction(android.R.drawable.ic_menu_view,
                                     getResources().getString(R.string.notifications_newNote_seeNote),
@@ -438,7 +438,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         NotificationChannel elCanal = new NotificationChannel("newNote",
                                 "newNote",
-                                NotificationManager.IMPORTANCE_HIGH);
+                                NotificationManager.IMPORTANCE_DEFAULT);
                         elCanal.setDescription("newNote");
                         elCanal.enableLights(true);
                         elCanal.setGroup("newNoteGroup"); // notificaciones anidadas

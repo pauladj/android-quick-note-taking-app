@@ -94,6 +94,7 @@ public class SingleNoteFragment extends Fragment {
             }catch (Exception e){
                 textOfNote = getResources().getString(R.string.fileNotFound);
             }
+            // se añade el contenido de la nota
             noteContent.loadData(textOfNote,"text/html; charset=UTF-8",
                     null);
         }

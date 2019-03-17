@@ -34,6 +34,7 @@
     <string name="italicText">Itálica</string>
     <string name="linkText">Enlace</string>
     <string name="editorTitle">Título</string>
+    <string name="editorBody">Texto de la nota</string>
     <string name="formatText">Formatear</string>
     <string name="editorAddTag">Añadir Etiqueta</string>
     <string name="failBoldText">Selecciona una palabra antes</string>

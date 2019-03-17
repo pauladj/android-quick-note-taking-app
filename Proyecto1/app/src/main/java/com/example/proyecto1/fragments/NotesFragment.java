@@ -67,7 +67,8 @@ public class NotesFragment extends Fragment {
             }
         }
 
-        if (notesIds.isEmpty()){ // first time loading the activity, get the data
+        if (notesIds.isEmpty()){
+        // first time loading the activity or there are not notes, get the  data again
             // load notes
             String activeUser = Data.getMyData().getActiveUsername();
             MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);

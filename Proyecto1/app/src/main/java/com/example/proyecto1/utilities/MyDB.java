@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class MyDB extends SQLiteOpenHelper {
@@ -32,7 +34,7 @@ public class MyDB extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE Notes ('id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "'title' CHAR(255) NOT NULL, 'fileContent' CHAR(255) NOT NULL UNIQUE, 'date' " +
                 "DATETIME " +
-                "NOT NULL DEFAULT CURRENT_TIMESTAMP, 'labelId' INTEGER, 'username' CHAR(255)" +
+                "NOT NULL DEFAULT (datetime('now','localtime')), 'labelId' INTEGER, 'username' CHAR(255)" +
                 ", " +
                 "FOREIGN KEY('labelId') REFERENCES Tags('id') ON DELETE SET NULL, " +
                 "FOREIGN KEY('username') REFERENCES Users('username') ON DELETE CASCADE)");
@@ -42,8 +44,7 @@ public class MyDB extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (2, 'tagPrueba2', 'admin')");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (3, 'tagPrueba3', 'admin')");
-        db.execSQL("INSERT INTO Notes(fileContent, title, username) VALUES ('dummyNote.html'," +
-                " 'Curabitur lobortis aliquet nulla, non cursus purus pellentesque et.', 'admin')");
+
     }
 
     @Override

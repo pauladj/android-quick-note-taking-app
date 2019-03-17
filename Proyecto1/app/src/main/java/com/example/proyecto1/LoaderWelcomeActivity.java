@@ -46,19 +46,6 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loader_welcome);
 
-        // dummy note
-        try {
-            OutputStreamWriter fichero = new OutputStreamWriter(openFileOutput("dummyNote.html",
-                    Context.MODE_PRIVATE));
-            fichero.write("Lorem <b>ipsum</b> dolor sit <i>amet</i>, consectetur " +
-                    "<b><i>adipiscing</i></b> " +
-                    "elit.<br><br>Integer " +
-                    "est mauris, <a href='http://google.com'>faucibus</a> id nunc nec, bibendum " +
-                    "dictum nibh. Praesent varius molestie sem, quis dapibus magna malesuada vitae. Aenean a placerat nisi. Aliquam ut lectus orci. Etiam mollis orci nec lectus mattis vehicula. Nulla feugiat tempor lectus, id facilisis arcu maximus ac. In leo diam, imperdiet ut lectus at, tempor mollis turpis. Sed ut massa mi. Sed ipsum odio, interdum ac pulvinar id, pretium vel mauris. <br><br>Duis tincidunt dolor ut est semper, vel porttitor ex placerat. Sed lobortis magna sit amet libero blandit, id iaculis est semper. Vivamus viverra purus at nulla pellentesque, ac porta purus faucibus. Duis consequat nec sem sit amet porta. ");
-            fichero.close();
-        } catch (IOException e){
-
-        }
 
         Thread welcomeThread = new Thread() {
             @Override

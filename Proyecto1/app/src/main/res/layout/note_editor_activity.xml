@@ -42,6 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/titleLabel"
                     android:inputType="textShortMessage"
+                    android:hint="@string/editorTitle"
                     android:singleLine="true" />
 
                 <Button
@@ -69,6 +70,7 @@
                     android:layout_height="281dp"
                     android:layout_alignParentBottom="true"
                     android:gravity="top"
+                    android:hint="@string/editorBody"
                     android:inputType="textMultiLine"
                     android:linksClickable="true"
                     android:scrollbars="vertical"

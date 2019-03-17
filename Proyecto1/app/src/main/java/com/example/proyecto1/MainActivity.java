@@ -171,7 +171,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
     public void yesRemoveTags(ArrayList<Integer> tagsId) {
         MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
         for (int id : tagsId){
-            ArrayList<Integer> noteIds = gestorDB.removeTag(id); // remove tag
+            ArrayList<Integer> noteIds = gestorDB.removeTag(id); // remove tag, get the noteids using that tag
             if (noteIds == null){
                 // database error
                 int tiempo = Toast.LENGTH_SHORT;
@@ -183,7 +183,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
                 // update recycler view
                 NotesFragment fragment =
                         (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
-                for (int noteId : noteIds){
+                for (int noteId : noteIds){ // the noteids using that tag
                     fragment.changeNote(noteId);
                 }
             }

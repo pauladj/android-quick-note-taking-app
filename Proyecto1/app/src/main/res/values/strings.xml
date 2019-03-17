@@ -35,6 +35,7 @@
     <string name="linkText">Link</string>
     <string name="formatText">Format</string>
     <string name="editorTitle">Title</string>
+    <string name="editorBody">Body text</string>
     <string name="editorAddTag">Add Tag</string>
     <string name="failBoldText">Select a word first</string>
     <string name="textToShowLabel">Text to show</string>
