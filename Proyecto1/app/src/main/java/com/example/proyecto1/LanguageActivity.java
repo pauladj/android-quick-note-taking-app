@@ -19,7 +19,7 @@ public class LanguageActivity extends AppCompatActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String language = prefs.getString("language", "default");
-        Locale system = getResources().getConfiguration().locale;
+        Locale system = Resources.getSystem().getConfiguration().locale;
 
         Locale nuevaloc = null;
         if (language.equals("default")) {
