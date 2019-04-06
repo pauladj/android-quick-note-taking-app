@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.support.v4.util.Pair;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -142,16 +143,18 @@ public class DriveServiceHelper {
     }
 
     /**
-     * Devuelve el identificador de una carpeta si esta {@code folderName} existe
+     * Devuelve el identificador de una carpeta si esta existe
+     * @param  folderName - el nombre de la carpeta a buscar
      */
     public Task<String> folderExists(String folderName) {
         return Tasks.call(mExecutor, () -> {
+            Log.i("aqui2", "1");
+            String query = "name = '" + folderName + "' and mimeType = 'application/vnd.google-apps.folder'";
             FileList result = mDriveService.files().list()
-                    .setQ("mimeType='application/vnd.google-apps.folder'")
+                    .setQ(query)
                     .setSpaces("drive")
-                    .setFields("name=" + folderName + ", trashed=" + false +
-                            ", sharedWithMe=" + false)
                     .execute();
+            Log.i("aqui2", "2");
             for (File file : result.getFiles()) {
                 // se ha encontrado la carpeta
                 return file.getId();

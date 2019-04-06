@@ -339,13 +339,13 @@ public class MainToolbar extends LanguageActivity {
 
         // create folder
         Log.i("aqui", "1");
-        DriveServiceHelper.getMiDriveServiceHelper().folderExists("notes")
+        DriveServiceHelper.getMiDriveServiceHelper().folderExists("notes_android_app")
             .addOnSuccessListener(existingFolderId -> {
                 if (existingFolderId == null){
                     Log.i("aqui", "2");
 
                     //Folder does not exist, create it
-                    DriveServiceHelper.getMiDriveServiceHelper().createFile("notes",
+                    DriveServiceHelper.getMiDriveServiceHelper().createFile("notes_android_app",
                             "application/vnd.google-apps.folder", "root")
                         .addOnSuccessListener(newFolderId -> {
                             // Folder created & note does not exist
@@ -394,7 +394,13 @@ public class MainToolbar extends LanguageActivity {
                         });
                 }else{
                     // Folder exists
-                    // Folder created & note does not exist
+                    /*
+                    * cambiar esto siguiente, comprobar si el fichero existe, si existe update content
+                    * Notificación de que se está subiendo?
+                    * meter el titulo de la nota dentro del fichero subido
+                    * subir las imágenes de la nota??
+                    * mirar si se pueden concatenar las tasks
+                    * */
                     Log.i("aqui", "11");
 
                     String[] dataOfNoteToUpload = getNoteContent(noteId);
@@ -436,7 +442,9 @@ public class MainToolbar extends LanguageActivity {
                 }
             })
             .addOnFailureListener(exception -> {
-
+                uploadNoteToDriveFailureToast();
+                Log.i("aqui", "17");
+                Log.i("aqui17", exception.toString());
             });
     }
 
@@ -575,15 +583,6 @@ public class MainToolbar extends LanguageActivity {
                 aviso.show();
             }else{
                 uploadNoteToDrive();
-            }
-        }else if(requestCode == 668){
-            // the user needs to select a folder to save the note
-            boolean error = true;
-            if (resultCode == RESULT_OK && data != null){
-                Uri uri = data.getData();
-                if (uri != null) {
-                    Log.i("aqui", uri.getPath());
-                }
             }
         }
 
