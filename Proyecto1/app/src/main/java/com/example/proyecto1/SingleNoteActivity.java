@@ -39,8 +39,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.ListenerDelDialogo {
 
-    int noteId;
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,12 +61,12 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
             Data.getMyData().setActiveUsername(activeUsername);
 
         }
-        noteId = extras.getInt("noteId", -1);
+        super.setNoteId(extras.getInt("noteId", -1));
 
 
         SingleNoteFragment fragmentDemo = (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
-        if (noteId != -1){
-            fragmentDemo.loadNote(noteId);
+        if (super.getNoteId() != -1){
+            fragmentDemo.loadNote(super.getNoteId());
         }
 
     }
@@ -80,68 +78,13 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
         return true;
     }
 
-    /**
-     * Save the noteId so it won't lose if there is a rotation of screen
-     * @param savedInstanceState
-     */
-    protected void onSaveInstanceState(Bundle savedInstanceState){
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("noteId", noteId);
-    }
-
-    /**
-     * Restore the noteId value
-     * @param savedInstanceState
-     */
-    protected void onRestoreInstanceState(Bundle savedInstanceState){
-        super.onRestoreInstanceState(savedInstanceState);
-        noteId = savedInstanceState.getInt("noteId");
-    }
 
     /**
      * Remove a note knowing its id
      */
     public void yesDeleteNote(){
-        super.yesDeleteNote(noteId);
-
-        
+        super.yesDeleteNote(super.getNoteId());
     }
 
-    /**
-     * Edit a note
-     */
-    public void editNote(){
-        super.editNote(noteId);
-    }
-
-
-    /**
-     * Upload note to drive
-     */
-    public void uploadNoteToDrive(){
-        GoogleSignInAccount cuenta = GoogleSignIn.getLastSignedInAccount(this);
-        if (cuenta == null){
-            // no está identificado
-            super.logInToDrive();
-        }else{
-            super.uploadNoteToDrive(noteId);
-        }
-    }
-
-    /**
-     * We get the callback of drive sign in
-     * @param requestCode - to specify this is the callback of creating a note
-     * @param resultCode - the result code
-     * @param data - the data
-     */
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // google drive log in attempt
-       if(requestCode == 333){
-            super.callbackDriveSignIn(data, noteId);
-        }
-    }
 
 }

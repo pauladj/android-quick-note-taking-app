@@ -24,8 +24,6 @@ import java.util.ArrayList;
 public class MainActivity extends MainToolbar implements NotesFragment.listenerDelFragment,
         DeleteNoteDialog.ListenerDelDialogo, AddRemoveTag.ListenerDelDialogo, NewTag.ListenerDelDialogo {
 
-    private int noteId; // selected note in landscape mode
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,37 +35,11 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
 
 
     /**
-     * Save the noteId so it won't lose if there is a rotation of screen
-     * @param savedInstanceState
-     */
-    protected void onSaveInstanceState(Bundle savedInstanceState){
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("noteId", noteId);
-    }
-
-    /**
-     * Restore the noteId value
-     * @param savedInstanceState
-     */
-    protected void onRestoreInstanceState(Bundle savedInstanceState){
-        super.onRestoreInstanceState(savedInstanceState);
-        noteId = savedInstanceState.getInt("noteId");
-    }
-
-    /**
      * Remove a note knowing its id (toolbar)
      */
     public void yesDeleteNote(){
-        super.yesDeleteNote(noteId);
+        super.yesDeleteNote(super.getNoteId());
     }
-
-    /**
-     * Edit a note
-     */
-    public void editNote(){
-        super.editNote(noteId);
-    }
-
 
 
     /**
@@ -78,7 +50,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         SingleNoteFragment fragment =
                 (SingleNoteFragment) getSupportFragmentManager().findFragmentById(R.id.singleNoteFragment);
         if (fragment != null && fragment.isInLayout() == true){
-            noteId = selectedNoteId;
+            super.setNoteId(selectedNoteId);
             // landscape
             // add options to menu
             showMenuOption(R.id.menuDelete);
@@ -110,42 +82,38 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
     }
 
     /**
-     * We get the result of creating new note or callback of drive sign in
+     * We get the result of creating new note
      * @param requestCode - to specify this is the callback of creating a note
      * @param resultCode - the result code
      * @param data - the data
      */
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // New note result
-        if (requestCode == 666){
+        if (requestCode == 666) {
             if (resultCode == RESULT_OK) {
                 // toast with ok
                 int tiempo = Toast.LENGTH_SHORT;
                 Toast aviso = Toast.makeText(getApplicationContext(), R.string.successCreatingNote,
                         tiempo);
-                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 100);
                 aviso.show();
                 // add it to recycler view
                 NotesFragment fragment =
                         (NotesFragment) getSupportFragmentManager().findFragmentById(R.id.notesFragment);
                 String fileName = data.getStringExtra("fileName"); //filename of the created note, it's unique
                 fragment.addNote(fileName); // add just created note
-            }else {
+            } else {
                 // toast with fail
                 int tiempo = Toast.LENGTH_SHORT;
                 Toast aviso = Toast.makeText(getApplicationContext(), R.string.failCreatingNote,
                         tiempo);
-                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 100);
                 aviso.show();
             }
-        }else if(requestCode == 333){
-           super.callbackDriveSignIn(data, noteId);
         }
     }
-
 
     /**
      * Manage tags, add and remove them, open dialog
@@ -186,18 +154,6 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
 
     }
 
-    /**
-     * Upload note to drive
-     */
-    public void uploadNoteToDrive(){
-        GoogleSignInAccount cuenta = GoogleSignIn.getLastSignedInAccount(this);
-        if (cuenta == null){
-            // no está identificado
-            super.logInToDrive();
-        }else{
-            super.uploadNoteToDrive(noteId);
-        }
-    }
 
 
 }

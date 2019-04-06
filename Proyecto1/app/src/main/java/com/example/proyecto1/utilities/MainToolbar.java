@@ -41,6 +41,7 @@ import java.io.IOException;
 public class MainToolbar extends LanguageActivity {
 
     Menu menu;
+    int noteId = -1; //selected noteid for singleNoteActivity and MainActivity (the one selected in the landscape mode)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,7 @@ public class MainToolbar extends LanguageActivity {
 
         if (id == R.id.menuEdit){
             // Edit a note
-            editNote();
+            editNote(noteId);
         }else if(id == R.id.menuSendEmail) {
             // Send note by email
             sendNoteByEmail();
@@ -109,6 +110,21 @@ public class MainToolbar extends LanguageActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Set the noteId
+     * @param noteId
+     */
+    public void setNoteId(int noteId){
+        this.noteId = noteId;
+    }
+
+    /**
+     * Get the noteId
+     */
+    public int getNoteId(){
+        return noteId;
     }
 
 
@@ -237,10 +253,6 @@ public class MainToolbar extends LanguageActivity {
      */
     public void saveNote(){}
 
-    /**
-     * The user wants to edit a note
-     */
-    public void editNote(){}
 
     /**
      * The user wants to manage the tags
@@ -418,5 +430,17 @@ public class MainToolbar extends LanguageActivity {
             aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
             aviso.show();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("noteId", noteId);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        noteId = savedInstanceState.getInt("noteId", -1);
     }
 }
