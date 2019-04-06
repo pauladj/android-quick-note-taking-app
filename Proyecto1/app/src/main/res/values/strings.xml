@@ -78,6 +78,8 @@
     <string name="preferences_languagesOptionSystem">System</string>
     <string name="preferences_languagesOptionEnglish">English</string>
     <string name="preferences_languagesOptionSpanish">Spanish</string>
-    <string name="googleDriveLogInError">There was en error trying to log in in Google Drive</string>
+    <string name="googleDriveLogInError">There was an error trying to log in in Google Drive</string>
+    <string name="googleDrivePermissionError">There was an error trying to obtain the permissions</string>
+
 
 </resources>

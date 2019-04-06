@@ -79,4 +79,6 @@
     <string name="preferences_languagesOptionEnglish">Inglés</string>
     <string name="preferences_languagesOptionSpanish">Español</string>
     <string name="googleDriveLogInError">Se ha producido un error al intentar iniciar sesión en Google Drive</string>
+    <string name="googleDrivePermissionError">Se ha producido un error al intentar conceder los permisos</string>
+
 </resources>
