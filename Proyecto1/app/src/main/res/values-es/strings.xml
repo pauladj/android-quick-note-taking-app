@@ -80,5 +80,5 @@
     <string name="preferences_languagesOptionSpanish">Español</string>
     <string name="googleDriveLogInError">Se ha producido un error al intentar iniciar sesión en Google Drive</string>
     <string name="googleDrivePermissionError">Se ha producido un error al intentar conceder los permisos</string>
-
+    <string name="googleDriveNoteUploadError">Se ha producido un error al intentar subir la nota</string>
 </resources>

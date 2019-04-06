@@ -80,6 +80,7 @@
     <string name="preferences_languagesOptionSpanish">Spanish</string>
     <string name="googleDriveLogInError">There was an error trying to log in in Google Drive</string>
     <string name="googleDrivePermissionError">There was an error trying to obtain the permissions</string>
+    <string name="googleDriveNoteUploadError">There was an error trying to upload the note</string>
 
 
 </resources>

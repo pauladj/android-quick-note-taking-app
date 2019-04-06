@@ -22,10 +22,17 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.support.v4.util.Pair;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import java.io.BufferedReader;
@@ -40,23 +47,45 @@ import java.util.concurrent.Executors;
  * A utility for performing read/write operations on Drive files via the REST API and opening a
  * file picker UI via Storage Access Framework.
  */
+//MODIFICADO, MIRAR LICENCIA
 public class DriveServiceHelper {
+    private static DriveServiceHelper miDriveServiceHelper;
     private final Executor mExecutor = Executors.newSingleThreadExecutor();
-    private final Drive mDriveService;
+    private static Drive mDriveService;
 
-    public DriveServiceHelper(Drive driveService) {
+    private DriveServiceHelper(Drive driveService) {
         mDriveService = driveService;
     }
 
     /**
+     * Get the DriveServiceHelper and set the driveService
+     * @return - an instance of driveservicehelper
+     */
+    public static DriveServiceHelper getMiDriveServiceHelper(Drive driveService){
+        if (miDriveServiceHelper == null){
+            miDriveServiceHelper = new DriveServiceHelper(driveService);
+        }
+        return miDriveServiceHelper;
+    }
+
+    /**
+     * Just get the driveservicehelper
+     * @return - an instance of driveservicehelper
+     */
+    public static DriveServiceHelper getMiDriveServiceHelper(){
+        return miDriveServiceHelper;
+    }
+
+
+    /**
      * Creates a text file in the user's My Drive folder and returns its file ID.
      */
-    public Task<String> createFile() {
+    public Task<String> createFile(String fileName, String mimeType, String parentId) {
         return Tasks.call(mExecutor, () -> {
             File metadata = new File()
-                    .setParents(Collections.singletonList("root"))
-                    .setMimeType("text/plain")
-                    .setName("Untitled file");
+                    .setParents(Collections.singletonList(parentId))
+                    .setMimeType(mimeType)
+                    .setName(fileName);
 
             File googleFile = mDriveService.files().create(metadata).execute();
             if (googleFile == null) {
@@ -68,8 +97,9 @@ public class DriveServiceHelper {
     }
 
     /**
-     * Opens the file identified by {@code fileId} and returns a {@link Pair} of its name and
+     * Opens the file identified by the fileId and returns a {@link Pair} of its name and
      * contents.
+     * @param fileId - the file to open
      */
     public Task<Pair<String, String>> readFile(String fileId) {
         return Tasks.call(mExecutor, () -> {
@@ -97,16 +127,36 @@ public class DriveServiceHelper {
      * Updates the file identified by {@code fileId} with the given {@code name} and {@code
      * content}.
      */
-    public Task<Void> saveFile(String fileId, String name, String content) {
+    public Task<Void> saveFile(String fileId, String name, String mime, String content) {
         return Tasks.call(mExecutor, () -> {
             // Create a File containing any metadata changes.
             File metadata = new File().setName(name);
 
             // Convert content to an AbstractInputStreamContent instance.
-            ByteArrayContent contentStream = ByteArrayContent.fromString("text/plain", content);
+            ByteArrayContent contentStream = ByteArrayContent.fromString(mime, content);
 
             // Update the metadata and contents.
             mDriveService.files().update(fileId, metadata, contentStream).execute();
+            return null;
+        });
+    }
+
+    /**
+     * Devuelve el identificador de una carpeta si esta {@code folderName} existe
+     */
+    public Task<String> folderExists(String folderName) {
+        return Tasks.call(mExecutor, () -> {
+            FileList result = mDriveService.files().list()
+                    .setQ("mimeType='application/vnd.google-apps.folder'")
+                    .setSpaces("drive")
+                    .setFields("name=" + folderName + ", trashed=" + false +
+                            ", sharedWithMe=" + false)
+                    .execute();
+            for (File file : result.getFiles()) {
+                // se ha encontrado la carpeta
+                return file.getId();
+            }
+
             return null;
         });
     }
