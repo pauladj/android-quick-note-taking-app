@@ -45,7 +45,7 @@ public class MyDB extends SQLiteOpenHelper {
                 "FOREIGN KEY('noteId') REFERENCES Notes('id') ON DELETE CASCADE)");
 
         // Insert dummy data
-        db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 0)");
+        db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 1)");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (2, 'tagPrueba2', 'admin')");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (3, 'tagPrueba3', 'admin')");

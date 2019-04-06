@@ -78,7 +78,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
      */
     public void createNewNote(View view) {
         Intent intent= new Intent(MainActivity.this, NoteEditorActivity.class);
-        startActivityForResult(intent, 666);
+        startActivityForResult(intent, 334);
     }
 
     /**
@@ -91,7 +91,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         super.onActivityResult(requestCode, resultCode, data);
 
         // New note result
-        if (requestCode == 666) {
+        if (requestCode == 334) {
             if (resultCode == RESULT_OK) {
                 // toast with ok
                 int tiempo = Toast.LENGTH_SHORT;

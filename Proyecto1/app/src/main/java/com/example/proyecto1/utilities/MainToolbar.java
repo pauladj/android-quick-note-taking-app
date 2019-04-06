@@ -33,7 +33,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
+import com.google.api.services.drive.DriveScopes;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,13 +87,13 @@ public class MainToolbar extends LanguageActivity {
 
         if (id == R.id.menuEdit){
             // Edit a note
-            editNote(noteId);
+            editNote();
         }else if(id == R.id.menuSendEmail) {
             // Send note by email
             sendNoteByEmail();
         }else if(id == R.id.menuUploadToDrive){
             // Upload note to drive
-            uploadNoteToDrive();
+            logInToDrive();
         }else if(id == R.id.menuDelete){
             // Confirm with user that they want to delete the note
             confirmDeleteNote();
@@ -262,75 +264,52 @@ public class MainToolbar extends LanguageActivity {
 
 
     /**
-     * Log in to Google Drive
+     * Try to log in into Google Drive
      */
     public void logInToDrive(){
-        // no está identificado
-        GoogleSignInOptions gso = new
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        GoogleSignInClient cliente= GoogleSignIn.getClient(this, gso);
-        // el sistema lo gestiona
-        Intent intentIdentif = cliente.getSignInIntent();
-        startActivityForResult(intentIdentif, 666);
+        GoogleSignInAccount cuenta = GoogleSignIn.getLastSignedInAccount(this);
+        if (cuenta == null){
+            // no está identificado
+            GoogleSignInOptions gso = new
+                    GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+            GoogleSignInClient cliente= GoogleSignIn.getClient(this, gso);
+            // el sistema lo gestiona
+            Intent intentIdentif = cliente.getSignInIntent();
+            startActivityForResult(intentIdentif, 666);
+        }else{
+            requestPermissionsToDrive();
+        }
     }
 
     /**
      * Request permissions to Drive
-     * @param noteIdToUpload - the noteId to upload
      */
-    public void requestPermissionsToDrive(int noteIdToUpload){
-        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this), Permisos)) {
-            GoogleSignIn.requestPermissions(this, CODIGO_NUMERICO,
-                    GoogleSignIn.getLastSignedInAccount(this), Permisos);
-        } else {
-
+    public void requestPermissionsToDrive(){
+        Scope permiso = new Scope(DriveScopes.DRIVE);
+        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this), permiso)) {
+            GoogleSignIn.requestPermissions(this, 667,
+                    GoogleSignIn.getLastSignedInAccount(this), permiso);
+        }else{
+            uploadNoteToDrive();
         }
     }
 
-    /**
-     * After the user tries to log in in google drive
-     * @param data
-     */
-    public void callbackDriveSignIn(Intent data, int noteIdToUpload){
-        // user tried to logged in in google drive
-        Task<GoogleSignInAccount> task =
-                GoogleSignIn.getSignedInAccountFromIntent(data);
-        try {
-            // identificado correctamente
-            GoogleSignInAccount cuenta = task.getResult(ApiException.class);
-            requestPermissionsToDrive(noteIdToUpload);
-            uploadNoteToDrive(noteIdToUpload);
-        } catch (ApiException e) {
-            // fallo de identificación
-            int tiempo = Toast.LENGTH_SHORT;
-            Toast aviso = Toast.makeText(getApplicationContext(), R.string.googleDriveLogInError, tiempo);
-            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
-            aviso.show();
-        }
-    }
-
-    /**
-     * The user wants to upload a note to drive
-     */
-    public void uploadNoteToDrive(){}
 
     /**
      * Upload the note content to drive
-     * @param noteId - the note to upload
      */
-    public void uploadNoteToDrive(int noteId){
-
+    public void uploadNoteToDrive(){
+        //sklfdj
     }
-
 
 
     /**
      * Call the activity to edit a note and wait for the result
      * @param noteId - the id of the note to edit
      */
-    public void editNote(int noteId){
+    public void editNote(){
         Intent intent= new Intent(this, NoteEditorActivity.class);
         intent.putExtra("noteId", noteId);
         startActivityForResult(intent, 333);
@@ -346,7 +325,7 @@ public class MainToolbar extends LanguageActivity {
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // New note result
+        // Edit note result
         if (requestCode == 333){
             if (resultCode == RESULT_OK) {
                 // toast with ok
@@ -366,6 +345,37 @@ public class MainToolbar extends LanguageActivity {
                 int tiempo = Toast.LENGTH_SHORT;
                 Toast aviso = Toast.makeText(getApplicationContext(), R.string.failSavingNote,
                         tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+            }
+        }else if(requestCode == 666){
+            // attempt to log in into google drive
+            Task<GoogleSignInAccount> task =
+                    GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // identificado correctamente
+                GoogleSignInAccount cuenta = task.getResult(ApiException.class);
+                requestPermissionsToDrive();
+            } catch (ApiException e) {
+                Log.i("aqui", e.toString());
+                Log.i("aqui", e.getMessage());
+                // fallo de identificación
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(getApplicationContext(), R.string.googleDriveLogInError, tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+            }
+        }else if(requestCode == 667){
+            // attempt to get user permission
+            Task<GoogleSignInAccount> task =
+                    GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount cuenta = task.getResult(ApiException.class);
+                uploadNoteToDrive();
+            } catch (ApiException e) {
+                // fallo de identificación
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(getApplicationContext(), R.string.googleDriveLogInError, tiempo);
                 aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
                 aviso.show();
             }
