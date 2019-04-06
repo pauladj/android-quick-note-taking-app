@@ -29,6 +29,13 @@
         android:title="@string/menuSendEmail"
         android:visible="false"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menuUploadToDrive"
+        android:icon="@drawable/ic_upload"
+        android:title="@string/menuUploadToDrive"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
     <!-- end -->
 
     <item

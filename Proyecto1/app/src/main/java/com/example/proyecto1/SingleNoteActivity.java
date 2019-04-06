@@ -27,10 +27,15 @@ import android.widget.Toast;
 
 import com.example.proyecto1.dialogs.ConfimExit;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
+import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
 import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MainToolbar;
 import com.example.proyecto1.utilities.MyDB;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.ListenerDelDialogo {
 
@@ -109,5 +114,34 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
         super.editNote(noteId);
     }
 
+
+    /**
+     * Upload note to drive
+     */
+    public void uploadNoteToDrive(){
+        GoogleSignInAccount cuenta = GoogleSignIn.getLastSignedInAccount(this);
+        if (cuenta == null){
+            // no está identificado
+            super.logInToDrive();
+        }else{
+            super.uploadNoteToDrive(noteId);
+        }
+    }
+
+    /**
+     * We get the callback of drive sign in
+     * @param requestCode - to specify this is the callback of creating a note
+     * @param resultCode - the result code
+     * @param data - the data
+     */
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // google drive log in attempt
+       if(requestCode == 333){
+            super.callbackDriveSignIn(data, noteId);
+        }
+    }
 
 }

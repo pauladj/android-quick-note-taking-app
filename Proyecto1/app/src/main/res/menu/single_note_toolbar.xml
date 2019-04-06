@@ -20,4 +20,10 @@
         android:title="@string/menuSendEmail"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/menuUploadToDrive"
+        android:icon="@drawable/ic_upload"
+        android:title="@string/menuUploadToDrive"
+        app:showAsAction="ifRoom" />
+
 </menu>

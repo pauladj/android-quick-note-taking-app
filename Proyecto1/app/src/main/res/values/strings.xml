@@ -17,6 +17,7 @@
     <string name="menuDelete">Delete</string>
     <string name="fileNotFound">File not found or error opening it</string>
     <string name="menuSendEmail">Email it</string>
+    <string name="menuUploadToDrive">Upload to Drive</string>
     <string name="noteSuccessfullyDeleted">The note has been successfully deleted</string>
     <string name="chooseEmailClient">Choose email application</string>
     <string name="noAppForThis">No app for this action can be found</string>
@@ -77,6 +78,6 @@
     <string name="preferences_languagesOptionSystem">System</string>
     <string name="preferences_languagesOptionEnglish">English</string>
     <string name="preferences_languagesOptionSpanish">Spanish</string>
-
+    <string name="googleDriveLogInError">There was en error trying to log in in Google Drive</string>
 
 </resources>

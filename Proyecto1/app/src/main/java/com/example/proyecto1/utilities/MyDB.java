@@ -39,6 +39,11 @@ public class MyDB extends SQLiteOpenHelper {
                 "FOREIGN KEY('labelId') REFERENCES Tags('id') ON DELETE SET NULL, " +
                 "FOREIGN KEY('username') REFERENCES Users('username') ON DELETE CASCADE)");
 
+        // Create table NoteImage
+        db.execSQL("CREATE TABLE NoteImage ('id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "'noteId' CHAR(255) NOT NULL, 'imagePath' CHAR(255) NOT NULL, " +
+                "FOREIGN KEY('noteId') REFERENCES Notes('id') ON DELETE CASCADE)");
+
         // Insert dummy data
         db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 0)");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");

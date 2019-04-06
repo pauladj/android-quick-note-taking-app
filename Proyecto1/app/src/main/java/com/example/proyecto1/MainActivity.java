@@ -1,19 +1,10 @@
 package com.example.proyecto1;
 
-import android.app.UiModeManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.proyecto1.dialogs.AddRemoveTag;
@@ -21,15 +12,14 @@ import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.dialogs.NewTag;
 import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
-import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MainToolbar;
 import com.example.proyecto1.utilities.MyDB;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends MainToolbar implements NotesFragment.listenerDelFragment,
         DeleteNoteDialog.ListenerDelDialogo, AddRemoveTag.ListenerDelDialogo, NewTag.ListenerDelDialogo {
@@ -94,6 +84,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
             showMenuOption(R.id.menuDelete);
             showMenuOption(R.id.menuEdit);
             showMenuOption(R.id.menuSendEmail);
+            showMenuOption(R.id.menuUploadToDrive);
 
             SingleNoteFragment elotro = (SingleNoteFragment) getSupportFragmentManager().
                     findFragmentById(R.id.singleNoteFragment);
@@ -119,7 +110,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
     }
 
     /**
-     * We get the result of creating new note
+     * We get the result of creating new note or callback of drive sign in
      * @param requestCode - to specify this is the callback of creating a note
      * @param resultCode - the result code
      * @param data - the data
@@ -150,6 +141,8 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
                 aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
                 aviso.show();
             }
+        }else if(requestCode == 333){
+           super.callbackDriveSignIn(data, noteId);
         }
     }
 
@@ -191,6 +184,19 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         }
 
 
+    }
+
+    /**
+     * Upload note to drive
+     */
+    public void uploadNoteToDrive(){
+        GoogleSignInAccount cuenta = GoogleSignIn.getLastSignedInAccount(this);
+        if (cuenta == null){
+            // no está identificado
+            super.logInToDrive();
+        }else{
+            super.uploadNoteToDrive(noteId);
+        }
     }
 
 

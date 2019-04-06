@@ -17,6 +17,7 @@
     <string name="menuDelete">Eliminar</string>
     <string name="fileNotFound">Fichero no encontrado o error abriéndolo</string>
     <string name="menuSendEmail">Enviar por email</string>
+    <string name="menuUploadToDrive">Subir nota a Drive</string>
     <string name="noteSuccessfullyDeleted">La nota se ha borrado correctamente</string>
     <string name="chooseEmailClient">Elegir aplicación</string>
     <string name="noAppForThis">No se puede encontrar una aplicación para esta acción</string>
@@ -77,4 +78,5 @@
     <string name="preferences_languagesOptionSystem">Sistema</string>
     <string name="preferences_languagesOptionEnglish">Inglés</string>
     <string name="preferences_languagesOptionSpanish">Español</string>
+    <string name="googleDriveLogInError">Se ha producido un error al intentar iniciar sesión en Google Drive</string>
 </resources>
