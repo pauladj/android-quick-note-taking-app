@@ -2,6 +2,7 @@ package com.example.proyecto1.utilities;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.util.Pair;
@@ -313,6 +314,31 @@ public class MainToolbar extends LanguageActivity {
         }
     }
 
+    /**
+     * Clase que se utiliza para crear una tarea asíncrona para la subida de la nota
+     */
+    public class UploadNoteTask extends AsyncTask<Integer, Pair<Integer, String>, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // crear dialogo
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... noteId) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean uploaded) {
+            super.onPostExecute(uploaded);
+        }
+
+        @Override
+        protected void onProgressUpdate(Pair<Integer, String>... values) {
+            super.onProgressUpdate(values);
+        }
+    }
 
     /**
      * Upload the note content to drive
