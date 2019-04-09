@@ -1,5 +1,6 @@
 package com.example.proyecto1.utilities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -50,6 +51,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 
 public class MainToolbar extends LanguageActivity {
@@ -320,15 +323,23 @@ public class MainToolbar extends LanguageActivity {
     public class UploadNoteTask extends AsyncTask<Void, Pair<Integer, String>, Boolean> {
 
         private Context context;
+        private boolean uploaded;
 
         public UploadNoteTask(Context context){
             this.context = context;
+            uploaded = false;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             // crear dialogo
+            ProgressDialog dialog = new ProgressDialog(context);
+            dialog.setMessage("Your message..");
+            dialog.setProgressStyle(dialog.STYLE_HORIZONTAL);
+            dialog.setProgress(0);
+
+            dialog.show();
         }
 
 
@@ -351,6 +362,26 @@ public class MainToolbar extends LanguageActivity {
 
             DriveServiceHelper.getMiDriveServiceHelper(googleDriveService);
 
+            // obtener la información de la nota y su contenido
+            String[] dataOfNoteToUpload = getNoteContent(noteId);
+
+            if (dataOfNoteToUpload == null) {
+                Log.i("aqui", "4");
+
+                // error fetching the note data
+                uploadNoteToDriveFailureToast();
+            }
+
+            // datos de la nota
+            String noteTitle = dataOfNoteToUpload[0];
+            String noteFileName = dataOfNoteToUpload[1];
+            String fileContent =
+                    "<title>" + noteTitle + "</title></br></br>" + dataOfNoteToUpload[2];
+            // el título del fichero
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd__HH_mm_ss");
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            String fileName = sdf.format(timestamp) + "_" + noteFileName;
+
             // comprobar si la carpeta de la aplicación notes existe
             DriveServiceHelper.getMiDriveServiceHelper().folderExists("notes_android_app")
                 .addOnSuccessListener(existingFolderId -> {
@@ -361,42 +392,31 @@ public class MainToolbar extends LanguageActivity {
                             "application/vnd.google-apps.folder", "root")
                             .addOnSuccessListener(newFolderId -> {
                                 // Folder created
-                                Log.i("aqui", "3");
+                                Log.i("aqui", "5");
 
-                                String[] dataOfNoteToUpload = getNoteContent(noteId);
-                                if (dataOfNoteToUpload == null){
-                                    Log.i("aqui", "4");
+                                // primero crear el fichero
+                                DriveServiceHelper.getMiDriveServiceHelper().createFile(fileName,
+                                        "text/html", newFolderId)
+                                    .addOnSuccessListener(fileId -> {
+                                        Log.i("aqui", "6");
 
-                                    // error fetching the note data
-                                    uploadNoteToDriveFailureToast();
-                                }else{
-                                    Log.i("aqui", "5");
+                                        // y luego actualizar sus datos
+                                        DriveServiceHelper.getMiDriveServiceHelper().saveFile(fileId, fileName, "text/html", fileContent)
+                                                .addOnSuccessListener((k) -> {
+                                                    Log.i("aqui", "7");
 
-                                    String noteFileName = dataOfNoteToUpload[1];
-                                    String fileContent = dataOfNoteToUpload[2];
-                                    // primero crear el fichero
-                                    DriveServiceHelper.getMiDriveServiceHelper().createFile(noteFileName, "text/html", newFolderId)
-                                        .addOnSuccessListener(fileId -> {
-                                            Log.i("aqui", "6");
+                                                })
+                                                .addOnFailureListener(exception -> {
+                                                    Log.i("aqui", "8");
 
-                                            // y luego actualizar sus datos
-                                            DriveServiceHelper.getMiDriveServiceHelper().saveFile(fileId, noteFileName, "text/html", fileContent)
-                                                    .addOnSuccessListener((k) -> {
-                                                        Log.i("aqui", "7");
+                                                    uploadNoteToDriveFailureToast();
+                                                });
+                                    })
+                                    .addOnFailureListener(exception -> {
+                                        Log.i("aqui", "9");
 
-                                                    })
-                                                    .addOnFailureListener(exception -> {
-                                                        Log.i("aqui", "8");
-
-                                                        uploadNoteToDriveFailureToast();
-                                                    });
-                                        })
-                                        .addOnFailureListener(exception -> {
-                                            Log.i("aqui", "9");
-
-                                            uploadNoteToDriveFailureToast();
-                                        });
-                                }
+                                        uploadNoteToDriveFailureToast();
+                                    });
                             })
                             .addOnFailureListener(exception -> {
                                 Log.i("aqui", "10");
@@ -405,50 +425,35 @@ public class MainToolbar extends LanguageActivity {
                             });
                     }else{
                         // Folder exists
-                        /*
-                         * cambiar esto siguiente, comprobar si el fichero existe, si existe update content
-                         * Notificación de que se está subiendo?
-                         * meter el titulo de la nota dentro del fichero subido
-                         * subir las imágenes de la nota??
-                         * */
                         Log.i("aqui", "11");
 
-                        String[] dataOfNoteToUpload = getNoteContent(noteId);
-                        if (dataOfNoteToUpload == null){
-                            Log.i("aqui", "12");
+                        // upload the note
+                        Log.i("aqui", "13");
 
-                            // error fetching the note data
-                            uploadNoteToDriveFailureToast();
-                        }else{
-                            // upload the note
-                            Log.i("aqui", "13");
+                        // primero crear el fichero
+                        DriveServiceHelper.getMiDriveServiceHelper().createFile(fileName,
+                                "text/html", existingFolderId)
+                                .addOnSuccessListener(fileId -> {
+                                    Log.i("aqui", "6");
 
-                            String noteFileName = dataOfNoteToUpload[1];
-                            String fileContent = dataOfNoteToUpload[2];
-                            // primero crear el fichero
-                            DriveServiceHelper.getMiDriveServiceHelper().createFile(noteFileName,
-                                    "text/html", existingFolderId)
-                                    .addOnSuccessListener(fileId -> {
-                                        // y luego actualizar sus datos
-                                        Log.i("aqui", "13");
+                                    // y luego actualizar sus datos
+                                    DriveServiceHelper.getMiDriveServiceHelper().saveFile(fileId, fileName, "text/html", fileContent)
+                                            .addOnSuccessListener((k) -> {
+                                                Log.i("aqui", "7");
 
-                                        DriveServiceHelper.getMiDriveServiceHelper().saveFile(fileId, noteFileName, "text/html", fileContent)
-                                                .addOnSuccessListener((k) -> {
-                                                    Log.i("aqui", "14");
+                                            })
+                                            .addOnFailureListener(exception -> {
+                                                Log.i("aqui", "8");
 
-                                                })
-                                                .addOnFailureListener(exception -> {
-                                                    Log.i("aqui", "15");
+                                                uploadNoteToDriveFailureToast();
+                                            });
+                                })
+                                .addOnFailureListener(exception -> {
+                                    Log.i("aqui", "9");
 
-                                                    uploadNoteToDriveFailureToast();
-                                                });
-                                    })
-                                    .addOnFailureListener(exception -> {
-                                        Log.i("aqui", "16");
+                                    uploadNoteToDriveFailureToast();
+                                });
 
-                                        uploadNoteToDriveFailureToast();
-                                    });
-                        }
                     }
                 })
                 .addOnFailureListener(exception -> {
@@ -463,6 +468,7 @@ public class MainToolbar extends LanguageActivity {
         @Override
         protected void onPostExecute(Boolean uploaded) {
             super.onPostExecute(uploaded);
+            Log.i("aquiResult", String.valueOf(uploaded));
         }
 
         @Override

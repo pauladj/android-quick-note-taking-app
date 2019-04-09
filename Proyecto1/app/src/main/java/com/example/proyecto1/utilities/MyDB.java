@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MyDB extends SQLiteOpenHelper {
@@ -360,6 +361,37 @@ public class MyDB extends SQLiteOpenHelper {
             }
         }
         return data;
+    }
+
+    /**
+     * Obtener las imágenes de una nota sabiendo su id
+     * @param noteId - el id de la nota
+     * @return - lista con el path de las imágenes
+     */
+    public ArrayList<String> getNoteImages(int noteId){
+        ArrayList<String> imagesPath = new ArrayList<>();
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        try {
+            db = this.getReadableDatabase();
+            c =
+                    db.rawQuery("SELECT imagePath FROM NotesImages WHERE noteId=" + String.valueOf(noteId),
+                            null);
+
+            while (c.moveToNext()) {
+                imagesPath.add(c.getString(0));
+            }
+        }catch (SQLException e){
+            //
+        }finally{
+            if (c != null) {
+                c.close();
+            }
+            if (db != null){
+                db.close();
+            }
+        }
+        return imagesPath;
     }
 
     /**
