@@ -1,5 +1,6 @@
 package com.example.proyecto1.utilities;
 
+import android.app.IntentService;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import com.example.proyecto1.dialogs.NewTag;
 import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.PreferencesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
+import com.example.proyecto1.services.UploadToDriveService;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -317,165 +319,6 @@ public class MainToolbar extends LanguageActivity {
         }
     }
 
-    /**
-     * Clase que se utiliza para crear una tarea asíncrona para la subida de la nota
-     */
-    public class UploadNoteTask extends AsyncTask<Void, Pair<Integer, String>, Boolean> {
-
-        private Context context;
-        private boolean uploaded;
-
-        public UploadNoteTask(Context context){
-            this.context = context;
-            uploaded = false;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            // crear dialogo
-            ProgressDialog dialog = new ProgressDialog(context);
-            dialog.setMessage("Your message..");
-            dialog.setProgressStyle(dialog.STYLE_HORIZONTAL);
-            dialog.setProgress(0);
-
-            dialog.show();
-        }
-
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-
-            GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(context);
-
-            GoogleAccountCredential credential =
-                    GoogleAccountCredential.usingOAuth2(
-                            context, Collections.singleton(DriveScopes.DRIVE));
-            credential.setSelectedAccount(googleAccount.getAccount());
-            Drive googleDriveService =
-                    new Drive.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            new GsonFactory(),
-                            credential)
-                            .setApplicationName("Drive API")
-                            .build();
-
-            DriveServiceHelper.getMiDriveServiceHelper(googleDriveService);
-
-            // obtener la información de la nota y su contenido
-            String[] dataOfNoteToUpload = getNoteContent(noteId);
-
-            if (dataOfNoteToUpload == null) {
-                Log.i("aqui", "4");
-
-                // error fetching the note data
-                uploadNoteToDriveFailureToast();
-            }
-
-            // datos de la nota
-            String noteTitle = dataOfNoteToUpload[0];
-            String noteFileName = dataOfNoteToUpload[1];
-            String fileContent =
-                    "<title>" + noteTitle + "</title></br></br>" + dataOfNoteToUpload[2];
-            // el título del fichero
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd__HH_mm_ss");
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            String fileName = sdf.format(timestamp) + "_" + noteFileName;
-
-            // comprobar si la carpeta de la aplicación notes existe
-            DriveServiceHelper.getMiDriveServiceHelper().folderExists("notes_android_app")
-                .addOnSuccessListener(existingFolderId -> {
-                    if (existingFolderId == null){
-                        Log.i("aqui", "2");
-                        //Folder does not exist, create it
-                        DriveServiceHelper.getMiDriveServiceHelper().createFile("notes_android_app",
-                            "application/vnd.google-apps.folder", "root")
-                            .addOnSuccessListener(newFolderId -> {
-                                // Folder created
-                                Log.i("aqui", "5");
-
-                                // primero crear el fichero
-                                DriveServiceHelper.getMiDriveServiceHelper().createFile(fileName,
-                                        "text/html", newFolderId)
-                                    .addOnSuccessListener(fileId -> {
-                                        Log.i("aqui", "6");
-
-                                        // y luego actualizar sus datos
-                                        DriveServiceHelper.getMiDriveServiceHelper().saveFile(fileId, fileName, "text/html", fileContent)
-                                                .addOnSuccessListener((k) -> {
-                                                    Log.i("aqui", "7");
-
-                                                })
-                                                .addOnFailureListener(exception -> {
-                                                    Log.i("aqui", "8");
-
-                                                    uploadNoteToDriveFailureToast();
-                                                });
-                                    })
-                                    .addOnFailureListener(exception -> {
-                                        Log.i("aqui", "9");
-
-                                        uploadNoteToDriveFailureToast();
-                                    });
-                            })
-                            .addOnFailureListener(exception -> {
-                                Log.i("aqui", "10");
-
-                                uploadNoteToDriveFailureToast();
-                            });
-                    }else{
-                        // Folder exists
-                        Log.i("aqui", "11");
-
-                        // upload the note
-                        Log.i("aqui", "13");
-
-                        // primero crear el fichero
-                        DriveServiceHelper.getMiDriveServiceHelper().createFile(fileName,
-                                "text/html", existingFolderId)
-                                .addOnSuccessListener(fileId -> {
-                                    Log.i("aqui", "6");
-
-                                    // y luego actualizar sus datos
-                                    DriveServiceHelper.getMiDriveServiceHelper().saveFile(fileId, fileName, "text/html", fileContent)
-                                            .addOnSuccessListener((k) -> {
-                                                Log.i("aqui", "7");
-
-                                            })
-                                            .addOnFailureListener(exception -> {
-                                                Log.i("aqui", "8");
-
-                                                uploadNoteToDriveFailureToast();
-                                            });
-                                })
-                                .addOnFailureListener(exception -> {
-                                    Log.i("aqui", "9");
-
-                                    uploadNoteToDriveFailureToast();
-                                });
-
-                    }
-                })
-                .addOnFailureListener(exception -> {
-                    uploadNoteToDriveFailureToast();
-                    Log.i("aqui", "17");
-                    Log.i("aqui17", exception.toString());
-                });
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean uploaded) {
-            super.onPostExecute(uploaded);
-            Log.i("aquiResult", String.valueOf(uploaded));
-        }
-
-        @Override
-        protected void onProgressUpdate(Pair<Integer, String>... values) {
-            super.onProgressUpdate(values);
-        }
-    }
 
     /**
      * Upload the note content to drive
@@ -484,8 +327,35 @@ public class MainToolbar extends LanguageActivity {
         //sklfdj
         Log.i("aqui", "yay");
         // Use the authenticated account to sign in to the Drive service.
-        UploadNoteTask tarea= (UploadNoteTask) new UploadNoteTask(this).execute();
+        // datos de la nota
+        // obtener la información de la nota y su contenido
+        String[] dataOfNoteToUpload = getNoteContent(noteId);
 
+        if (dataOfNoteToUpload == null) {
+            Log.i("aqui", "4");
+
+            // error fetching the note data
+            uploadNoteToDriveFailureToast();
+        }
+
+        String noteTitle = dataOfNoteToUpload[0];
+        String noteFileName = dataOfNoteToUpload[1];
+        String fileContent =
+                "<title>" + noteTitle + "</title></br></br>" + dataOfNoteToUpload[2];
+        // el título del fichero
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd__HH_mm_ss");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String fileName = sdf.format(timestamp) + "_" + noteFileName;
+
+        // iniciar servicio de subida de fichero
+        Intent msgIntent = new Intent(this, UploadToDriveService.class);
+        msgIntent.putExtra("fileContent", fileContent);
+        msgIntent.putExtra("fileName", fileName);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(msgIntent);
+        } else {
+            startService(msgIntent);
+        }
     }
 
     /**

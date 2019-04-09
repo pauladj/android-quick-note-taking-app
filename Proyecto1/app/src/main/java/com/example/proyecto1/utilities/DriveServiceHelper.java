@@ -149,7 +149,8 @@ public class DriveServiceHelper {
     public Task<String> folderExists(String folderName) {
         return Tasks.call(mExecutor, () -> {
             Log.i("aqui2", "1");
-            String query = "name = '" + folderName + "' and mimeType = 'application/vnd.google-apps.folder'";
+            String query = "name = '" + folderName + "' and mimeType = 'application/vnd" +
+                    ".google-apps.folder' and trashed = false";
             FileList result = mDriveService.files().list()
                     .setQ(query)
                     .setSpaces("drive")
