@@ -1,5 +1,6 @@
 package com.example.proyecto1.services;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -14,6 +15,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -22,6 +24,7 @@ import android.util.Log;
 import com.example.proyecto1.R;
 import com.example.proyecto1.SingleNoteActivity;
 import com.example.proyecto1.utilities.DriveServiceHelper;
+import com.example.proyecto1.utilities.MainToolbar;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -33,11 +36,6 @@ import com.google.api.services.drive.DriveScopes;
 import java.util.Collections;
 
 public class UploadToDriveService extends Service {
-
-    private NotificationCompat.Builder elBuilder;
-    private NotificationManager elManager;
-    private int progress;
-    private int idNotification;
 
 
     /**
@@ -71,12 +69,21 @@ public class UploadToDriveService extends Service {
         elBuilder.setOngoing(false);
         elManager.notify(idNotification, elBuilder.build());
 
+        error = true;
         stopSelf();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+
+        NotificationCompat.Builder elBuilder;
+        NotificationManager elManager;
+        int progress;
+        int idNotification;
+
+        // pasar como parámetro estos de aqui arriba y comprobar si tiene la play store antes de
+        // drive
 
         // se obtienen los datos asociados al intent
         String fileName = intent.getStringExtra("fileName");
@@ -88,7 +95,7 @@ public class UploadToDriveService extends Service {
 
         // the initial value is 3 if it's the first time, but we have to add one to this
         idNotification = prefs_especiales.getInt("id", 2) + 1;
-
+        Log.i("aquiid_notf", String.valueOf(idNotification) );
         SharedPreferences.Editor editor2= prefs_especiales.edit();
         // the initial value is 3
         editor2.putInt("id",idNotification);
@@ -104,16 +111,10 @@ public class UploadToDriveService extends Service {
         elBuilder.setSmallIcon(R.drawable.ic_upload)
                 .setContentTitle("titulo")
                 .setContentText("textp")
-                .setAutoCancel(false)
-                .setOngoing(true) // el usuario no puede quitar la notificación
+                .setAutoCancel(true)
                 .setGroup("uploadNoteGroup") // notificaciones anidadas
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setProgress(100,0,false);
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            elBuilder.setVibrate(new long[0]);
-        }
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel elCanal = new NotificationChannel("uploadNote",
@@ -123,8 +124,6 @@ public class UploadToDriveService extends Service {
             elCanal.enableLights(true);
             elCanal.setGroup("uploadNoteGroup"); // notificaciones anidadas
             elCanal.setLightColor(Color.BLUE);
-            elCanal.setVibrationPattern(new long[0]);
-            elCanal.enableVibration(true);
 
             elManager.createNotificationChannel(elCanal);
         }
@@ -142,7 +141,6 @@ public class UploadToDriveService extends Service {
                             //set this notification as the summary for the group
                             .setGroupSummary(true)
                             .setAutoCancel(false)
-                            .setOngoing(true) // el usuario no puede quitar la notificación
                             .build();
             elManager.notify(idNotification, summaryNotification);
         }
@@ -267,5 +265,16 @@ public class UploadToDriveService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (progress != 100 && !error){
+            // si el servicio se ha destruído destruir la notificación si no ha habido error
+            NotificationManager elManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            elManager.cancel(idNotification);
+        }
     }
 }
