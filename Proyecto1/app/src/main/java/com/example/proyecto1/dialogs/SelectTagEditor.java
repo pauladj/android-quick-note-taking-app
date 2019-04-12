@@ -28,11 +28,10 @@ public class SelectTagEditor extends DialogFragment {
     ListenerDelDialogo miListener;
 
     int selectedTagId = -1; // selected tag id
-    String selectedTagName = ""; // selected tag name
 
 
     public interface ListenerDelDialogo {
-        void addTagToPost(int tagId, String tagName);
+        void addTagToPost(int tagId);
         void createNewTag();
     }
 
@@ -42,14 +41,12 @@ public class SelectTagEditor extends DialogFragment {
     public Dialog onCreateDialog(@Nullable final Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey("selectedTagId") && savedInstanceState.containsKey("selectedTagName")){
+        if (savedInstanceState != null && savedInstanceState.containsKey("selectedTagId")){
             // activity restarted
             selectedTagId = savedInstanceState.getInt("selectedTagId");
-            selectedTagName = savedInstanceState.getString("selectedTagName");
         }else if (getArguments() != null) {
             // just created the dialog, the user has previously selected a tag
             Bundle bundle = getArguments();
-            selectedTagName = bundle.getString("chosenTagName");
             selectedTagId = bundle.getInt("chosenTagId");
         }
 
@@ -86,10 +83,8 @@ public class SelectTagEditor extends DialogFragment {
                     if (newSelectedTagId == selectedTagId) {
                         ((AlertDialog) dialog).getListView().setItemChecked(which, false);
                         selectedTagId = -1;
-                        selectedTagName = "";
                     } else {
                         selectedTagId = newSelectedTagId;
-                        selectedTagName = data.get(1).get(which);
                     }
                 }
             });
@@ -103,7 +98,7 @@ public class SelectTagEditor extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // save
-                miListener.addTagToPost(selectedTagId, selectedTagName);
+                miListener.addTagToPost(selectedTagId);
             }
         });
 
@@ -129,6 +124,5 @@ public class SelectTagEditor extends DialogFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("selectedTagId", selectedTagId);
-        outState.putString("selectedTagName", selectedTagName);
     }
 }

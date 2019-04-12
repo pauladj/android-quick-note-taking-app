@@ -45,24 +45,6 @@
                     android:hint="@string/editorTitle"
                     android:singleLine="true" />
 
-                <Button
-                    android:id="@+id/addTagButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/titleInput"
-                    android:onClick="addTag"
-                    android:text="@string/editorAddTag" />
-
-                <TextView
-                    android:id="@+id/assignedTag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/titleInput"
-                    android:layout_toEndOf="@+id/addTagButton"
-                    android:text=""
-                    android:textAppearance="@style/tag"
-                    android:theme="@style/tag"
-                    android:visibility="invisible" />
 
                 <EditText
                     android:id="@+id/noteBody"
@@ -75,7 +57,7 @@
                     android:linksClickable="true"
                     android:scrollbars="vertical"
                     android:paddingBottom="50dp"
-                    android:layout_below="@id/addTagButton"/>
+                    android:layout_below="@id/titleInput"/>
 
             </RelativeLayout>
 
@@ -134,5 +116,4 @@
                 android:text="@string/formatText" />
         </TableRow>
     </TableLayout>
-
 </android.support.constraint.ConstraintLayout>

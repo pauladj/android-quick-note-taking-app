@@ -23,6 +23,7 @@ import android.text.style.CharacterStyle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -34,6 +35,7 @@ import com.example.proyecto1.dialogs.ConfimExit;
 import com.example.proyecto1.dialogs.DeleteTextStyles;
 import com.example.proyecto1.dialogs.InsertLinkEditor;
 import com.example.proyecto1.dialogs.NewTag;
+import com.example.proyecto1.services.UploadToDriveService;
 import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MainToolbar;
 import com.example.proyecto1.utilities.MyDB;
@@ -53,7 +55,6 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
     int noteId = -1; // If we are editing an existing note
 
     int chosenTagId = -1; // the selected tag by the user
-    String chosenTagName = "";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -61,6 +62,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         getMenuInflater().inflate(R.menu.editor_toolbar, menu);
         return true;
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +136,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
 
                 if (noteData[2] != null){
                     // there's a tag, set the tag
-                    addTagToPost(Integer.valueOf(noteData[3]), noteData[2]);
+                    addTagToPost(Integer.valueOf(noteData[3]));
                 }
 
                 // set the body
@@ -282,16 +284,14 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
 
 
     /**
-     * The user wants to add a tag to the post
-     * @param v - the element clicked
+     * The user wants to add or remove a tag to/from the post
      */
-    public void addTag(View v){
+    public void manageTags(){
         // Show the dialog to select one
         DialogFragment dialog = new SelectTagEditor();
         Bundle bl = new Bundle();
         // la etiqueta elegida actual
         bl.putInt("chosenTagId", chosenTagId);
-        bl.putString("chosenTagName", chosenTagName);
         dialog.setArguments(bl);
         dialog.show(getSupportFragmentManager(), "addTagEditor");
     }
@@ -300,19 +300,8 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
      * The user has selected a tag to add to the post
      * @param tagId - the id of the selected tag
      */
-    public void addTagToPost(int tagId, String tagName){
+    public void addTagToPost(int tagId){
         chosenTagId = tagId;
-        chosenTagName = tagName;
-        TextView a = findViewById(R.id.assignedTag);
-        if (tagId == -1){
-            // nothing selected, tag name not shown
-            a.setVisibility(View.INVISIBLE);
-        }else{
-            // a tag has been selected, show it
-            a.setVisibility(View.VISIBLE);
-            a.setVisibility(View.VISIBLE);
-            a.setText(tagName);
-        }
     }
 
 
@@ -532,15 +521,12 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         chosenTagId = savedInstanceState.getInt("chosenTagId");
-        chosenTagName = savedInstanceState.getString("chosenTagName");
-        addTagToPost(chosenTagId, chosenTagName); // show the tag if there's one like before
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("chosenTagId", chosenTagId);
-        outState.putString("chosenTagName", chosenTagName);
         outState.putInt("noteId", noteId);
     }
 }
