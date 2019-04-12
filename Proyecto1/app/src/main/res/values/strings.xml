@@ -17,7 +17,7 @@
     <string name="menuDelete">Delete</string>
     <string name="fileNotFound">File not found or error opening it</string>
     <string name="menuSendEmail">Email it</string>
-    <string name="menuUploadToDrive">Upload to Drive</string>
+    <string name="menuUploadToDrive">Upload text to Google Drive</string>
     <string name="noteSuccessfullyDeleted">The note has been successfully deleted</string>
     <string name="chooseEmailClient">Choose email application</string>
     <string name="noAppForThis">No app for this action can be found</string>
@@ -81,6 +81,11 @@
     <string name="googleDriveLogInError">There was an error trying to log in in Google Drive</string>
     <string name="googleDrivePermissionError">There was an error trying to obtain the permissions</string>
     <string name="googleDriveNoteUploadError">There was an error trying to upload the note</string>
+    <string name="noteIsBeingUploaded">Wait until the current note has been uploaded</string>
+    <string name="noteUploadComplete">The note has been uploaded to Google Drive</string>
+    <string name="noteUploadFail">There was a problem trying to upload the note</string>
+    <string name="noteUpload">Uploading the note to Google Drive</string>
+    <string name="googlePlayNeeded">You need to install Google Play for this functionality to work</string>
 
 
 </resources>

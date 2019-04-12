@@ -1,5 +1,6 @@
 package com.example.proyecto1.utilities;
 
+import android.app.ActivityManager;
 import android.app.IntentService;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -38,6 +39,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
@@ -110,7 +113,21 @@ public class MainToolbar extends LanguageActivity {
             sendNoteByEmail();
         }else if(id == R.id.menuUploadToDrive){
             // Upload note to drive
-            logInToDrive();
+            if (noteIsBeingUploaded(UploadToDriveService.class)){
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(this, R.string.noteIsBeingUploaded, tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+            }else{
+                if(userHasPlayServices()) {
+                    logInToDrive();
+                }else{
+                    int tiempo = Toast.LENGTH_SHORT;
+                    Toast aviso = Toast.makeText(this, R.string.googlePlayNeeded, tiempo);
+                    aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                    aviso.show();
+                }
+            }
         }else if(id == R.id.menuDelete){
             // Confirm with user that they want to delete the note
             confirmDeleteNote();
@@ -278,7 +295,38 @@ public class MainToolbar extends LanguageActivity {
      */
     public void manageTags(){}
 
+    /**
+     * Check if the service to upload the note is active
+     * @return true if the service is running, false if not
+     */
+    private boolean noteIsBeingUploaded(Class<?> serviceName){
+        // FIXME https://gist.github.com/kevinmcmahon/2988931
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceName.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    /**
+     * If the user does not have the Play services installed it returns false
+     * @return true or false
+     */
+    private boolean userHasPlayServices(){
+        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+        int code = api.isGooglePlayServicesAvailable(this);
+        if (code == ConnectionResult.SUCCESS) {
+            return true;
+        }
+        else {
+            if (api.isUserResolvableError(code)){
+                api.getErrorDialog(this, code, 58).show();
+            }
+            return false;
+        }
+    }
 
     /**
      * Try to log in into Google Drive
@@ -339,13 +387,13 @@ public class MainToolbar extends LanguageActivity {
         }
 
         String noteTitle = dataOfNoteToUpload[0];
-        String noteFileName = dataOfNoteToUpload[1];
         String fileContent =
                 "<title>" + noteTitle + "</title></br></br>" + dataOfNoteToUpload[2];
         // el título del fichero
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd__HH_mm_ss");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        String fileName = sdf.format(timestamp) + "_" + noteFileName;
+        String shortTitle = noteTitle.substring(0, Math.min(noteTitle.length(), 28));
+        String fileName = sdf.format(timestamp) + "_" + shortTitle + ".html";
 
         // iniciar servicio de subida de fichero
         Intent msgIntent = new Intent(this, UploadToDriveService.class);

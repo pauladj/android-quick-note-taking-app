@@ -1,30 +1,21 @@
 package com.example.proyecto1.services;
 
-import android.app.AlarmManager;
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.example.proyecto1.R;
-import com.example.proyecto1.SingleNoteActivity;
 import com.example.proyecto1.utilities.DriveServiceHelper;
-import com.example.proyecto1.utilities.MainToolbar;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -36,6 +27,16 @@ import com.google.api.services.drive.DriveScopes;
 import java.util.Collections;
 
 public class UploadToDriveService extends Service {
+
+    NotificationCompat.Builder elBuilder;
+    NotificationManager elManager;
+    int progress; // el progreso actual
+    int totalProgress; // el progreso total (100%)
+    int idNotification; // el id de la notificación
+    boolean error; // si se ha producido algún error
+
+    String fileName; // el nombre del fichero de la nota
+    String fileContent; // el contenido de la nota
 
 
     /**
@@ -54,8 +55,9 @@ public class UploadToDriveService extends Service {
      * If the upload is complete
      */
     private void uploadCompleteNotification(){
-        elBuilder.setContentText("Upload Complete");
-        elBuilder.setOngoing(false);
+        elBuilder.setContentText(getResources().getString(R.string.noteUploadComplete));
+        elBuilder.setContentTitle(fileName);
+        elBuilder.setProgress(0,0,false); // hide the progress bar
         elManager.notify(idNotification, elBuilder.build());
 
         stopSelf();
@@ -65,8 +67,7 @@ public class UploadToDriveService extends Service {
      * If the upload failed
      */
     private void uploadFailedNotification(){
-        elBuilder.setContentText("Upload failed");
-        elBuilder.setOngoing(false);
+        elBuilder.setContentText(getResources().getString(R.string.noteUploadFail));
         elManager.notify(idNotification, elBuilder.build());
 
         error = true;
@@ -74,21 +75,13 @@ public class UploadToDriveService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
+    public void onCreate() {
+        super.onCreate();
+        progress = 0; // progreso hecho
+        totalProgress = 0 ; // progreso total
+        error = false;
 
-        NotificationCompat.Builder elBuilder;
-        NotificationManager elManager;
-        int progress;
-        int idNotification;
-
-        // pasar como parámetro estos de aqui arriba y comprobar si tiene la play store antes de
-        // drive
-
-        // se obtienen los datos asociados al intent
-        String fileName = intent.getStringExtra("fileName");
-        String fileContent = intent.getStringExtra("fileContent");
-
+        // just the first time
         // obtener id de la notificación
         SharedPreferences prefs_especiales= getSharedPreferences("preferencias_especiales",
                 Context.MODE_PRIVATE);
@@ -101,7 +94,6 @@ public class UploadToDriveService extends Service {
         editor2.putInt("id",idNotification);
         editor2.apply();
 
-
         // notificación
         elManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -109,18 +101,17 @@ public class UploadToDriveService extends Service {
                 "uploadNote");
 
         elBuilder.setSmallIcon(R.drawable.ic_upload)
-                .setContentTitle("titulo")
-                .setContentText("textp")
+                .setContentTitle(getResources().getString(R.string.noteUpload))
                 .setAutoCancel(true)
                 .setGroup("uploadNoteGroup") // notificaciones anidadas
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setProgress(100,0,false);
+                .setProgress(totalProgress, progress,false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel elCanal = new NotificationChannel("uploadNote",
                     "uploadNote",
                     NotificationManager.IMPORTANCE_HIGH);
-            elCanal.setDescription("uploadNote");
+            elCanal.setDescription(getResources().getString(R.string.noteUpload));
             elCanal.enableLights(true);
             elCanal.setGroup("uploadNoteGroup"); // notificaciones anidadas
             elCanal.setLightColor(Color.BLUE);
@@ -132,9 +123,9 @@ public class UploadToDriveService extends Service {
             // notificación anidada principal
             Notification summaryNotification =
                     new NotificationCompat.Builder(this, "uploadNote")
-                            .setContentTitle("titulo principal")
+                            .setContentTitle(getResources().getString(R.string.noteUpload))
                             //set content text to support devices running API level < 24
-                            .setContentText("texto principal")
+                            .setContentText(getResources().getString(R.string.noteUpload))
                             .setSmallIcon(R.drawable.ic_upload)
                             //specify which group this notification belongs to
                             .setGroup("uploadNoteGroup")
@@ -149,7 +140,18 @@ public class UploadToDriveService extends Service {
         }else{
             elManager.notify(idNotification, elBuilder.build()); // start notification
         }
+    }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+
+        // py comprobar si tiene la play store antes de
+        // drive
+
+        // se obtienen los datos asociados al intent
+        fileName = intent.getStringExtra("fileName");
+        fileContent = intent.getStringExtra("fileContent");
 
         // el servicio se ejecuta
         GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
@@ -171,7 +173,7 @@ public class UploadToDriveService extends Service {
         // comprobar si la carpeta de la aplicación notes existe
         DriveServiceHelper.getMiDriveServiceHelper().folderExists("notes_android_app")
                 .addOnSuccessListener(existingFolderId -> {
-                    progress = 25;
+                    progress += 25;
                     updateNotification();
                     if (existingFolderId == null){
                         Log.i("aqui", "2");

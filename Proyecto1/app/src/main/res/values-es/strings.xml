@@ -17,7 +17,7 @@
     <string name="menuDelete">Eliminar</string>
     <string name="fileNotFound">Fichero no encontrado o error abriéndolo</string>
     <string name="menuSendEmail">Enviar por email</string>
-    <string name="menuUploadToDrive">Subir nota a Drive</string>
+    <string name="menuUploadToDrive">Guardar texto en Google Drive</string>
     <string name="noteSuccessfullyDeleted">La nota se ha borrado correctamente</string>
     <string name="chooseEmailClient">Elegir aplicación</string>
     <string name="noAppForThis">No se puede encontrar una aplicación para esta acción</string>
@@ -81,4 +81,10 @@
     <string name="googleDriveLogInError">Se ha producido un error al intentar iniciar sesión en Google Drive</string>
     <string name="googleDrivePermissionError">Se ha producido un error al intentar conceder los permisos</string>
     <string name="googleDriveNoteUploadError">Se ha producido un error al intentar subir la nota</string>
+    <string name="noteIsBeingUploaded">Espera hasta que la nota actual se haya subido</string>
+    <string name="noteUploadComplete">La nota se ha guardado en Google Drive satisfactoriamente</string>
+    <string name="noteUploadFail">Se ha producido un error al intentar guardar la nota en Google Drive</string>
+    <string name="noteUpload">Subiendo la nota a Google Drive</string>
+    <string name="googlePlayNeeded">Necesitas tener instalado Google Play para utilizar esta funcionalidad</string>
+
 </resources>
