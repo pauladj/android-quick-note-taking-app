@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,74 +10,20 @@
         android:id="@+id/labarra"
         layout="@layout/main_toolbar" />
 
-    <ScrollView
-        android:id="@+id/scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_above="@+id/m_table_menu"
-        android:padding="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/labarra"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-            <RelativeLayout
-                android:id="@+id/noteEditorContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/titleLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/editorTitle" />
-
-                <EditText
-                    android:id="@+id/titleInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/titleLabel"
-                    android:inputType="textShortMessage"
-                    android:hint="@string/editorTitle"
-                    android:singleLine="true" />
-
-
-                <EditText
-                    android:id="@+id/noteBody"
-                    android:layout_width="match_parent"
-                    android:layout_height="281dp"
-                    android:layout_alignParentBottom="true"
-                    android:gravity="top"
-                    android:hint="@string/editorBody"
-                    android:inputType="textMultiLine"
-                    android:linksClickable="true"
-                    android:scrollbars="vertical"
-                    android:paddingBottom="50dp"
-                    android:layout_below="@id/titleInput"/>
-
-            </RelativeLayout>
-
-
-    </ScrollView>
-
-    <TableLayout
-        android:id="@+id/m_table_menu"
+    <HorizontalScrollView
+        android:id="@+id/horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="0dp"
-        android:background="@android:color/white"
-        android:padding="0dp"
-        android:stretchColumns="*"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/scrollview"
-        tools:layout_editor_absoluteX="73dp">
+        android:layout_below="@id/labarra"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:scrollbars="horizontal" >
 
-        <TableRow>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:background="@android:color/white"
+            android:orientation="horizontal" >
 
             <Button
                 android:id="@+id/boldText"
@@ -114,6 +60,46 @@
                 android:enabled="false"
                 android:onClick="formatText"
                 android:text="@string/formatText" />
-        </TableRow>
-    </TableLayout>
-</android.support.constraint.ConstraintLayout>
+
+            <Button
+                android:id="@+id/formatTe2xt"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:onClick="formatText"
+                android:text="@string/formatText" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/titleLabel"
+        android:layout_below="@id/horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/editorTitle" />
+
+    <EditText
+        android:id="@+id/titleInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/titleLabel"
+        android:inputType="textShortMessage"
+        android:hint="@string/editorTitle"
+        android:singleLine="true" />
+
+
+    <EditText
+        android:id="@+id/noteBody"
+        android:layout_width="match_parent"
+        android:layout_height="281dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="top"
+        android:hint="@string/editorBody"
+        android:inputType="textMultiLine"
+        android:linksClickable="true"
+        android:scrollbars="vertical"
+        android:layout_below="@id/titleInput"/>
+
+
+</RelativeLayout>
