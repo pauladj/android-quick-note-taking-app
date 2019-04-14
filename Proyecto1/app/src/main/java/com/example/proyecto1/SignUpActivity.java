@@ -1,9 +1,11 @@
 package com.example.proyecto1;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -11,9 +13,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.proyecto1.fragments.AsyncTaskFragment;
 import com.example.proyecto1.utilities.MyDB;
+import com.google.android.gms.dynamic.SupportFragmentWrapper;
 
-public class SignUpActivity extends LanguageActivity {
+public class SignUpActivity extends LanguageActivity implements AsyncTaskFragment.TaskCallbacks {
+
+    private static final String TAG_TASK_FRAGMENT = "task_fragment";
+    private AsyncTaskFragment mTaskFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +29,17 @@ public class SignUpActivity extends LanguageActivity {
         setContentView(R.layout.signup);
         //focus on username field when username sees the screen
         findViewById(R.id.inputUsername).requestFocus();
+
+        FragmentManager fm = getSupportFragmentManager();
+        mTaskFragment = (AsyncTaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
+
+        // If the Fragment is non-null, then it is currently being
+        // retained across a configuration change.
+        if (mTaskFragment == null) {
+            mTaskFragment = new AsyncTaskFragment();
+            fm.beginTransaction().add(mTaskFragment, TAG_TASK_FRAGMENT).commit();
+        }
+
     }
 
     /**
@@ -47,6 +65,11 @@ public class SignUpActivity extends LanguageActivity {
             // empty username or password, do nothing
         }else{
             // sign up
+            Log.i("aquiw", "asdf");
+            String[] params = {"signup", username, password};
+            mTaskFragment.start(params);
+
+            /*
             MyDB gestorDB = new MyDB(this, "Notes", null, 1);
             Boolean usernameExists = gestorDB.checkIfUsernameExists(username);
             if (usernameExists){
@@ -72,7 +95,9 @@ public class SignUpActivity extends LanguageActivity {
 
                 // and then show log in screen
                 logInButton(view);
-            }
+            }*/
         }
     }
+
 }
+

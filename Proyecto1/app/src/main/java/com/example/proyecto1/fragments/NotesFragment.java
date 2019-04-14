@@ -44,7 +44,7 @@ public class NotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent,
                              @Nullable Bundle savedInstanceState) {
         // Defines the xml file for the fragment
-
+        Log.i("aqui", "oncreate");
         View v = inflater.inflate(R.layout.notes_fragment, parent, false);
         return v;
     }
@@ -53,6 +53,8 @@ public class NotesFragment extends Fragment {
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        Log.i("aqui", "onactivity created");
+
         // Setup any handles to view objects here
         super.onActivityCreated(savedInstanceState);
         // load recycler view

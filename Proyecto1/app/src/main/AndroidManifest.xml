@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.example.proyecto1">
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <dist:module dist:instant="true" />
 
@@ -14,10 +15,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/NotesTheme">
 
-        <service android:name=".services.UploadToDriveService"/>
-        <activity android:name=".LanguageActivity"></activity>
+        <service android:name=".services.UploadToDriveService" />
+
+        <activity android:name=".LanguageActivity" />
         <activity android:name=".PreferencesActivity" />
         <activity
             android:name=".NoteEditorActivity"

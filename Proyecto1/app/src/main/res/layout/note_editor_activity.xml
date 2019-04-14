@@ -61,14 +61,6 @@
                 android:onClick="formatText"
                 android:text="@string/formatText" />
 
-            <Button
-                android:id="@+id/formatTe2xt"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:onClick="formatText"
-                android:text="@string/formatText" />
         </LinearLayout>
     </HorizontalScrollView>
 
