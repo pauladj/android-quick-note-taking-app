@@ -47,10 +47,8 @@ function execute($con, $sentence){
 
 function select_is_empty($resultado){
   if (mysqli_num_rows($resultado) > 0) {
-    echo "asdf";
     return true;
   }else{
-    echo "s";
     return false;
   }
 }
