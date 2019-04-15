@@ -2,7 +2,9 @@ package com.example.proyecto1.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.SystemClock;
@@ -31,6 +33,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Timestamp;
 
 /**
  * This Fragment manages a single background task and retains
@@ -200,6 +203,8 @@ public class AsyncTaskFragment extends Fragment {
                     // El usuario quiere registrarse
                     parametrosJSON.put("username", strings[0]);
                     parametrosJSON.put("password", strings[1]);
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    parametrosJSON.put("accessToken", timestamp.getTime());
 
                     PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
                     out.print(parametrosJSON.toString());
@@ -235,8 +240,15 @@ public class AsyncTaskFragment extends Fragment {
                     // if ok
                     if (json.containsKey("success")){
                         // toast
-                        // set the active username so we don't have to read it from the database every time
-                        Data.getMyData().setActiveUsername(strings[0]);
+                        // set the active username
+                        Data.getMyData().setActiveUsername(json.get("success").toString());
+
+                        // guardar el usuario activo en las preferencias
+                        LogInActivity activity = (LogInActivity)getActivity();
+                        if (activity != null){
+                            activity.setActiveUsername(json.get("success").toString());
+                        }
+
                         Log.i("aqui_active", Data.getMyData().getActiveUsername());
                         success = true;
                     }else {

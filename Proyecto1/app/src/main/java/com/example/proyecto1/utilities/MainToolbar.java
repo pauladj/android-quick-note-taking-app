@@ -5,6 +5,7 @@ import android.app.IntentService;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -589,6 +590,16 @@ public class MainToolbar extends LanguageActivity {
         // remove active
         // user
         Data.getMyData().setActiveUsername(null); // remove active user
+
+        // borrarlo de las preferencias
+        SharedPreferences prefs_especiales= getSharedPreferences(
+                "preferencias_especiales",
+                Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor2= prefs_especiales.edit();
+        editor2.remove("activeUsername");
+        editor2.apply();
+
         // start login screen
         Intent i = new Intent(this, LogInActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);// Limpiar pila de actividades

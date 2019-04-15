@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 
-public class LoaderWelcomeActivity extends AppCompatActivity {
+public class LoaderWelcomeActivity extends Common {
 
     private boolean shownAlready = false; // if we change the orientation while
                                             // the thread is running, it will duplicate the
@@ -58,8 +58,7 @@ public class LoaderWelcomeActivity extends AppCompatActivity {
                 } finally {
                     // After 1.5 seconds
                     // check if a user is already logged in
-                    MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
-                    String loggedInUsername = gestorDB.getActiveUsername();
+                    String loggedInUsername = getActiveUsername();
                     if (loggedInUsername != null){
                         // user has previously logged in
                         // set the active username so we don't have to log in every time

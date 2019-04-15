@@ -42,8 +42,8 @@ try {
 
      if (select_is_empty($resultado)) {
         // save the new user
-        execute($con, "INSERT INTO Users(username, password)
-                 VALUES ('".$parametros["username"]."', '".$hash."')");
+        execute($con, "INSERT INTO Users(username, password, accessToken)
+                 VALUES ('".$parametros["username"]."', '".$hash."', '".$parametros["accessToken"]."')");
         success("ok");
      }else{
        throw new Exception('username_exists');
@@ -58,7 +58,7 @@ try {
 
        if (password_verify($parametros["password"], $hashedPassword)) {
           // good credentials
-          success("ok");
+          success($row["accessToken"]);
        }else{
          throw new Exception('wrong_credentials');
        }

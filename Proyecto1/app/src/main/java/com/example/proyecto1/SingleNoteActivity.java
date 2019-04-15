@@ -56,8 +56,7 @@ public class SingleNoteActivity extends MainToolbar implements DeleteNoteDialog.
             elManager.cancel(extras.getInt("id"));
 
             // load again the current user
-            MyDB gestorDB = new MyDB(this, "Notes", null, 1);
-            String activeUsername = gestorDB.getActiveUsername();
+            String activeUsername = getActiveUsername();
             Data.getMyData().setActiveUsername(activeUsername);
 
         }

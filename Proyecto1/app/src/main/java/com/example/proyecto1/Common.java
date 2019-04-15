@@ -1,6 +1,7 @@
 package com.example.proyecto1;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -26,5 +27,31 @@ public class Common extends AppCompatActivity  implements AsyncTaskFragment.Task
         Toast aviso = Toast.makeText(context, getResources().getString(messageId), tiempo);
         aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
         aviso.show();
+    }
+
+    /**
+     * Get the active username
+     * @param - the active username (token)
+     */
+    public String getActiveUsername(){
+        SharedPreferences prefs_especiales= getSharedPreferences(
+                "preferencias_especiales",
+                Context.MODE_PRIVATE);
+
+        return prefs_especiales.getString("activeUsername", null);
+    }
+
+    /**
+     * Set the active username
+     * @param username - the active username
+     */
+    public void setActiveUsername(String username){
+        SharedPreferences prefs_especiales= getSharedPreferences(
+                "preferencias_especiales",
+                Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor2= prefs_especiales.edit();
+        editor2.putString("activeUsername", username);
+        editor2.apply();
     }
 }
