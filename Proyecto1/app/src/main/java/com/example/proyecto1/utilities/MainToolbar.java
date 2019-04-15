@@ -586,24 +586,14 @@ public class MainToolbar extends LanguageActivity {
      * The user wants to log out
      */
     private void logOut(){
-        MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
-        boolean changed = gestorDB.setUsernameAsInactive(Data.getMyData().getActiveUsername()); //
         // remove active
         // user
-        if (changed){
-            Data.getMyData().setActiveUsername(null); // remove active user
-            // start login screen
-            Intent i = new Intent(this, LogInActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);// Limpiar pila de actividades
-            startActivity(i);
-            finish();
-        }else{
-            // database error
-            int tiempo = Toast.LENGTH_SHORT;
-            Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
-            aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
-            aviso.show();
-        }
+        Data.getMyData().setActiveUsername(null); // remove active user
+        // start login screen
+        Intent i = new Intent(this, LogInActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);// Limpiar pila de actividades
+        startActivity(i);
+        finish();
     }
 
     @Override
