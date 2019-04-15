@@ -22,14 +22,10 @@ public class MyDB extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Create table Users
-        db.execSQL("CREATE TABLE Users ('username' CHAR(255) PRIMARY KEY NOT NULL, 'password' " +
-                "CHAR(255) NOT NULL, 'active' BIT DEFAULT 0)");
 
         // Create table Tags
         db.execSQL("CREATE TABLE Tags ('id' INTEGER PRIMARY KEY AUTOINCREMENT," +
-                " 'name' CHAR(255) NOT NULL, 'username' INTEGER, FOREIGN KEY('username') "+
-                " REFERENCES Users('username') ON DELETE CASCADE)");
+                " 'name' CHAR(255) NOT NULL, 'username' INTEGER)");
 
         // Create table Notes
         db.execSQL("CREATE TABLE Notes ('id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -37,8 +33,7 @@ public class MyDB extends SQLiteOpenHelper {
                 "DATETIME " +
                 "NOT NULL DEFAULT (datetime('now','localtime')), 'labelId' INTEGER, 'username' CHAR(255)" +
                 ", " +
-                "FOREIGN KEY('labelId') REFERENCES Tags('id') ON DELETE SET NULL, " +
-                "FOREIGN KEY('username') REFERENCES Users('username') ON DELETE CASCADE)");
+                "FOREIGN KEY('labelId') REFERENCES Tags('id') ON DELETE SET NULL)");
 
         // Create table NoteImage
         db.execSQL("CREATE TABLE NoteImage ('id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -46,7 +41,6 @@ public class MyDB extends SQLiteOpenHelper {
                 "FOREIGN KEY('noteId') REFERENCES Notes('id') ON DELETE CASCADE)");
 
         // Insert dummy data
-        db.execSQL("INSERT INTO Users VALUES ('admin', '1111', 1)");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (2, 'tagPrueba2', 'admin')");
         db.execSQL("INSERT INTO Tags(id, name, username) VALUES (3, 'tagPrueba3', 'admin')");

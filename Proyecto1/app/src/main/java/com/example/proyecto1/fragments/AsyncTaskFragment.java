@@ -2,6 +2,7 @@ package com.example.proyecto1.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.SystemClock;
@@ -15,8 +16,11 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.example.proyecto1.Common;
+import com.example.proyecto1.LogInActivity;
+import com.example.proyecto1.MainActivity;
 import com.example.proyecto1.R;
 import com.example.proyecto1.SignUpActivity;
+import com.example.proyecto1.utilities.Data;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -129,16 +133,21 @@ public class AsyncTaskFragment extends Fragment {
             isTaskRunning = true;
             Log.i("aquiw", "333");
 
-            progressDialog = ProgressDialog.show(getActivity(), "Loading", "Please wait a moment!");
+            // enseñar el diálogo
+            progressDialog = ProgressDialog.show(getActivity(),
+                    getResources().getString(R.string.loadingTitle),
+                    getResources().getString(R.string.loadingBody));
         }
 
         @Override
         public void onPostExecute(Pair<Boolean, Integer> result) {
             if (progressDialog != null) {
+                // cerrar el diálogo
                 progressDialog.dismiss();
             }
             isTaskRunning = false;
             if (result != null){
+                // si hay mensaje enviarlo a la actividad padre
                 mCallbacks.showToast(result.first, result.second);
             }
             if (action.equals("signup") && success){
@@ -146,6 +155,14 @@ public class AsyncTaskFragment extends Fragment {
                 SignUpActivity activity = (SignUpActivity)getActivity();
                 if (activity != null){
                     activity.goToLogIn();
+                }
+            }else if(action.equals("login") && success){
+                // go to the main activity
+                LogInActivity activity = (LogInActivity)getActivity();
+                if (activity != null) {
+                    Intent i = new Intent(getActivity(), MainActivity.class);
+                    startActivity(i);
+                    getActivity().finish();
                 }
             }
         }
@@ -177,9 +194,10 @@ public class AsyncTaskFragment extends Fragment {
 
                 // se forma el json y se procesa la respuesta según el método que se quiera
 
+                JSONObject parametrosJSON = new JSONObject();
+                parametrosJSON.put("action", action);
                 if (action == "signup") {
-                    JSONObject parametrosJSON = new JSONObject();
-                    parametrosJSON.put("action", action);
+                    // El usuario quiere registrarse
                     parametrosJSON.put("username", strings[0]);
                     parametrosJSON.put("password", strings[1]);
 
@@ -199,6 +217,33 @@ public class AsyncTaskFragment extends Fragment {
                         if (error.equals("username_exists")){
                             // show toast
                             return Pair.create(true, R.string.userAlreadyExists);
+                        }else{
+                            throw new Exception("connection_error");
+                        }
+                    }
+                }else if (action == "login") {
+                    // El usuario quiere registrarse
+                    parametrosJSON.put("username", strings[0]);
+                    parametrosJSON.put("password", strings[1]);
+
+                    PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
+                    out.print(parametrosJSON.toString());
+                    out.close();
+
+                    JSONObject json = getJsonFromResponse(urlConnection);
+
+                    // if ok
+                    if (json.containsKey("success")){
+                        // toast
+                        // set the active username so we don't have to read it from the database every time
+                        Data.getMyData().setActiveUsername(strings[0]);
+                        Log.i("aqui_active", Data.getMyData().getActiveUsername());
+                        success = true;
+                    }else {
+                        String error = json.get("error").toString();
+                        if (error.equals("wrong_credentials")){
+                            // show toast
+                            return Pair.create(true, R.string.incorrectPassword);
                         }else{
                             throw new Exception("connection_error");
                         }
@@ -233,6 +278,7 @@ public class AsyncTaskFragment extends Fragment {
                     inputStream.close();
                     Log.i("aqui", result);
 
+                    // get the json of the response
                     JSONParser parser = new JSONParser();
                     JSONObject json = (JSONObject) parser.parse(result);
                     Log.i("aquijson", json.toString());
@@ -244,6 +290,7 @@ public class AsyncTaskFragment extends Fragment {
                 // error
                 // there was a connection error
                 if (urlConnection != null){
+                    // cerrar conexión
                     urlConnection.disconnect();
                 }
                 throw new Exception("connection_error");

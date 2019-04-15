@@ -3,6 +3,7 @@
 define('__PROJECT_ROOT__', dirname(__FILE__));
 //require_once(__PROJECT_ROOT__.'/connector.php');
 require_once('connector.php');
+require_once('utils.php');
 
 
 function success($message){
@@ -25,7 +26,6 @@ $action = $parametros["action"];
 
 try {
    $con = connect();
-   $allGood = false;
    if ($action == "checkIfUserCanBeLoggedIn") {
      // TODO
      // Checks if a username exists with that password
@@ -37,14 +37,33 @@ try {
    }elseif ($action == "signup") {
      /*----  Sign Up ----*/
      // check if username exists
-     $resultado = execute($con, "SELECT username FROM Users WHERE username='".$parametros["username"]."' AND password='".$parametros["password"]."'");
+     $hash = hashPassword($parametros["password"]);
+     $resultado = execute($con, "SELECT username FROM Users WHERE username='".$parametros["username"]."' AND password='".$hash."'");
+
      if (select_is_empty($resultado)) {
         // save the new user
         execute($con, "INSERT INTO Users(username, password)
-                 VALUES ('".$parametros["username"]."', '".$parametros["password"]."')");
+                 VALUES ('".$parametros["username"]."', '".$hash."')");
         success("ok");
      }else{
        throw new Exception('username_exists');
+     }
+   }elseif ($action == "login") {
+     /*---- Log In ----*/
+     $resultado = execute($con, "SELECT password FROM Users WHERE username='".$parametros["username"]."'");
+     if (!select_is_empty($resultado)) {
+       // the user exists, check password
+       $row = mysqli_fetch_assoc($resultado);
+       $hashedPassword = $row["password"];
+
+       if (password_verify($parametros["password"], $hashedPassword)) {
+          // good credentials
+          success("ok");
+       }else{
+         throw new Exception('wrong_credentials');
+       }
+     }else{
+       throw new Exception('wrong_credentials');
      }
    }
 } catch (Exception $e) {
