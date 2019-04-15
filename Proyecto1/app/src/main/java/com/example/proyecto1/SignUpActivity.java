@@ -17,7 +17,7 @@ import com.example.proyecto1.fragments.AsyncTaskFragment;
 import com.example.proyecto1.utilities.MyDB;
 import com.google.android.gms.dynamic.SupportFragmentWrapper;
 
-public class SignUpActivity extends LanguageActivity implements AsyncTaskFragment.TaskCallbacks {
+public class SignUpActivity extends LanguageActivity{
 
     private static final String TAG_TASK_FRAGMENT = "task_fragment";
     private AsyncTaskFragment mTaskFragment;
@@ -30,11 +30,12 @@ public class SignUpActivity extends LanguageActivity implements AsyncTaskFragmen
         //focus on username field when username sees the screen
         findViewById(R.id.inputUsername).requestFocus();
 
+        // fragmento que contiene la tarea asíncrona
         FragmentManager fm = getSupportFragmentManager();
         mTaskFragment = (AsyncTaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
 
-        // If the Fragment is non-null, then it is currently being
-        // retained across a configuration change.
+        // El fragmento solo es null cuando la actividad se crea por primera vez, cuando se rota
+        // el fragmento se mantiene
         if (mTaskFragment == null) {
             mTaskFragment = new AsyncTaskFragment();
             fm.beginTransaction().add(mTaskFragment, TAG_TASK_FRAGMENT).commit();
@@ -46,6 +47,13 @@ public class SignUpActivity extends LanguageActivity implements AsyncTaskFragmen
      * Click on log in button
      */
     public void logInButton(View view){
+        goToLogIn();
+    }
+
+    /**
+     * Go to the log in page
+     */
+    public void goToLogIn(){
         Intent i = new Intent(this, LogInActivity.class);
         startActivity(i);
         finish();
@@ -65,37 +73,9 @@ public class SignUpActivity extends LanguageActivity implements AsyncTaskFragmen
             // empty username or password, do nothing
         }else{
             // sign up
-            Log.i("aquiw", "asdf");
-            String[] params = {"signup", username, password};
+            String[] params = {username, password};
+            mTaskFragment.setAction("signup");
             mTaskFragment.start(params);
-
-            /*
-            MyDB gestorDB = new MyDB(this, "Notes", null, 1);
-            Boolean usernameExists = gestorDB.checkIfUsernameExists(username);
-            if (usernameExists){
-                // toast saying it exists
-                int tiempo = Toast.LENGTH_SHORT;
-                Toast aviso = Toast.makeText(this, R.string.userAlreadyExists, tiempo);
-                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
-                aviso.show();
-            }else{
-                // Save the new user
-                SQLiteDatabase db = gestorDB.getWritableDatabase();
-                ContentValues newUser = new ContentValues();
-                newUser.put("username", username);
-                newUser.put("password", password);
-                db.insert("Users", null, newUser);
-                db.close();
-
-                // show toast across screens
-                int tiempo = Toast.LENGTH_SHORT;
-                Toast aviso = Toast.makeText(getApplicationContext(), R.string.userSuccessfullyRegistered, tiempo);
-                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
-                aviso.show();
-
-                // and then show log in screen
-                logInButton(view);
-            }*/
         }
     }
 

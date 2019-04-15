@@ -11,7 +11,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.util.Locale;
-public class LanguageActivity extends AppCompatActivity {
+public class LanguageActivity extends Common {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

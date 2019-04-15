@@ -15,8 +15,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/NotesTheme">
+        android:theme="@style/NotesTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".Common"></activity>
 
         <service android:name=".services.UploadToDriveService" />
 

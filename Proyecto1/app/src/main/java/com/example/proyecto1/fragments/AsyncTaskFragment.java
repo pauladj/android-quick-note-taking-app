@@ -10,6 +10,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
+import android.view.Gravity;
+import android.widget.Toast;
+
+import com.example.proyecto1.Common;
+import com.example.proyecto1.R;
+import com.example.proyecto1.SignUpActivity;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,25 +36,18 @@ public class AsyncTaskFragment extends Fragment {
 
     private ProgressDialog progressDialog;
     private boolean isTaskRunning = false;
+    private String action; // action to do, signup, login....
+    private boolean success = false; // if the asynctask has been successful...
 
 
-    /**
-     * Callback interface through which the fragment will report the
-     * task's progress and results back to the Activity.
-     */
     public interface TaskCallbacks {
-
+        void showToast(Boolean acrossWindows, int messageId);
     }
 
     private TaskCallbacks mCallbacks;
     private DummyTask mTask;
 
-    /**
-     * Hold a reference to the parent Activity so we can report the
-     * task's current progress and results. The Android framework
-     * will pass us a reference to the newly created Activity after
-     * each configuration change.
-     */
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -55,14 +55,13 @@ public class AsyncTaskFragment extends Fragment {
     }
 
     /**
-     * This method will only be called once when the retained
-     * Fragment is first created.
+     * This method will only be called once
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Retain this fragment across configuration changes.
+        // Mantener el fragmento aunque se rote la pantalla.
         setRetainInstance(true);
     }
 
@@ -85,6 +84,13 @@ public class AsyncTaskFragment extends Fragment {
         mTask = new DummyTask();
         Log.i("aquiw", "asdf22222222222");
         mTask.execute(params);
+    }
+
+    /**
+     * Set the action to execute
+     */
+    public void setAction(String action){
+        this.action = action;
     }
 
 
@@ -111,7 +117,7 @@ public class AsyncTaskFragment extends Fragment {
      * method in case they are invoked after the Activity's and
      * Fragment's onDestroy() method have been called.
      */
-    private class DummyTask extends AsyncTask<String, Void, String> {
+    private class DummyTask extends AsyncTask<String, Void, Pair<Boolean, Integer>> {
 
 
         // The four methods below are called by the TaskFragment when new
@@ -127,12 +133,23 @@ public class AsyncTaskFragment extends Fragment {
         }
 
         @Override
-        public void onPostExecute(String result) {
+        public void onPostExecute(Pair<Boolean, Integer> result) {
             if (progressDialog != null) {
                 progressDialog.dismiss();
             }
             isTaskRunning = false;
+            if (result != null){
+                mCallbacks.showToast(result.first, result.second);
+            }
+            if (action.equals("signup") && success){
+                // go to the login view
+                SignUpActivity activity = (SignUpActivity)getActivity();
+                if (activity != null){
+                    activity.goToLogIn();
+                }
+            }
         }
+
 
         /**
          * Note that we do NOT call the callback object's methods
@@ -140,60 +157,99 @@ public class AsyncTaskFragment extends Fragment {
          * in a race condition.
          */
         @Override
-        protected String doInBackground(String... strings) {
+        protected Pair<Boolean, Integer> doInBackground(String... strings) {
             Log.i("aqui", "backgro");
-            String action = strings[0];
             Log.i("aqui", action);
-            if (action == "signup") {
+            try {
+                // se forma la url con sus opciones para pedir datos al servidor
                 String direccion = "https://dawepauladj.webcindario.com/urls.php";
                 HttpURLConnection urlConnection = null;
-                try {
-                    URL destino = new URL(direccion);
 
-                    urlConnection = (HttpURLConnection) destino.openConnection();
-                    urlConnection.setConnectTimeout(5000);
-                    urlConnection.setReadTimeout(5000);
+                URL destino = new URL(direccion);
 
+                urlConnection = (HttpURLConnection) destino.openConnection();
+                urlConnection.setConnectTimeout(5000);
+                urlConnection.setReadTimeout(5000);
+
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoOutput(true);
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+
+                // se forma el json y se procesa la respuesta según el método que se quiera
+
+                if (action == "signup") {
                     JSONObject parametrosJSON = new JSONObject();
                     parametrosJSON.put("action", action);
-                    parametrosJSON.put("username", strings[1]);
-                    parametrosJSON.put("password", strings[2]);
-
-                    urlConnection.setRequestMethod("POST");
-                    urlConnection.setDoOutput(true);
-                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    parametrosJSON.put("username", strings[0]);
+                    parametrosJSON.put("password", strings[1]);
 
                     PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
                     out.print(parametrosJSON.toString());
                     out.close();
 
-                    int statusCode = urlConnection.getResponseCode();
-                    Log.i("aqui", urlConnection.getResponseMessage());
-                    Log.i("aquistatus", String.valueOf(statusCode));
+                    JSONObject json = getJsonFromResponse(urlConnection);
 
-                    if (statusCode == 200) {
-                        BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                        String line, result = "";
-                        while ((line = bufferedReader.readLine()) != null) {
-                            result += line;
+                    // if ok
+                    if (json.containsKey("success")){
+                        // toast
+                        success = true;
+                        return Pair.create(true, R.string.userSuccessfullyRegistered);
+                    }else {
+                        String error = json.get("error").toString();
+                        if (error.equals("username_exists")){
+                            // show toast
+                            return Pair.create(true, R.string.userAlreadyExists);
+                        }else{
+                            throw new Exception("connection_error");
                         }
-                        inputStream.close();
-                        Log.i("aqui", result);
-
-                        JSONParser parser = new JSONParser();
-                        JSONObject json = (JSONObject) parser.parse(result);
-                        Log.i("aqui", json.toString());
                     }
-                } catch (Exception e) {
-                    // error
-                    Log.i("aqui", e.toString());
                 }
+            } catch (Exception e) {
+                // error
+                // toast of error
+                Log.i("aqui", e.toString());
+                return Pair.create(true, R.string.serverError);
             }
-            return "d";
+            return null;
         }
 
+        /**
+         * We get the json from the http request
+         * @param urlConnection
+         * @return - the json object of the response
+         * @throws Exception - if there is a connection error
+         */
+        private JSONObject getJsonFromResponse(HttpURLConnection urlConnection) throws Exception{
+            try{
+                int statusCode = urlConnection.getResponseCode();
 
+                if (statusCode == 200) {
+                    BufferedInputStream inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                    String line, result = "";
+                    while ((line = bufferedReader.readLine()) != null) {
+                        result += line;
+                    }
+                    inputStream.close();
+                    Log.i("aqui", result);
+
+                    JSONParser parser = new JSONParser();
+                    JSONObject json = (JSONObject) parser.parse(result);
+                    Log.i("aquijson", json.toString());
+                    return json;
+                }else{
+                    throw new Exception("connection_error");
+                }
+            }catch (Exception e){
+                // error
+                // there was a connection error
+                if (urlConnection != null){
+                    urlConnection.disconnect();
+                }
+                throw new Exception("connection_error");
+            }
+
+        }
 
     }
 }

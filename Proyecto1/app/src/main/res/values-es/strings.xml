@@ -86,5 +86,7 @@
     <string name="noteUploadFail">Se ha producido un error al intentar guardar la nota en Google Drive</string>
     <string name="noteUpload">Subiendo la nota a Google Drive</string>
     <string name="googlePlayNeeded">Necesitas tener instalado Google Play para utilizar esta funcionalidad</string>
-
+    <string name="serverError">No se ha podido conectar con el servidor</string>
+    <string name="loadingTitle">Cargando</string>
+    <string name="loadingBody">Por favor, espera un momento…</string>
 </resources>

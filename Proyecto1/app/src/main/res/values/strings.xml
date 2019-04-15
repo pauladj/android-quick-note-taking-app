@@ -86,6 +86,7 @@
     <string name="noteUploadFail">There was a problem trying to upload the note</string>
     <string name="noteUpload">Uploading the note to Google Drive</string>
     <string name="googlePlayNeeded">You need to install Google Play for this functionality to work</string>
-
-
+    <string name="serverError">There was an error when trying to connect to the server</string>
+    <string name="loadingTitle">Loading</string>
+    <string name="loadingBody">Please wait a moment…</string>
 </resources>
