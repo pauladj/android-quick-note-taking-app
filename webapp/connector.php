@@ -24,7 +24,7 @@ function connect(){
 
   #Comprobamos conexión
   if (mysqli_connect_errno($con)) {
-    echo 'Error de conexion: ' . mysqli_connect_error();
+    //echo 'Error de conexion: ' . mysqli_connect_error();
     throw new Exception('external_error');
   }
 
@@ -37,8 +37,8 @@ function execute($con, $sentence){
   $resultado = mysqli_query($con, $sentence);
   # Comprobar si se ha ejecutado correctamente
   if (!$resultado) {
-    echo 'Ha ocurrido algún error: ' . mysqli_error($con);
-    exit;
+    //echo 'Ha ocurrido algún error: ' . mysqli_error($con);
+    //exit;
     throw new Exception('external_error');
   }
   return $resultado;
@@ -47,9 +47,9 @@ function execute($con, $sentence){
 
 function select_is_empty($resultado){
   if (mysqli_num_rows($resultado) > 0) {
-    return true;
-  }else{
     return false;
+  }else{
+    return true;
   }
 }
 
