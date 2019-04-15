@@ -50,7 +50,7 @@ try {
      }
    }elseif ($action == "login") {
      /*---- Log In ----*/
-     $resultado = execute($con, "SELECT password FROM Users WHERE username='".$parametros["username"]."'");
+     $resultado = execute($con, "SELECT password, accessToken FROM Users WHERE username='".$parametros["username"]."'");
      if (!select_is_empty($resultado)) {
        // the user exists, check password
        $row = mysqli_fetch_assoc($resultado);
@@ -58,7 +58,8 @@ try {
 
        if (password_verify($parametros["password"], $hashedPassword)) {
           // good credentials
-          success($row["accessToken"]);
+          $accessToken = $row["accessToken"];
+          success($accessToken);
        }else{
          throw new Exception('wrong_credentials');
        }
