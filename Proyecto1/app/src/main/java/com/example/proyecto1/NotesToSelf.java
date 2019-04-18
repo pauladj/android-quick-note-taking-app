@@ -1,6 +1,8 @@
 package com.example.proyecto1;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
@@ -72,6 +74,11 @@ public class NotesToSelf extends MainToolbar {
      * @param imagePath - the path of the image
      */
     private void clickOnSelfNote(String imagePath){
-
+        if (imagePath != null && !imagePath.isEmpty()) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(imagePath), "image/*");
+            startActivity(intent);
+        }
     }
 }

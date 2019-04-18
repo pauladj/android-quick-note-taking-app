@@ -38,6 +38,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -381,12 +382,19 @@ public class AsyncTaskFragment extends Fragment {
                     if (anchoImagen >= 240){
                         // redimensionar
                         altoImagen = ((altoImagen * 240) / anchoImagen);
-                        elBitmap  = Bitmap.createScaledBitmap(elBitmap, 240, altoImagen, false);
+                        elBitmap  = Bitmap.createScaledBitmap(elBitmap, 240, altoImagen, true);
                     }
 
                     elBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
                     os.flush();
                     os.close();
+
+                    // avisar a la galería de que hay una nueva foto
+                    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    Uri contentUri = Uri.fromFile(imagenFich);
+                    mediaScanIntent.setData(contentUri);
+                    getActivity().sendBroadcast(mediaScanIntent);
+
 
                     Log.i("aqui_downloadaimage", "end");
                     Log.i("aquiu_path", imagenFich.getPath());
