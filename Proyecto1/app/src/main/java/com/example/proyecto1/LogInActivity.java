@@ -19,9 +19,6 @@ import java.io.OutputStreamWriter;
 
 public class LogInActivity extends LanguageActivity {
 
-    private static final String TAG_TASK_FRAGMENT = "task_fragment";
-    private AsyncTaskFragment mTaskFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,17 +26,6 @@ public class LogInActivity extends LanguageActivity {
         setContentView(R.layout.login);
         //focus on username field when username sees the screen
         findViewById(R.id.inputUsername).requestFocus();
-
-        // fragmento que contiene la tarea asíncrona
-        FragmentManager fm = getSupportFragmentManager();
-        mTaskFragment = (AsyncTaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
-
-        // El fragmento solo es null cuando la actividad se crea por primera vez, cuando se rota
-        // el fragmento se mantiene
-        if (mTaskFragment == null) {
-            mTaskFragment = new AsyncTaskFragment();
-            fm.beginTransaction().add(mTaskFragment, TAG_TASK_FRAGMENT).commit();
-        }
     }
 
     /**
@@ -58,40 +44,8 @@ public class LogInActivity extends LanguageActivity {
         } else {
             // log in
             String[] params = {username, password};
-            mTaskFragment.setAction("login");
-            mTaskFragment.start(params);
-
-            /*
-            MyDB gestorDB = new MyDB(this, "Notes", null, 1);
-            boolean userCanBeLoggedIn = gestorDB.checkIfUserCanBeLoggedIn(username, password);
-            if (userCanBeLoggedIn) {
-                // there is a user with this data
-                // save the user as active in database
-                boolean changed = gestorDB.setUsernameAsActive(username);
-
-                if (changed){
-                    // set the active username so we don't have to read it from the database every time
-                    Data.getMyData().setActiveUsername(username);
-
-                    // go to the main activity
-                    Intent i = new Intent(this, MainActivity.class);
-                    startActivity(i);
-                    finish();
-                }else {
-                    // database error
-                    int tiempo = Toast.LENGTH_SHORT;
-                    Toast aviso = Toast.makeText(this, R.string.databaseError, tiempo);
-                    aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
-                    aviso.show();
-                }
-
-
-            } else {
-                int tiempo = Toast.LENGTH_SHORT;
-                Toast aviso = Toast.makeText(this, R.string.incorrectPassword, tiempo);
-                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
-                aviso.show();
-            }*/
+            getmTaskFragment().setAction("login");
+            getmTaskFragment().start(params);
         }
     }
 

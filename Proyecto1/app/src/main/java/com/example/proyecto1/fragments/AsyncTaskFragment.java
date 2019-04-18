@@ -5,8 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -20,20 +23,32 @@ import android.widget.Toast;
 import com.example.proyecto1.Common;
 import com.example.proyecto1.LogInActivity;
 import com.example.proyecto1.MainActivity;
+import com.example.proyecto1.NotesToSelf;
 import com.example.proyecto1.R;
 import com.example.proyecto1.SignUpActivity;
 import com.example.proyecto1.utilities.Data;
+import com.example.proyecto1.utilities.GeneradorConexionesSeguras;
+import com.example.proyecto1.utilities.MyDB;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * This Fragment manages a single background task and retains
@@ -167,6 +182,9 @@ public class AsyncTaskFragment extends Fragment {
                     startActivity(i);
                     getActivity().finish();
                 }
+            }else if(action.equals("fetchselfnotes")){
+                Intent i = new Intent(getActivity(), NotesToSelf.class);
+                startActivity(i);
             }
         }
 
@@ -182,14 +200,10 @@ public class AsyncTaskFragment extends Fragment {
             Log.i("aqui", action);
             try {
                 // se forma la url con sus opciones para pedir datos al servidor
-                String direccion = "https://dawepauladj.webcindario.com/urls.php";
-                HttpURLConnection urlConnection = null;
+                String direccion = "https://134.209.235.115/pdejaime001/WEB/urls.php";
 
-                URL destino = new URL(direccion);
-
-                urlConnection = (HttpURLConnection) destino.openConnection();
-                urlConnection.setConnectTimeout(5000);
-                urlConnection.setReadTimeout(5000);
+                HttpsURLConnection urlConnection=
+                        GeneradorConexionesSeguras.getInstance().crearConexionSegura(getActivity(),direccion);
 
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setDoOutput(true);
@@ -260,14 +274,132 @@ public class AsyncTaskFragment extends Fragment {
                             throw new Exception("connection_error");
                         }
                     }
+                }else if(action == "fetchselfnotes"){
+                    // se obtienen notas nuevas, es decir, si el usuario no tiene datos de
+                    // aplicación se obtendrán todas, pero si hay realizado esta acción hace 5
+                    // minutos se obtendrán las nuevas
+
+                    // se obtiene el json
+
+                    // obtener la fecha de la última vez que se realizó esta acción
+                    String pattern = "yyyy-MM-dd HH:mm:ss";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+                    String currentDate = simpleDateFormat.format(new Date());
+                    Log.i("aqui_currentdate", currentDate);
+
+                    SharedPreferences prefs_especiales= getActivity().getSharedPreferences(
+                            "preferencias_especiales",
+                            Context.MODE_PRIVATE);
+                    String lastFetchedDate = prefs_especiales.getString("lastFetchedDate",
+                            currentDate);
+
+                    // guardar fecha y hora del último fetch
+                    SharedPreferences.Editor editor2= prefs_especiales.edit();
+                    editor2.putString("lastFetchedDate", currentDate);
+                    editor2.apply();
+
+                    parametrosJSON.put("username", Data.getMyData().getActiveUsername());
+                    parametrosJSON.put("date", lastFetchedDate);
+                    parametrosJSON.put("now", currentDate);
+                    Log.i("aqui_envia", parametrosJSON.toJSONString() );
+                    PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
+                    out.print(parametrosJSON.toString());
+                    out.close();
+
+                    JSONObject json = getJsonFromResponse(urlConnection);
+
+                    // si se ha producido un problema
+                    if (!json.containsKey("success")){
+                        throw new Exception("connection_error");
+                    }
+
+                    // si hay imagen ésta se descarga
+                    JSONArray selfNotes = (JSONArray) json.get("success");
+                    for (int i = 0; i < selfNotes.size(); i++) {
+                        JSONObject row = (JSONObject) selfNotes.get(i);
+
+                        Log.i("aqui_iteracion", row.toJSONString());
+
+                        String imagePath = (String) row.get("imagePath");
+                        String imageLocalPath = "";
+                        String date = (String) row.get("date"); // FIXME no se si esto es así
+                        String message = (String) row.get("message");
+
+
+                        if (imagePath != null){
+                            // la nota es una imagen, se descarga y se guarda
+                            imageLocalPath = downloadAndSaveImage(imagePath);
+                            if (imageLocalPath.equals("")){
+                                // se ha producido un error al descargar/guardar la imagen
+                                message = getResources().getString(R.string.imageError);
+                            }
+                        }
+                        // se guarda en la base de datos
+                        String activeUser = Data.getMyData().getActiveUsername();
+                        MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
+                        gestorDB.addSelfNote(activeUser, message, imageLocalPath, date);
+                    }
                 }
             } catch (Exception e) {
                 // error
                 // toast of error
-                Log.i("aqui", e.toString());
+                Log.i("aquidf", e.getMessage());
                 return Pair.create(true, R.string.serverError);
             }
             return null;
+        }
+
+        /**
+         * Download an image from the server and save it on the phone
+         * @param url - the url of the image to download
+         * @return - the local path of the image
+         */
+        private String downloadAndSaveImage(String url){
+            try {
+                Log.i("aqui_downloadaimage", "start");
+
+                HttpsURLConnection conn =
+                        GeneradorConexionesSeguras.getInstance().crearConexionSegura(getActivity(), url);
+
+                int responseCode = 0;
+
+                responseCode = conn.getResponseCode();
+                if (responseCode == HttpsURLConnection.HTTP_OK) {
+                    Bitmap elBitmap = BitmapFactory.decodeStream(conn.getInputStream());
+
+                    File eldirectorio = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String fileName = timeStamp + "_";
+
+                    File imagenFich = new File(eldirectorio, fileName + ".jpg");
+                    OutputStream os = new FileOutputStream(imagenFich);
+
+                    int anchoImagen = elBitmap.getWidth();
+                    int altoImagen = elBitmap.getHeight();
+
+                    if (anchoImagen >= 240){
+                        // redimensionar
+                        altoImagen = ((altoImagen * 240) / anchoImagen);
+                        elBitmap  = Bitmap.createScaledBitmap(elBitmap, 240, altoImagen, false);
+                    }
+
+                    elBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                    os.flush();
+                    os.close();
+
+                    Log.i("aqui_downloadaimage", "end");
+                    Log.i("aquiu_path", imagenFich.getPath());
+                    return imagenFich.getPath();
+
+                }else{
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                // error downloading image
+                Log.i("aquinoooo", e.getMessage());
+                return "";
+            }
         }
 
         /**
@@ -296,6 +428,7 @@ public class AsyncTaskFragment extends Fragment {
                     Log.i("aquijson", json.toString());
                     return json;
                 }else{
+                    Log.i("aqui", String.valueOf(statusCode));
                     throw new Exception("connection_error");
                 }
             }catch (Exception e){

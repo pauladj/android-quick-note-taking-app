@@ -19,8 +19,6 @@ import com.google.android.gms.dynamic.SupportFragmentWrapper;
 
 public class SignUpActivity extends LanguageActivity{
 
-    private static final String TAG_TASK_FRAGMENT = "task_fragment";
-    private AsyncTaskFragment mTaskFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +27,6 @@ public class SignUpActivity extends LanguageActivity{
         setContentView(R.layout.signup);
         //focus on username field when username sees the screen
         findViewById(R.id.inputUsername).requestFocus();
-
-        // fragmento que contiene la tarea asíncrona
-        FragmentManager fm = getSupportFragmentManager();
-        mTaskFragment = (AsyncTaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
-
-        // El fragmento solo es null cuando la actividad se crea por primera vez, cuando se rota
-        // el fragmento se mantiene
-        if (mTaskFragment == null) {
-            mTaskFragment = new AsyncTaskFragment();
-            fm.beginTransaction().add(mTaskFragment, TAG_TASK_FRAGMENT).commit();
-        }
 
     }
 
@@ -74,8 +61,8 @@ public class SignUpActivity extends LanguageActivity{
         }else{
             // sign up
             String[] params = {username, password};
-            mTaskFragment.setAction("signup");
-            mTaskFragment.start(params);
+            getmTaskFragment().setAction("signup");
+            getmTaskFragment().start(params);
         }
     }
 

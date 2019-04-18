@@ -1,15 +1,19 @@
 package com.example.proyecto1;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.proyecto1.dialogs.AddRemoveTag;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
+import com.example.proyecto1.dialogs.NewNoteType;
 import com.example.proyecto1.dialogs.NewTag;
+import com.example.proyecto1.fragments.AsyncTaskFragment;
 import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
 import com.example.proyecto1.utilities.MainToolbar;
@@ -22,7 +26,9 @@ import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 
 public class MainActivity extends MainToolbar implements NotesFragment.listenerDelFragment,
-        DeleteNoteDialog.ListenerDelDialogo, AddRemoveTag.ListenerDelDialogo, NewTag.ListenerDelDialogo {
+        DeleteNoteDialog.ListenerDelDialogo, AddRemoveTag.ListenerDelDialogo,
+        NewTag.ListenerDelDialogo, NewNoteType.ListenerNewNoteType {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +83,29 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
      * @param view - the clicked on element
      */
     public void createNewNote(View view) {
-        Intent intent= new Intent(MainActivity.this, NoteEditorActivity.class);
+        DialogFragment dialogChoose = new NewNoteType();
+        dialogChoose.show(getSupportFragmentManager(), "chooseNoteType");
+    }
+
+    /**
+     * The user has decided to create a normal note
+     */
+    @Override
+    public void createNormalNote() {
+        // crear nota normal
+        Intent intent= new Intent(this, NoteEditorActivity.class);
         startActivityForResult(intent, 334);
+    }
+
+    /**
+     * The user has decided to create a self note
+     */
+    @Override
+    public void createSelfNote() {
+        // obtener info para ver las notas rápidas, es decir, hacer un fetch para ver
+        // si hay nuevas desde la última vez
+        getmTaskFragment().setAction("fetchselfnotes");
+        getmTaskFragment().start(null);
     }
 
     /**

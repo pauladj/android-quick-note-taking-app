@@ -17,7 +17,19 @@
         android:supportsRtl="true"
         android:theme="@style/NotesTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Common"></activity>
+
+        <provider
+            android:authorities="com.example.proyecto1.provider"
+            android:name="android.support.v4.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider"/>
+        </provider>
+
+        <activity android:name=".NotesToSelf"></activity>
+        <activity android:name=".Common" />
 
         <service android:name=".services.UploadToDriveService" />
 
@@ -54,5 +66,7 @@
             </intent-filter>
         </activity>
     </application>
+
+
 
 </manifest>

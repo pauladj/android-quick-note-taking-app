@@ -2,6 +2,8 @@ package com.example.proyecto1;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -10,6 +12,25 @@ import android.widget.Toast;
 import com.example.proyecto1.fragments.AsyncTaskFragment;
 
 public class Common extends AppCompatActivity  implements AsyncTaskFragment.TaskCallbacks  {
+
+    private static final String TAG_TASK_FRAGMENT = "task_fragment";
+    private AsyncTaskFragment mTaskFragment;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // fragmento que contiene la tarea asíncrona
+        FragmentManager fm = getSupportFragmentManager();
+        mTaskFragment = (AsyncTaskFragment) fm.findFragmentByTag(TAG_TASK_FRAGMENT);
+
+        // El fragmento solo es null cuando la actividad se crea por primera vez, cuando se rota
+        // el fragmento se mantiene
+        if (mTaskFragment == null) {
+            mTaskFragment = new AsyncTaskFragment();
+            fm.beginTransaction().add(mTaskFragment, TAG_TASK_FRAGMENT).commit();
+        }
+    }
 
     /**
      * Show a toast in the view
@@ -54,4 +75,14 @@ public class Common extends AppCompatActivity  implements AsyncTaskFragment.Task
         editor2.putString("activeUsername", username);
         editor2.apply();
     }
+
+    /**
+     * Get the fragment containing the asynctask
+     * @return - The async task fragment
+     */
+    public AsyncTaskFragment getmTaskFragment(){
+        return mTaskFragment;
+    }
+
+
 }

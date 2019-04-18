@@ -66,6 +66,34 @@ try {
      }else{
        throw new Exception('wrong_credentials');
      }
+   }elseif ($action == "fetchselfnotes") {
+      //se obtienen las nuevas selfnotes desde la última vez que se miraron
+      $username = $parametros["username"];
+      $date = $parametros["date"];
+      $timestamp = date('Y-m-d H:i:s', strtotime($date));
+
+      $now = date('Y-m-d H:i:s', strtotime($parametros["now"]));
+
+      if ($timestamp == $now) {
+        // first time fetching
+        $resultado = execute($con, "SELECT message, imagePath, creationDate FROM SelfNotes WHERE username='".$username."' AND creationDate <= '".$now."'");
+      }else{
+        $resultado = execute($con, "SELECT message, imagePath, creationDate FROM SelfNotes WHERE username='".$username."' AND creationDate > '".$timestamp."' AND creationDate <= '".$now."'");
+      }
+      $all_json = array(); // all the results
+      if (!select_is_empty($resultado)) {
+        // there are new notes, transform then into json object
+        while($row = mysqli_fetch_assoc($resultado)) {
+          // create json object
+          $json_row = array(
+            'imagePath' => $row["imagePath"],
+            'date' => $row["creationDate"],
+            'message'=> $row["message"]
+          );
+          $all_json[] = $json_row;
+        }
+      }
+      success($all_json);
    }
 } catch (Exception $e) {
   // error

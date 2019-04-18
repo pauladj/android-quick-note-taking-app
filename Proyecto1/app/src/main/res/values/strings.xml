@@ -89,4 +89,8 @@
     <string name="serverError">There was an error when trying to connect to the server</string>
     <string name="loadingTitle">Loading</string>
     <string name="loadingBody">Please wait a moment…</string>
+    <string name="choose">Please, choose one…</string>
+    <string name="chooseNote">Create new note</string>
+    <string name="chooseQuickNote">Write quick note</string>
+    <string name="imageError">Image error</string>
 </resources>

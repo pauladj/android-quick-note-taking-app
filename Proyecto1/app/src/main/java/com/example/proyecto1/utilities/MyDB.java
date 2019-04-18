@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -35,15 +36,11 @@ public class MyDB extends SQLiteOpenHelper {
                 ", " +
                 "FOREIGN KEY('labelId') REFERENCES Tags('id') ON DELETE SET NULL)");
 
-        // Create table NoteImage
-        db.execSQL("CREATE TABLE NoteImage ('id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "'noteId' CHAR(255) NOT NULL, 'imagePath' CHAR(255) NOT NULL, " +
-                "FOREIGN KEY('noteId') REFERENCES Notes('id') ON DELETE CASCADE)");
+        // Create table SelfNotes
+        db.execSQL("CREATE TABLE SelfNotes ('id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "'message' CHAR(255), 'imagePath' CHAR(255), 'date' DATETIME " +
+                "NOT NULL, 'username' CHAR(255))");
 
-        // Insert dummy data
-        db.execSQL("INSERT INTO Tags(id, name, username) VALUES (1, 'tagPrueba', 'admin')");
-        db.execSQL("INSERT INTO Tags(id, name, username) VALUES (2, 'tagPrueba2', 'admin')");
-        db.execSQL("INSERT INTO Tags(id, name, username) VALUES (3, 'tagPrueba3', 'admin')");
 
     }
 
@@ -56,118 +53,6 @@ public class MyDB extends SQLiteOpenHelper {
 
         // Create the tables again
         onCreate(db);
-    }
-
-    /**
-     * Check if a username exists in database
-     * @param username
-     * @return True - exists, False - does not exist
-     */
-    public boolean checkIfUsernameExists(String username){
-        SQLiteDatabase db = null;
-        Cursor c = null;
-        boolean exists;
-        try {
-            db = this.getReadableDatabase();
-            c = db.rawQuery("SELECT username FROM Users WHERE username='" + username + "'", null);
-            if (c.moveToNext()) {
-                // there is a user with these data
-                exists = true;
-            }else{
-                exists = false;
-            }
-        }catch (SQLException e){
-            exists = true;
-        }finally {
-            if (c != null) {
-                c.close();
-            }
-            if (db != null){
-                db.close();
-            }
-        }
-
-        return exists;
-    }
-
-    /**
-     * Checks if a username exists with that password
-     * @param username
-     * @param password
-     * @return True or False
-     */
-    public boolean checkIfUserCanBeLoggedIn(String username, String password){
-        SQLiteDatabase db = null;
-        Cursor c = null;
-        boolean exists;
-        try {
-            db = this.getReadableDatabase();
-            c = db.rawQuery("SELECT username FROM Users WHERE username='" + username + "' AND password='" + password + "'", null);
-            if (c.moveToNext()) {
-                // there is a user with these data
-                exists = true;
-            }else{
-                exists = false;
-            }
-        }catch (SQLException e){
-            exists = true;
-        }finally {
-            if (c != null) {
-                c.close();
-            }
-            if (db != null){
-                db.close();
-            }
-        }
-        return exists;
-    }
-
-    /**
-     * Sets the username as active
-     * @param username
-     * @return true if the user has been set as active
-     */
-    public boolean setUsernameAsActive(String username){
-        SQLiteDatabase db = null;
-        boolean changed;
-        try{
-            db = this.getWritableDatabase();
-            ContentValues modification = new ContentValues();
-            modification.put("active", 1);
-            db.update("Users", modification, "username='" + username + "'", null);
-            changed = true;
-        }catch (SQLException e){
-            changed = false;
-        }finally {
-            if (db != null){
-                db.close();
-            }
-        }
-        return changed;
-    }
-
-    /**
-     * Sets the username as active
-     * @param username
-     * @return true if the username has been set as inactive
-     */
-    public boolean setUsernameAsInactive(String username){
-        SQLiteDatabase db = null;
-        boolean changed;
-        try {
-            db = this.getWritableDatabase();
-            ContentValues modification = new ContentValues();
-            modification.put("active", 0);
-            db.update("Users", modification, "username='" + username + "'", null);
-            changed = true;
-        }catch (SQLException e){
-            changed = false;
-        }finally {
-            if (db != null){
-                db.close();
-            }
-        }
-        return changed;
     }
 
     /**
@@ -252,6 +137,91 @@ public class MyDB extends SQLiteOpenHelper {
         }
         return notesData;
     }
+
+    /**
+     * Get self notes data to show on the screen
+     * @param username - of which we have to get the notes
+     * @return text, date, image of each note
+     */
+    public ArrayList<ArrayList<String>> getSelfNotesByUser(String username){
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        ArrayList<ArrayList<String>> notesData = null;
+
+        try {
+            db = this.getReadableDatabase();
+            c = db.rawQuery("SELECT message, imagePath, date FROM" +
+                            " SelfNotes WHERE username='" + username + "' ORDER BY " +
+                            "date ASC",
+                    null);
+
+            ArrayList<String> noteMessages = new ArrayList<>();
+            ArrayList<String> noteImages = new ArrayList<>();
+            ArrayList<String> noteDates = new ArrayList<>();
+
+            while (c.moveToNext()) {
+                // there is a user with these data
+                String message = c.getString(0);
+                String image = c.getString(1);
+                if (message.equals("null")){
+                    message = null;
+                }
+
+                if (image.isEmpty()){
+                    image = null;
+                }
+                String date = c.getString(2);
+
+                noteMessages.add(message);
+                noteImages.add(image);
+                noteDates.add(date);
+            }
+            notesData = new ArrayList<>();
+            notesData.add(noteMessages);
+            notesData.add(noteDates);
+            notesData.add(noteImages);
+        }catch (SQLException e){
+            //
+            Log.i("aqui", e.toString());
+        }finally {
+            if (c != null) {
+                c.close();
+            }
+            if (db != null){
+                db.close();
+            }
+        }
+        return notesData;
+    }
+
+    /**
+     * Add self note
+     * @param username - the user who wrote it
+     * @param message - the message, this could be null
+     * @param imagePath - the image local path, this could be null
+     * @param date- the date of the self note
+     * @return - if the data has been added
+     */
+    public boolean addSelfNote(String username, String message, String imagePath, String date){
+        SQLiteDatabase db = null;
+        boolean changed;
+        try {
+            db = this.getWritableDatabase();
+
+            db.execSQL("INSERT INTO SelfNotes ('message', 'imagePath', 'date', 'username') VALUES" +
+                    " ('" + message + "', '" + imagePath + "', '" + date + "', '" + username +
+                    "')");
+            changed = true;
+        }catch (SQLException e){
+            changed = false;
+        }finally {
+            if (db != null){
+                db.close();
+            }
+        }
+        return changed;
+    }
+
 
     /**
      * Get a note filename where the content is saved
@@ -355,37 +325,6 @@ public class MyDB extends SQLiteOpenHelper {
             }
         }
         return data;
-    }
-
-    /**
-     * Obtener las imágenes de una nota sabiendo su id
-     * @param noteId - el id de la nota
-     * @return - lista con el path de las imágenes
-     */
-    public ArrayList<String> getNoteImages(int noteId){
-        ArrayList<String> imagesPath = new ArrayList<>();
-        SQLiteDatabase db = null;
-        Cursor c = null;
-        try {
-            db = this.getReadableDatabase();
-            c =
-                    db.rawQuery("SELECT imagePath FROM NotesImages WHERE noteId=" + String.valueOf(noteId),
-                            null);
-
-            while (c.moveToNext()) {
-                imagesPath.add(c.getString(0));
-            }
-        }catch (SQLException e){
-            //
-        }finally{
-            if (c != null) {
-                c.close();
-            }
-            if (db != null){
-                db.close();
-            }
-        }
-        return imagesPath;
     }
 
     /**

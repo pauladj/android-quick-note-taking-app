@@ -89,4 +89,8 @@
     <string name="serverError">No se ha podido conectar con el servidor</string>
     <string name="loadingTitle">Cargando</string>
     <string name="loadingBody">Por favor, espera un momento…</string>
+    <string name="choose">Por favor, elige uno…</string>
+    <string name="chooseNote">Crear nueva nota</string>
+    <string name="chooseQuickNote">Escribir nota rápida</string>
+    <string name="imageError">Error de la imagen</string>
 </resources>
