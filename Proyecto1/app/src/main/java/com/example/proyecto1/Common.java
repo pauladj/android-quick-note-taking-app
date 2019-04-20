@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.proyecto1.fragments.AsyncTaskFragment;
 
-public class Common extends AppCompatActivity  implements AsyncTaskFragment.TaskCallbacks  {
+public class Common extends LanguageActivity  implements AsyncTaskFragment.TaskCallbacks  {
 
     private static final String TAG_TASK_FRAGMENT = "task_fragment";
     private AsyncTaskFragment mTaskFragment;

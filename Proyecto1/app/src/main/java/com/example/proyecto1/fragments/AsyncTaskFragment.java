@@ -56,6 +56,8 @@ import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
+// aqui BIBLIOGRAFÍA
+
 /**
  * This Fragment manages a single background task and retains
  * itself across configuration changes.
@@ -66,6 +68,9 @@ public class AsyncTaskFragment extends Fragment {
     private boolean isTaskRunning = false;
     private String action; // action to do, signup, login....
     private boolean success = false; // if the asynctask has been successful...
+
+    private int currentProgress; // progreso actual
+    private int totalProgress; // progreso máx al que se puede llegar
 
     private String message; // el contenido del self message
     private String image; //el path de la imagen del self message
@@ -105,7 +110,15 @@ public class AsyncTaskFragment extends Fragment {
         // and the AsyncTask is still working, re-create and display the
         // progress dialog.
         if (isTaskRunning) {
-            progressDialog = ProgressDialog.show(getActivity(), "Loading", "Please wait a moment!");
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setIndeterminate(false);
+            progressDialog.setTitle(getResources().getString(R.string.loadingTitle));
+            progressDialog.setMessage(getResources().getString(R.string.loadingBody));
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setProgress(currentProgress);
+            progressDialog.setMax(totalProgress);
+            progressDialog.show();
+
         }
     }
 
@@ -133,6 +146,7 @@ public class AsyncTaskFragment extends Fragment {
      */
     @Override
     public void onDetach() {
+        // aqui - bibliografía
         // All dialogs should be closed before leaving the activity in order to avoid
         // the: Activity has leaked window com.android.internal.policy... exception
         if (progressDialog != null && progressDialog.isShowing()) {
@@ -150,7 +164,7 @@ public class AsyncTaskFragment extends Fragment {
      * method in case they are invoked after the Activity's and
      * Fragment's onDestroy() method have been called.
      */
-    private class DummyTask extends AsyncTask<String, Void, Pair<Boolean, Integer>> {
+    private class DummyTask extends AsyncTask<String, Integer, Pair<Boolean, Integer>> {
 
 
         // The four methods below are called by the TaskFragment when new
@@ -163,9 +177,13 @@ public class AsyncTaskFragment extends Fragment {
             Log.i("aquiw", "333");
 
             // enseñar el diálogo
-            progressDialog = ProgressDialog.show(getActivity(),
-                    getResources().getString(R.string.loadingTitle),
-                    getResources().getString(R.string.loadingBody));
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setIndeterminate(false);
+            progressDialog.setMax(1); // por defecto una acción
+            progressDialog.setTitle(getResources().getString(R.string.loadingTitle));
+            progressDialog.setMessage(getResources().getString(R.string.loadingBody));
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.show();
         }
 
         @Override
@@ -176,7 +194,7 @@ public class AsyncTaskFragment extends Fragment {
             }
             isTaskRunning = false;
             if (result != null){
-                // si hay mensaje enviarlo a la actividad padre
+                // si hay mensaje toast enviarlo a la actividad padre
                 mCallbacks.showToast(result.first, result.second);
             }
             if (action.equals("signup") && success){
@@ -194,6 +212,7 @@ public class AsyncTaskFragment extends Fragment {
                     getActivity().finish();
                 }
             }else if(action.equals("fetchselfnotes")){
+                // cargar página noteToSelf
                 Intent i = new Intent(getActivity(), NotesToSelf.class);
                 startActivity(i);
             }else if((action.equals("sendselfnotes") || action.equals("sendphoto")) && success){
@@ -228,6 +247,7 @@ public class AsyncTaskFragment extends Fragment {
                 JSONObject parametrosJSON = new JSONObject();
                 parametrosJSON.put("action", action);
                 if (action == "signup") {
+                    publishProgress(-1); // la barra será indeterminada, sin valores fijos
                     // El usuario quiere registrarse
                     parametrosJSON.put("username", strings[0]);
                     parametrosJSON.put("password", strings[1]);
@@ -244,6 +264,8 @@ public class AsyncTaskFragment extends Fragment {
                     if (json.containsKey("success")){
                         // toast
                         success = true;
+                        currentProgress = 1;
+                        publishProgress(currentProgress); // avisar
                         return Pair.create(true, R.string.userSuccessfullyRegistered);
                     }else {
                         String error = json.get("error").toString();
@@ -279,6 +301,9 @@ public class AsyncTaskFragment extends Fragment {
 
                         Log.i("aqui_active", Data.getMyData().getActiveUsername());
                         success = true;
+
+                        currentProgress = 1;
+                        publishProgress(currentProgress); // avisar
                     }else {
                         String error = json.get("error").toString();
                         if (error.equals("wrong_credentials")){
@@ -331,6 +356,8 @@ public class AsyncTaskFragment extends Fragment {
                     MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
                     SQLiteDatabase db = gestorDB.getWritableDatabase();
                     db.beginTransactionNonExclusive();
+                    totalProgress = selfNotes.size(); // el total al que habrá que llegar para
+                                                      // completar la tarea asíncrona
                     for (int i = 0; i < selfNotes.size(); i++) {
                         JSONObject row = (JSONObject) selfNotes.get(i);
 
@@ -353,6 +380,9 @@ public class AsyncTaskFragment extends Fragment {
                         // se guarda en la base de datos
                         String activeUser = Data.getMyData().getActiveUsername();
                         gestorDB.addSelfNote(activeUser, message, imageLocalPath, date, db);
+                        currentProgress = i;
+                        publishProgress(currentProgress); // actualizar la ventana para mostrar
+                                                          // progreso
                     }
 
                     // si all es correcto y se llega aquí
@@ -367,6 +397,7 @@ public class AsyncTaskFragment extends Fragment {
                     db.close(); // se cierra la base de datos
                 }else if(action == "sendselfnotes"){
                     // send a self note
+
                     String pattern = "yyyy-MM-dd HH:mm:ss";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
@@ -398,8 +429,6 @@ public class AsyncTaskFragment extends Fragment {
                     SharedPreferences prefs_especiales= getActivity().getSharedPreferences(
                             "preferencias_especiales",
                             Context.MODE_PRIVATE);
-                    String lastFetchedDate = prefs_especiales.getString("lastFetchedDate",
-                            currentDate);
 
                     // guardar fecha y hora del último fetch
                     SharedPreferences.Editor editor2= prefs_especiales.edit();
@@ -411,6 +440,8 @@ public class AsyncTaskFragment extends Fragment {
                     image = null;
                     date = currentDate;
 
+                    currentProgress = 1;
+                    publishProgress(currentProgress); // avisar
                 }else if(action == "sendphoto"){
                     // Mandar una imagen tomada por la cámara de fotos
                     String uri = strings[0];
@@ -462,8 +493,6 @@ public class AsyncTaskFragment extends Fragment {
                     SharedPreferences prefs_especiales= getActivity().getSharedPreferences(
                             "preferencias_especiales",
                             Context.MODE_PRIVATE);
-                    String lastFetchedDate = prefs_especiales.getString("lastFetchedDate",
-                            currentDate);
 
                     // guardar fecha y hora del último fetch
                     SharedPreferences.Editor editor2= prefs_especiales.edit();
@@ -474,6 +503,9 @@ public class AsyncTaskFragment extends Fragment {
                     message = null;
                     image = uri;
                     date = currentDate;
+
+                    currentProgress = 1;
+                    publishProgress(currentProgress); // avisar
                 }
             } catch (Exception e) {
                 // error
@@ -482,6 +514,18 @@ public class AsyncTaskFragment extends Fragment {
                 return Pair.create(true, R.string.serverError);
             }
             return null;
+        }
+
+        /**
+         * Si se notifica un avance en la tarea
+         * @param values
+         */
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            progressDialog.setProgress(currentProgress);
+            progressDialog.setMax(totalProgress);
+
         }
 
         /**

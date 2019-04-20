@@ -17,7 +17,7 @@ import com.example.proyecto1.fragments.AsyncTaskFragment;
 import com.example.proyecto1.utilities.MyDB;
 import com.google.android.gms.dynamic.SupportFragmentWrapper;
 
-public class SignUpActivity extends LanguageActivity{
+public class SignUpActivity extends Common{
 
 
     @Override

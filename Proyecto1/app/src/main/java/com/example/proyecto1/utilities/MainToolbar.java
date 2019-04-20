@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.proyecto1.Common;
 import com.example.proyecto1.LanguageActivity;
 import com.example.proyecto1.LogInActivity;
 import com.example.proyecto1.MainActivity;
@@ -61,7 +62,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 
-public class MainToolbar extends LanguageActivity {
+public class MainToolbar extends Common {
 
     Menu menu;
     int noteId = -1; //selected noteid for singleNoteActivity and MainActivity (the one selected in the landscape mode)
