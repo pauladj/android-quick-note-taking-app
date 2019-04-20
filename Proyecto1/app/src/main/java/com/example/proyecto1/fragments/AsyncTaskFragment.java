@@ -5,16 +5,19 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.SystemClock;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
@@ -36,7 +39,9 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -62,9 +67,14 @@ public class AsyncTaskFragment extends Fragment {
     private String action; // action to do, signup, login....
     private boolean success = false; // if the asynctask has been successful...
 
+    private String message; // el contenido del self message
+    private String image; //el path de la imagen del self message
+    private String date; // la fecha del self message
+
 
     public interface TaskCallbacks {
         void showToast(Boolean acrossWindows, int messageId);
+        void addSelfNoteToRecycler(String message, String imagePath, String date);
     }
 
     private TaskCallbacks mCallbacks;
@@ -186,6 +196,9 @@ public class AsyncTaskFragment extends Fragment {
             }else if(action.equals("fetchselfnotes")){
                 Intent i = new Intent(getActivity(), NotesToSelf.class);
                 startActivity(i);
+            }else if((action.equals("sendselfnotes") || action.equals("sendphoto")) && success){
+                // la nota de solo texto se ha enviado correctamente
+                mCallbacks.addSelfNoteToRecycler(message, image, date);
             }
         }
 
@@ -295,10 +308,6 @@ public class AsyncTaskFragment extends Fragment {
                     String lastFetchedDate = prefs_especiales.getString("lastFetchedDate",
                             currentDate);
 
-                    // guardar fecha y hora del último fetch
-                    SharedPreferences.Editor editor2= prefs_especiales.edit();
-                    editor2.putString("lastFetchedDate", currentDate);
-                    editor2.apply();
 
                     parametrosJSON.put("username", Data.getMyData().getActiveUsername());
                     parametrosJSON.put("date", lastFetchedDate);
@@ -315,8 +324,13 @@ public class AsyncTaskFragment extends Fragment {
                         throw new Exception("connection_error");
                     }
 
-                    // si hay imagen ésta se descarga
+                    // se recorren todas las selfnotes no vistas hasta ahora
                     JSONArray selfNotes = (JSONArray) json.get("success");
+
+                    // se empieza una transacción
+                    MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
+                    SQLiteDatabase db = gestorDB.getWritableDatabase();
+                    db.beginTransactionNonExclusive();
                     for (int i = 0; i < selfNotes.size(); i++) {
                         JSONObject row = (JSONObject) selfNotes.get(i);
 
@@ -324,7 +338,7 @@ public class AsyncTaskFragment extends Fragment {
 
                         String imagePath = (String) row.get("imagePath");
                         String imageLocalPath = "";
-                        String date = (String) row.get("date"); // FIXME no se si esto es así
+                        String date = (String) row.get("date");
                         String message = (String) row.get("message");
 
 
@@ -338,9 +352,128 @@ public class AsyncTaskFragment extends Fragment {
                         }
                         // se guarda en la base de datos
                         String activeUser = Data.getMyData().getActiveUsername();
-                        MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
-                        gestorDB.addSelfNote(activeUser, message, imageLocalPath, date);
+                        gestorDB.addSelfNote(activeUser, message, imageLocalPath, date, db);
                     }
+
+                    // si all es correcto y se llega aquí
+                    db.setTransactionSuccessful();
+                    db.endTransaction();
+
+                    // guardar fecha y hora del último fetch si no ha habido ningún fallo
+                    SharedPreferences.Editor editor2= prefs_especiales.edit();
+                    editor2.putString("lastFetchedDate", currentDate);
+                    editor2.apply();
+
+                    db.close(); // se cierra la base de datos
+                }else if(action == "sendselfnotes"){
+                    // send a self note
+                    String pattern = "yyyy-MM-dd HH:mm:ss";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+                    String currentDate = simpleDateFormat.format(new Date());
+                    Log.i("aqui_currentdate", currentDate);
+
+                    parametrosJSON.put("username", Data.getMyData().getActiveUsername());
+                    parametrosJSON.put("date", currentDate);
+                    parametrosJSON.put("message", strings[0]);
+                    Log.i("aqui_envia", parametrosJSON.toJSONString() );
+                    PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
+                    out.print(parametrosJSON.toString());
+                    out.close();
+
+                    JSONObject json = getJsonFromResponse(urlConnection);
+
+                    // si se ha producido un problema
+                    if (!json.containsKey("success")){
+                        return Pair.create(true, R.string.errorSendingMessage);
+                    }
+
+                    // se guarda en la base de datos
+                    String activeUser = Data.getMyData().getActiveUsername();
+                    MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
+                    gestorDB.addSelfNote(activeUser, strings[0], null, currentDate, null);
+
+                    // se cambia la hora del último fetch, porque si algún otro dispositivo envía
+                    // un mensaje se captura con firebase y se añade manualmente
+                    SharedPreferences prefs_especiales= getActivity().getSharedPreferences(
+                            "preferencias_especiales",
+                            Context.MODE_PRIVATE);
+                    String lastFetchedDate = prefs_especiales.getString("lastFetchedDate",
+                            currentDate);
+
+                    // guardar fecha y hora del último fetch
+                    SharedPreferences.Editor editor2= prefs_especiales.edit();
+                    editor2.putString("lastFetchedDate", currentDate);
+                    editor2.apply();
+
+                    success = true;
+                    message = strings[0];
+                    image = null;
+                    date = currentDate;
+
+                }else if(action == "sendphoto"){
+                    // Mandar una imagen tomada por la cámara de fotos
+                    String uri = strings[0];
+                    Uri imagen = Uri.fromFile(new File(uri));
+
+                    Bitmap mBitmap =
+                            MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),
+                            imagen);
+
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+                    byte[] fototransformada = stream.toByteArray();
+                    String fotoen64 = Base64.encodeToString(fototransformada,Base64.DEFAULT);
+
+                    String pattern = "yyyy-MM-dd HH:mm:ss";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    String currentDate = simpleDateFormat.format(new Date());
+
+                    urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                    Uri.Builder builder = new Uri.Builder()
+                            .appendQueryParameter("action", action)
+                            .appendQueryParameter("username",  Data.getMyData().getActiveUsername())
+                            .appendQueryParameter("date", currentDate)
+                            .appendQueryParameter("image", fotoen64);
+                    String parametrosURL = builder.build().getEncodedQuery();
+
+                    PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
+                    out.print(parametrosURL);
+                    out.close();
+
+                    Log.i("aquiee", parametrosJSON.toString());
+
+                    JSONObject json = getJsonFromResponse(urlConnection);
+
+                    // si se ha producido un problema
+                    if (!json.containsKey("success")){
+                        throw new Exception("connection_error");
+                    }
+
+                    // se guarda en la base de datos
+                    String activeUser = Data.getMyData().getActiveUsername();
+                    MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
+                    gestorDB.addSelfNote(activeUser, null, uri, currentDate, null);
+
+                    // se cambia la hora del último fetch, porque si algún otro dispositivo envía
+                    // un mensaje se captura con firebase y se añade manualmente
+                    SharedPreferences prefs_especiales= getActivity().getSharedPreferences(
+                            "preferencias_especiales",
+                            Context.MODE_PRIVATE);
+                    String lastFetchedDate = prefs_especiales.getString("lastFetchedDate",
+                            currentDate);
+
+                    // guardar fecha y hora del último fetch
+                    SharedPreferences.Editor editor2= prefs_especiales.edit();
+                    editor2.putString("lastFetchedDate", currentDate);
+                    editor2.apply();
+
+                    success = true;
+                    message = null;
+                    image = uri;
+                    date = currentDate;
                 }
             } catch (Exception e) {
                 // error
@@ -367,6 +500,7 @@ public class AsyncTaskFragment extends Fragment {
 
                 responseCode = conn.getResponseCode();
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
+                    // se guarda la foto de tamaño normal
                     Bitmap elBitmap = BitmapFactory.decodeStream(conn.getInputStream());
 
                     File eldirectorio = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -376,6 +510,11 @@ public class AsyncTaskFragment extends Fragment {
                     File imagenFich = new File(eldirectorio, fileName + ".jpg");
                     OutputStream os = new FileOutputStream(imagenFich);
 
+                    elBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                    os.flush();
+                    os.close();
+
+                    // se guarda la foto en miniatura si su ancho es mayor de 240
                     int anchoImagen = elBitmap.getWidth();
                     int altoImagen = elBitmap.getHeight();
 
@@ -383,11 +522,14 @@ public class AsyncTaskFragment extends Fragment {
                         // redimensionar
                         altoImagen = ((altoImagen * 240) / anchoImagen);
                         elBitmap  = Bitmap.createScaledBitmap(elBitmap, 240, altoImagen, true);
-                    }
 
-                    elBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-                    os.flush();
-                    os.close();
+                        File imagenFichSmall = new File(eldirectorio, fileName + "_small.jpg");
+                        os = new FileOutputStream(imagenFichSmall);
+
+                        elBitmap.compress(Bitmap.CompressFormat.JPEG, 60, os);
+                        os.flush();
+                        os.close();
+                    }
 
                     // avisar a la galería de que hay una nueva foto
                     Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

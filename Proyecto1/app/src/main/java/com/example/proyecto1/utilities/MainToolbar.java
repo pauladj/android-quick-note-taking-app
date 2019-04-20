@@ -144,6 +144,9 @@ public class MainToolbar extends LanguageActivity {
         }else if(id == R.id.menuSave){
             // Save note when editing it
             saveNote();
+        }else if(id == R.id.menuCamera){
+            // Take photo and upload it
+            tryTakingPhotoWithTheCamera();
         }
 
         return super.onOptionsItemSelected(item);
@@ -618,4 +621,9 @@ public class MainToolbar extends LanguageActivity {
         super.onRestoreInstanceState(savedInstanceState);
         noteId = savedInstanceState.getInt("noteId", -1);
     }
+
+    /**
+     * The user wants to take a photo with the camera
+     */
+    public void tryTakingPhotoWithTheCamera(){}
 }

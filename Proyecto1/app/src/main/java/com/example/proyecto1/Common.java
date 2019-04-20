@@ -84,5 +84,12 @@ public class Common extends AppCompatActivity  implements AsyncTaskFragment.Task
         return mTaskFragment;
     }
 
+    /**
+     * Add a self note to the recycler view
+     * @param message - the text of the message
+     * @param imagePath - the image path
+     * @param date - the date of the message
+     */
+    public void addSelfNoteToRecycler(String message, String imagePath, String date){}
 
 }

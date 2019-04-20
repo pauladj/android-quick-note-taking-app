@@ -93,4 +93,10 @@
     <string name="chooseNote">Create new note</string>
     <string name="chooseQuickNote">Write quick note</string>
     <string name="imageError">Image error</string>
+    <string name="enterMessage">Enter the note…</string>
+    <string name="sendMessage">Send</string>
+    <string name="errorSendingMessage">There was an error trying to send the message</string>
+    <string name="menuCamera">Add photo</string>
+    <string name="errorTakingPicture">There was an error taking the picture</string>
+
 </resources>

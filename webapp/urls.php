@@ -16,13 +16,17 @@ function success($message){
 
 $parametros = json_decode(file_get_contents('php://input'), true);
 
-if (!array_key_exists('action', $parametros)) {
+if (!array_key_exists('action', $parametros) && !isset($_POST['action'])) {
   exit;
 }
 
 $con = '';
 
-$action = $parametros["action"];
+if (isset($_POST['action'])){
+  $action = $_POST['action'];
+}else{
+  $action = $parametros["action"];
+}
 
 try {
    $con = connect();
@@ -76,9 +80,9 @@ try {
 
       if ($timestamp == $now) {
         // first time fetching
-        $resultado = execute($con, "SELECT message, imagePath, creationDate FROM SelfNotes WHERE username='".$username."' AND creationDate <= '".$now."'");
+        $resultado = execute($con, "SELECT message, imagePath, creationDate FROM SelfNotes WHERE accessToken='".$username."' AND creationDate <= '".$now."'");
       }else{
-        $resultado = execute($con, "SELECT message, imagePath, creationDate FROM SelfNotes WHERE username='".$username."' AND creationDate > '".$timestamp."' AND creationDate <= '".$now."'");
+        $resultado = execute($con, "SELECT message, imagePath, creationDate FROM SelfNotes WHERE accessToken='".$username."' AND creationDate > '".$timestamp."' AND creationDate <= '".$now."'");
       }
       $all_json = array(); // all the results
       if (!select_is_empty($resultado)) {
@@ -94,6 +98,29 @@ try {
         }
       }
       success($all_json);
+   }else if($action == "sendselfnotes"){
+     // a user creates a new self note with text
+     $date = $parametros["date"];
+     $timestamp = date('Y-m-d H:i:s', strtotime($date));
+
+     execute($con, "INSERT INTO SelfNotes(accessToken, message, creationDate)
+              VALUES ('".$parametros["username"]."', '".$parametros["message"]."', '".$timestamp."')");
+     success("ok");
+   }else if($action == "sendphoto"){
+     // a user creates a new self note with a photo
+      $date = $_POST['date'];
+      $timestamp = date('Y-m-d H:i:s', strtotime($date));
+      $filename = date('Ymd_His', strtotime($date));
+
+      $base = $_POST['image'];
+      $binary = base64_decode($base);
+      file_put_contents($filename.".jpg", $binary);
+
+      $actual_link = "https://134.209.235.115/pdejaime001/WEB/".$filename.".jpg";
+
+      execute($con, "INSERT INTO SelfNotes(accessToken, imagePath, creationDate)
+               VALUES ('".$_POST["username"]."', '".$actual_link."', '".$timestamp."')");
+      success("ok");
    }
 } catch (Exception $e) {
   // error

@@ -93,4 +93,9 @@
     <string name="chooseNote">Crear nueva nota</string>
     <string name="chooseQuickNote">Escribir nota rápida</string>
     <string name="imageError">Error de la imagen</string>
+    <string name="enterMessage">Introduzca la nota…</string>
+    <string name="sendMessage">Enviar</string>
+    <string name="errorSendingMessage">Se ha producido un error al intentar enviar un mensaje</string>
+    <string name="menuCamera">Añadir foto</string>
+    <string name="errorTakingPicture">Se ha producido un error al capturar la imagen</string>
 </resources>

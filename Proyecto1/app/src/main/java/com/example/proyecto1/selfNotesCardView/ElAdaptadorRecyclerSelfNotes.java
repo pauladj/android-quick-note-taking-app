@@ -1,6 +1,9 @@
 package com.example.proyecto1.selfNotesCardView;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import com.example.proyecto1.R;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 
 public class ElAdaptadorRecyclerSelfNotes extends RecyclerView.Adapter <ElViewHolderSelfNote> implements View.OnClickListener{
@@ -62,9 +66,16 @@ public class ElAdaptadorRecyclerSelfNotes extends RecyclerView.Adapter <ElViewHo
         }else{
             // solo imagen
             // se tiene el path de la imagen
-            File imgFile = new  File(noteImages.get(i));
-            if(imgFile.exists()) {
+            try{
+                // mostrar en los imageviews imágenes pequeñas para que el recyclerview no se
+                // "atasque" y vaya lento
+                String[] name = noteImages.get(i).split(".jpg");
+                String fileName = name[0] + "_small.jpg";
+                File imgFile = new  File(fileName);
                 elViewHolder.noteImage.setImageURI(Uri.fromFile(imgFile));
+
+            }catch (Exception e){
+
             }
         }
 

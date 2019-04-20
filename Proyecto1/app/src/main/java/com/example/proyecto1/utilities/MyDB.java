@@ -167,7 +167,7 @@ public class MyDB extends SQLiteOpenHelper {
                     message = null;
                 }
 
-                if (image.isEmpty()){
+                if (image.isEmpty() || image.equals("null")){
                     image = null;
                 }
                 String date = c.getString(2);
@@ -194,19 +194,28 @@ public class MyDB extends SQLiteOpenHelper {
         return notesData;
     }
 
+
     /**
      * Add self note
      * @param username - the user who wrote it
      * @param message - the message, this could be null
      * @param imagePath - the image local path, this could be null
      * @param date- the date of the self note
+     * @param database - si se quiere utilizar una transacción
      * @return - if the data has been added
      */
-    public boolean addSelfNote(String username, String message, String imagePath, String date){
+    public boolean addSelfNote(String username, String message, String imagePath, String date,
+                               SQLiteDatabase database){
         SQLiteDatabase db = null;
+
         boolean changed;
         try {
-            db = this.getWritableDatabase();
+            if (database != null){
+                // se quiere empezar una transacción
+                db = database;
+            }else {
+                db = this.getWritableDatabase();
+            }
 
             db.execSQL("INSERT INTO SelfNotes ('message', 'imagePath', 'date', 'username') VALUES" +
                     " ('" + message + "', '" + imagePath + "', '" + date + "', '" + username +
@@ -215,7 +224,8 @@ public class MyDB extends SQLiteOpenHelper {
         }catch (SQLException e){
             changed = false;
         }finally {
-            if (db != null){
+            if (db != null && database == null){
+                // si no es una transacción
                 db.close();
             }
         }
