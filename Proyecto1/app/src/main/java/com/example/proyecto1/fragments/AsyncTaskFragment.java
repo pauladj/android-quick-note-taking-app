@@ -193,6 +193,24 @@ public class AsyncTaskFragment extends Fragment {
             }else if((action.equals("sendselfnotes") || action.equals("sendphoto")) && success){
                 // la nota de solo texto se ha enviado correctamente
                 mCallbacks.addSelfNoteToRecycler(message, image, date);
+            }else if(action.equals("logout") && success){
+                // el usuario quiere salir de la cuenta
+                Data.getMyData().setActiveUsername(null); // remove active user
+
+                // borrarlo de las preferencias
+                SharedPreferences prefs_especiales= getActivity().getSharedPreferences(
+                        "preferencias_especiales",
+                        Context.MODE_PRIVATE);
+
+                SharedPreferences.Editor editor2= prefs_especiales.edit();
+                editor2.remove("activeUsername");
+                editor2.apply();
+
+                // start login screen
+                Intent i = new Intent(getActivity(), LogInActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);// Limpiar pila de actividades
+                startActivity(i);
+                getActivity().finish();
             }
         }
 
@@ -258,14 +276,14 @@ public class AsyncTaskFragment extends Fragment {
                     JSONObject json = getJsonFromResponse(urlConnection);
 
                     // if ok
-                    if (json.containsKey("success")){
+                    if (json.containsKey("success")) {
                         // toast
                         // set the active username
                         Data.getMyData().setActiveUsername(json.get("success").toString());
 
                         // guardar el usuario activo en las preferencias
-                        LogInActivity activity = (LogInActivity)getActivity();
-                        if (activity != null){
+                        LogInActivity activity = (LogInActivity) getActivity();
+                        if (activity != null) {
                             activity.setActiveUsername(json.get("success").toString());
                         }
 
@@ -274,15 +292,31 @@ public class AsyncTaskFragment extends Fragment {
 
                         currentProgress = 1;
                         publishProgress(currentProgress); // avisar
-                    }else {
+                    } else {
                         String error = json.get("error").toString();
-                        if (error.equals("wrong_credentials")){
+                        if (error.equals("wrong_credentials")) {
                             // show toast
                             return Pair.create(true, R.string.incorrectPassword);
-                        }else{
+                        } else {
                             throw new Exception("connection_error");
                         }
                     }
+                }else if(action == "logout"){
+                    // El usuario quiere salir de su cuenta
+                    parametrosJSON.put("username", strings[0]);
+                    parametrosJSON.put("firebaseToken", strings[1]);
+
+                    PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
+                    out.print(parametrosJSON.toString());
+                    out.close();
+
+                    JSONObject json = getJsonFromResponse(urlConnection);
+
+                    // if not ok
+                    if (!json.containsKey("success")){
+                        throw new Exception("connection_error");
+                    }
+                    success = true;
                 }else if(action == "fetchselfnotes"){
                     // se obtienen notas nuevas, es decir, si el usuario no tiene datos de
                     // aplicación se obtendrán todas, pero si ha realizado esta acción hace 5

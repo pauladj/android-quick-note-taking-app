@@ -86,7 +86,15 @@ try {
      }
    }elseif ($action == "logout") {
      /*---- Log out ----*/
+     $accessToken = $parametros["username"];
+     $firebaseToken = $parametros["firebaseToken"];
+     $groupId = get_user_group($accessToken);
 
+     if ($groupId != NULL) {
+       // el grupo de usuario existe, quitar dispositivo
+       remove_device_from_group($accessToken, $firebaseToken, $groupId);
+     }
+     success("ok");
 
    }elseif ($action == "fetchselfnotes") {
       //se obtienen las nuevas selfnotes desde la última vez que se miraron

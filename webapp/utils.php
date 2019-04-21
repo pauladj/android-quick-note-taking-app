@@ -62,6 +62,23 @@ function add_device_to_group($accessToken, $firebaseToken, $groupId)
   }
 }
 
+function remove_device_from_group($accessToken, $firebaseToken, $groupId)
+{
+  // el grupo de usuario ya existe, quitar dispositivo
+  try {
+      $msg = array(
+        'operation' => 'remove',
+        'notification_key_name' => $accessToken,
+        'notification_key' => $groupId,
+        'registration_ids' => array($firebaseToken)
+      );
+      $msgJSON = json_encode($msg);
+      $json = enviar_post_fcm($msgJSON, 'https://fcm.googleapis.com/fcm/notification', true);
+  } catch (Exception $e) {
+    throw new Exception("connection_error");
+  }
+}
+
 function enviar_post_fcm($msgJSON, $url='https://fcm.googleapis.com/fcm/send', $isPost=true){
   // enviar post a fcm
   $cabecera= array(
