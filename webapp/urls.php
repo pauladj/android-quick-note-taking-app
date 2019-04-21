@@ -131,6 +131,13 @@ try {
 
      execute($con, "INSERT INTO SelfNotes(accessToken, message, creationDate)
               VALUES ('".$parametros["username"]."', '".$parametros["message"]."', '".$timestamp."')");
+
+      // avisar a sus otros dispositivos de android
+      $groupId = get_user_group($parametros["username"]);
+      if ($groupId != NULL) {
+        send_message_to_group($groupId, $parametros["message"]);
+      }
+
      success("ok");
    }else if($action == "sendphoto"){
      // a user creates a new self note with a photo
@@ -146,6 +153,12 @@ try {
 
       execute($con, "INSERT INTO SelfNotes(accessToken, imagePath, creationDate)
                VALUES ('".$_POST["username"]."', '".$actual_link."', '".$timestamp."')");
+
+       // avisar a sus otros dispositivos de android
+       $groupId = get_user_group($_POST["username"]);
+       if ($groupId != NULL) {
+         send_message_to_group($groupId, "📷");
+       }
       success("ok");
    }
 } catch (Exception $e) {

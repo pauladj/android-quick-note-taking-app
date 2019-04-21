@@ -79,7 +79,29 @@ function remove_device_from_group($accessToken, $firebaseToken, $groupId)
   }
 }
 
-function enviar_post_fcm($msgJSON, $url='https://fcm.googleapis.com/fcm/send', $isPost=true){
+function send_message_to_group($groupId, $elemento){
+  // mandar mensaje a un usuario en todas las aplicaciones en las que haya iniciado sesión
+  // que tiene una nota corta nueva, es decir, la ha mandado desde alguna de sus aplicaciones
+  try {
+      $msg = array(
+        'to' => $groupId,
+        'data' => array(
+          'action' => 'newselfnote',
+        ),
+        'notification' => array (
+            'body' => $elemento,
+            'title' => 'Nueva nota breve',
+            'icon' => 'ic_stat_ic_notification',
+        )
+      );
+      $msgJSON = json_encode($msg);
+      $json = enviar_post_fcm($msgJSON, 'https://fcm.googleapis.com/fcm/send', true);
+  } catch (Exception $e) {
+    throw new Exception("connection_error");
+  }
+}
+
+function enviar_post_fcm($msgJSON, $url, $isPost){
   // enviar post a fcm
   $cabecera= array(
   'Authorization: key=AIzaSyBUmzG6OtRIyQ1aVJXSpAjP4tnwQQZVyUw',
