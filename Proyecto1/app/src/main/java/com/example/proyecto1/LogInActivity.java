@@ -2,9 +2,11 @@ package com.example.proyecto1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -13,6 +15,10 @@ import android.widget.Toast;
 import com.example.proyecto1.fragments.AsyncTaskFragment;
 import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MyDB;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -43,9 +49,25 @@ public class LogInActivity extends Common {
             // empty username or password, do nothing
         } else {
             // log in
-            String[] params = {username, password};
-            getmTaskFragment().setAction("login");
-            getmTaskFragment().start(params);
+            FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        showToast(false, R.string.serverError);
+                        Log.w("aqui", "getInstanceId failed", task.getException());
+                        return;
+                    }
+
+                    // Get new Instance ID token
+                    String firebaseToken = task.getResult().getToken();
+                    Log.i("aqui_firebasetoken", firebaseToken);
+                    String[] params = {username, password, firebaseToken};
+                    getmTaskFragment().setAction("login");
+                    getmTaskFragment().start(params);
+                })
+                .addOnFailureListener(exception -> {
+                    Log.i("aqui", "9");
+                    showToast(false, R.string.serverError);
+                });
         }
     }
 

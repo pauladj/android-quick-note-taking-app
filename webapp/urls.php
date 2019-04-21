@@ -8,7 +8,7 @@ require_once('utils.php');
 
 function success($message){
   $json = array(
-    'success' => $message
+    'success' => $message,
   );
   echo(json_encode($json));
 }
@@ -54,19 +54,33 @@ try {
      }
    }elseif ($action == "login") {
      /*---- Log In ----*/
-     $resultado = execute($con, "SELECT password, accessToken FROM Users WHERE username='".$parametros["username"]."'");
-     if (!select_is_empty($resultado)) {
-       // the user exists, check password
-       $row = mysqli_fetch_assoc($resultado);
-       $hashedPassword = $row["password"];
+     $resultado = execute($con, "SELECT password, accessToken, groupId FROM Users WHERE username='".$parametros["username"]."'");
 
-       if (password_verify($parametros["password"], $hashedPassword)) {
-          // good credentials
-          $accessToken = $row["accessToken"];
-          success($accessToken);
-       }else{
-         throw new Exception('wrong_credentials');
-       }
+     if (!select_is_empty($resultado)) {
+         // the user exists, check password
+         $row = mysqli_fetch_assoc($resultado);
+
+         $hashedPassword = $row["password"];
+         $accessToken = $row["accessToken"];
+         $groupId = $row["groupId"];
+         $firebaseToken = $parametros["firebaseToken"];
+
+         if (password_verify($parametros["password"], $hashedPassword)) {
+            // good credentials
+         }else{
+           // bad credentials
+           throw new Exception('wrong_credentials');
+         }
+
+         if ($groupId == NULL) {
+           // se crea el grupo para el usuario
+           $groupId = create_user_group($accessToken, $firebaseToken);
+           execute($con, "UPDATE Users SET groupId = '".$groupId."' WHERE username='".$parametros["username"]."'");
+         }else{
+           // el grupo de usuario ya existe, añadir dispositivo
+           add_device_to_group($accessToken, $firebaseToken, $groupId);
+         }
+         success($accessToken);
      }else{
        throw new Exception('wrong_credentials');
      }

@@ -249,6 +249,7 @@ public class AsyncTaskFragment extends Fragment {
                     // El usuario quiere registrarse
                     parametrosJSON.put("username", strings[0]);
                     parametrosJSON.put("password", strings[1]);
+                    parametrosJSON.put("firebaseToken", strings[2]);
 
                     PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
                     out.print(parametrosJSON.toString());

@@ -2,13 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.example.proyecto1">
-    <uses-feature android:name="android.hardware.camera2.full" android:required="true"/>
+
+    <uses-feature
+        android:name="android.hardware.camera2.full"
+        android:required="true" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <dist:module dist:instant="true" />
@@ -17,23 +20,40 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/NotesTheme"
-        android:largeHeap="true"
         android:usesCleartextTraffic="true">
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher_background" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorPrimary" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="canal por defecto" />
+        <service
+            android:name=".services.ServicioFirebase"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <provider
-            android:authorities="com.example.proyecto1.provider"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.proyecto1.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_provider"/>
+                android:resource="@xml/file_provider" />
         </provider>
 
-        <activity android:name=".NotesToSelf"></activity>
+        <activity android:name=".NotesToSelf" />
         <activity android:name=".Common" />
 
         <service android:name=".services.UploadToDriveService" />
@@ -71,7 +91,5 @@
             </intent-filter>
         </activity>
     </application>
-
-
 
 </manifest>

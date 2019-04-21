@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "376726478494",
+    "firebase_url": "https://dasnotes.firebaseio.com",
+    "project_id": "dasnotes",
+    "storage_bucket": "dasnotes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376726478494:android:b3e178e4e24335ea",
+        "android_client_info": {
+          "package_name": "com.example.proyecto1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376726478494-185mm7q0lqunlm0il6au5b3gra7mjofv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.proyecto1",
+            "certificate_hash": "017b91d5b176ec11201dbf5f1b0ad569bdb990d4"
+          }
+        },
+        {
+          "client_id": "376726478494-rso9ucd7gpn6hq98j16hefms9bbevs3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEeaboySSzh-cMChRYyC8BF1UIZSsMxzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376726478494-rso9ucd7gpn6hq98j16hefms9bbevs3o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
