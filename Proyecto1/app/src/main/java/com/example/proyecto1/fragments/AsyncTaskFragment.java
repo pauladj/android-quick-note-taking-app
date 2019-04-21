@@ -110,6 +110,7 @@ public class AsyncTaskFragment extends Fragment {
         // and the AsyncTask is still working, re-create and display the
         // progress dialog.
         if (isTaskRunning) {
+            // Se configura el progress dialog
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setIndeterminate(false);
             progressDialog.setTitle(getResources().getString(R.string.loadingTitle));
@@ -118,7 +119,6 @@ public class AsyncTaskFragment extends Fragment {
             progressDialog.setProgress(currentProgress);
             progressDialog.setMax(totalProgress);
             progressDialog.show();
-
         }
     }
 
@@ -133,7 +133,7 @@ public class AsyncTaskFragment extends Fragment {
     }
 
     /**
-     * Set the action to execute
+     * Set the action to execute (login,..)
      */
     public void setAction(String action){
         this.action = action;
@@ -166,17 +166,12 @@ public class AsyncTaskFragment extends Fragment {
      */
     private class DummyTask extends AsyncTask<String, Integer, Pair<Boolean, Integer>> {
 
-
-        // The four methods below are called by the TaskFragment when new
-        // progress updates or results are available. The MainActivity
-        // should respond by updating its UI to indicate the change.
-
         @Override
         public void onPreExecute() {
             isTaskRunning = true;
             Log.i("aquiw", "333");
 
-            // enseñar el diálogo
+            // configurar y enseñar el diálogo
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setIndeterminate(false);
             progressDialog.setMax(1); // por defecto una acción
@@ -222,11 +217,6 @@ public class AsyncTaskFragment extends Fragment {
         }
 
 
-        /**
-         * Note that we do NOT call the callback object's methods
-         * directly from the background thread, as this could result
-         * in a race condition.
-         */
         @Override
         protected Pair<Boolean, Integer> doInBackground(String... strings) {
             Log.i("aqui", "backgro");
@@ -247,7 +237,6 @@ public class AsyncTaskFragment extends Fragment {
                 JSONObject parametrosJSON = new JSONObject();
                 parametrosJSON.put("action", action);
                 if (action == "signup") {
-                    publishProgress(-1); // la barra será indeterminada, sin valores fijos
                     // El usuario quiere registrarse
                     parametrosJSON.put("username", strings[0]);
                     parametrosJSON.put("password", strings[1]);
@@ -265,7 +254,7 @@ public class AsyncTaskFragment extends Fragment {
                         // toast
                         success = true;
                         currentProgress = 1;
-                        publishProgress(currentProgress); // avisar
+                        publishProgress(currentProgress); // avisar del progreso
                         return Pair.create(true, R.string.userSuccessfullyRegistered);
                     }else {
                         String error = json.get("error").toString();
@@ -315,7 +304,7 @@ public class AsyncTaskFragment extends Fragment {
                     }
                 }else if(action == "fetchselfnotes"){
                     // se obtienen notas nuevas, es decir, si el usuario no tiene datos de
-                    // aplicación se obtendrán todas, pero si hay realizado esta acción hace 5
+                    // aplicación se obtendrán todas, pero si ha realizado esta acción hace 5
                     // minutos se obtendrán las nuevas
 
                     // se obtiene el json
@@ -352,7 +341,7 @@ public class AsyncTaskFragment extends Fragment {
                     // se recorren todas las selfnotes no vistas hasta ahora
                     JSONArray selfNotes = (JSONArray) json.get("success");
 
-                    // se empieza una transacción
+                    // se empieza una transacción, si se produce un fallo se hará rollback de todo
                     MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
                     SQLiteDatabase db = gestorDB.getWritableDatabase();
                     db.beginTransactionNonExclusive();
@@ -398,12 +387,13 @@ public class AsyncTaskFragment extends Fragment {
                 }else if(action == "sendselfnotes"){
                     // send a self note
 
+                    // obtener fecha actual
                     String pattern = "yyyy-MM-dd HH:mm:ss";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
                     String currentDate = simpleDateFormat.format(new Date());
                     Log.i("aqui_currentdate", currentDate);
 
+                    // añadir parámetros
                     parametrosJSON.put("username", Data.getMyData().getActiveUsername());
                     parametrosJSON.put("date", currentDate);
                     parametrosJSON.put("message", strings[0]);
@@ -441,9 +431,11 @@ public class AsyncTaskFragment extends Fragment {
                     date = currentDate;
 
                     currentProgress = 1;
-                    publishProgress(currentProgress); // avisar
+                    publishProgress(currentProgress); // avisar del progreso
                 }else if(action == "sendphoto"){
                     // Mandar una imagen tomada por la cámara de fotos
+
+                    // obtener, comprimir y transformar la imagen a Base64
                     String uri = strings[0];
                     Uri imagen = Uri.fromFile(new File(uri));
 
@@ -457,10 +449,12 @@ public class AsyncTaskFragment extends Fragment {
                     byte[] fototransformada = stream.toByteArray();
                     String fotoen64 = Base64.encodeToString(fototransformada,Base64.DEFAULT);
 
+                    // obtener fecha de ahora
                     String pattern = "yyyy-MM-dd HH:mm:ss";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     String currentDate = simpleDateFormat.format(new Date());
 
+                    // formar parámetros a enviar
                     urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
                     Uri.Builder builder = new Uri.Builder()
@@ -558,22 +552,20 @@ public class AsyncTaskFragment extends Fragment {
                     os.flush();
                     os.close();
 
-                    // se guarda la foto en miniatura si su ancho es mayor de 240
+                    // se guarda la foto en miniatura para que el recyclerview no sea lento
                     int anchoImagen = elBitmap.getWidth();
                     int altoImagen = elBitmap.getHeight();
 
-                    if (anchoImagen >= 240){
-                        // redimensionar
-                        altoImagen = ((altoImagen * 240) / anchoImagen);
-                        elBitmap  = Bitmap.createScaledBitmap(elBitmap, 240, altoImagen, true);
+                    // redimensionar
+                    altoImagen = ((altoImagen * 240) / anchoImagen);
+                    elBitmap  = Bitmap.createScaledBitmap(elBitmap, 240, altoImagen, true);
 
-                        File imagenFichSmall = new File(eldirectorio, fileName + "_small.jpg");
-                        os = new FileOutputStream(imagenFichSmall);
+                    File imagenFichSmall = new File(eldirectorio, fileName + "_small.jpg");
+                    os = new FileOutputStream(imagenFichSmall);
 
-                        elBitmap.compress(Bitmap.CompressFormat.JPEG, 60, os);
-                        os.flush();
-                        os.close();
-                    }
+                    elBitmap.compress(Bitmap.CompressFormat.JPEG, 60, os);
+                    os.flush();
+                    os.close();
 
                     // avisar a la galería de que hay una nueva foto
                     Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -584,7 +576,7 @@ public class AsyncTaskFragment extends Fragment {
 
                     Log.i("aqui_downloadaimage", "end");
                     Log.i("aquiu_path", imagenFich.getPath());
-                    return imagenFich.getPath();
+                    return imagenFich.getPath(); // devolver el path local de la imagen
 
                 }else{
                     throw new Exception();

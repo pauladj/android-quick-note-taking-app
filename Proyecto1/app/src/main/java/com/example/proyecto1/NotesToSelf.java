@@ -240,19 +240,18 @@ public class NotesToSelf extends MainToolbar {
                 int anchoImagen = elBitmap.getWidth();
                 int altoImagen = elBitmap.getHeight();
 
-                if (anchoImagen >= 240){
-                    // redimensionar
-                    altoImagen = ((altoImagen * 240) / anchoImagen);
-                    elBitmap  = Bitmap.createScaledBitmap(elBitmap, 240, altoImagen, true);
+                // redimensionar y guardar una miniatura de la imagen para que el recyclerview no
+                // vaya lento
+                altoImagen = ((altoImagen * 240) / anchoImagen);
+                elBitmap  = Bitmap.createScaledBitmap(elBitmap, 240, altoImagen, true);
 
-                    File eldirectorio = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                    File imagenFich = new File(photoName + "_small.jpg");
-                    OutputStream os = new FileOutputStream(imagenFich);
+                File eldirectorio = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                File imagenFich = new File(photoName + "_small.jpg");
+                OutputStream os = new FileOutputStream(imagenFich);
 
-                    elBitmap.compress(Bitmap.CompressFormat.JPEG, 60, os);
-                    os.flush();
-                    os.close();
-                }
+                elBitmap.compress(Bitmap.CompressFormat.JPEG, 60, os);
+                os.flush();
+                os.close();
 
                 // mandar aviso a la galería de que se ha añadido una imagen
                 Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
