@@ -1,11 +1,14 @@
 package com.example.proyecto1;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -135,6 +138,16 @@ public class NotesToSelf extends MainToolbar {
             layoutRecycler.setLayoutManager(elLayoutLineal);
             layoutRecycler.smoothScrollToPosition(messagesDates.size());
             eladaptador.notifyDataSetChanged();
+
+
+            // si el usuario ha deshabilitado el modo background para la aplicación, no recibirá los
+            // mensajes FCM
+            ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (am.isBackgroundRestricted()==true){
+                    showToast(true, R.string.fcmNotAvailable);
+                }
+            }
         }
     }
 

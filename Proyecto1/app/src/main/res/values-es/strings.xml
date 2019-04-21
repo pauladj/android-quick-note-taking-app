@@ -98,4 +98,5 @@
     <string name="errorSendingMessage">Se ha producido un error al intentar enviar un mensaje</string>
     <string name="menuCamera">Añadir foto</string>
     <string name="errorTakingPicture">Se ha producido un error al capturar la imagen</string>
+    <string name="fcmNotAvailable">No se te notificará de nuevos mensajes cortos porque la aplicación está deshabilitada en modo background</string>
 </resources>

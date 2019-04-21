@@ -1,7 +1,10 @@
 package com.example.proyecto1;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -37,6 +40,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
         setContentView(R.layout.main_activity);
         // load top toolbar
         loadToolbar();
+
     }
 
 
