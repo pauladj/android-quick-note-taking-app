@@ -56,12 +56,7 @@ import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
-// aqui BIBLIOGRAFÍA
 
-/**
- * This Fragment manages a single background task and retains
- * itself across configuration changes.
- */
 public class AsyncTaskFragment extends Fragment {
 
     private ProgressDialog progressDialog;
@@ -93,7 +88,7 @@ public class AsyncTaskFragment extends Fragment {
     }
 
     /**
-     * This method will only be called once
+     * Solo se llamará una vez
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,9 +101,8 @@ public class AsyncTaskFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // If we are returning here from a screen orientation
-        // and the AsyncTask is still working, re-create and display the
-        // progress dialog.
+        // Si la pantalla se ha girado y la tarea todavía se está ejecutando mostrar otra vez el
+        // progressdialog
         if (isTaskRunning) {
             // Se configura el progress dialog
             progressDialog = new ProgressDialog(getActivity());
@@ -140,15 +134,8 @@ public class AsyncTaskFragment extends Fragment {
     }
 
 
-    /**
-     * Set the callback to null so we don't accidentally leak the
-     * Activity instance.
-     */
     @Override
     public void onDetach() {
-        // aqui - bibliografía
-        // All dialogs should be closed before leaving the activity in order to avoid
-        // the: Activity has leaked window com.android.internal.policy... exception
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
@@ -156,14 +143,7 @@ public class AsyncTaskFragment extends Fragment {
         mCallbacks = null;
     }
 
-    /**
-     * A dummy task that performs some (dumb) background work and
-     * proxies progress updates and results back to the Activity.
-     *
-     * Note that we need to check if the callbacks are null in each
-     * method in case they are invoked after the Activity's and
-     * Fragment's onDestroy() method have been called.
-     */
+
     private class DummyTask extends AsyncTask<String, Integer, Pair<Boolean, Integer>> {
 
         @Override
