@@ -54,7 +54,7 @@ try {
      }
    }elseif ($action == "login") {
      /*---- Log In ----*/
-     $resultado = execute($con, "SELECT password, accessToken, groupId FROM Users WHERE username='".$parametros["username"]."'");
+     $resultado = execute($con, "SELECT password, accessToken FROM Users WHERE username='".$parametros["username"]."'");
 
      if (!select_is_empty($resultado)) {
          // the user exists, check password
@@ -62,7 +62,6 @@ try {
 
          $hashedPassword = $row["password"];
          $accessToken = $row["accessToken"];
-         $groupId = $row["groupId"];
          $firebaseToken = $parametros["firebaseToken"];
 
          if (password_verify($parametros["password"], $hashedPassword)) {
@@ -72,10 +71,11 @@ try {
            throw new Exception('wrong_credentials');
          }
 
+         $groupId = get_user_group($accessToken);
+
          if ($groupId == NULL) {
            // se crea el grupo para el usuario
-           $groupId = create_user_group($accessToken, $firebaseToken);
-           execute($con, "UPDATE Users SET groupId = '".$groupId."' WHERE username='".$parametros["username"]."'");
+           create_user_group($accessToken, $firebaseToken);
          }else{
            // el grupo de usuario ya existe, añadir dispositivo
            add_device_to_group($accessToken, $firebaseToken, $groupId);
@@ -84,6 +84,10 @@ try {
      }else{
        throw new Exception('wrong_credentials');
      }
+   }elseif ($action == "logout") {
+     /*---- Log out ----*/
+
+
    }elseif ($action == "fetchselfnotes") {
       //se obtienen las nuevas selfnotes desde la última vez que se miraron
       $username = $parametros["username"];
