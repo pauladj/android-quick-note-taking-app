@@ -135,7 +135,7 @@ try {
       // avisar a sus otros dispositivos de android
       $groupId = get_user_group($parametros["username"]);
       if ($groupId != NULL) {
-        send_message_to_group($groupId, $parametros["message"]);
+        send_message_to_group($groupId, $parametros["message"], 'message', $parametros["message"], $timestamp);
       }
 
      success("ok");
@@ -157,7 +157,7 @@ try {
        // avisar a sus otros dispositivos de android
        $groupId = get_user_group($_POST["username"]);
        if ($groupId != NULL) {
-         send_message_to_group($groupId, "📷");
+         send_message_to_group($groupId, "📷", "image", $actual_link, $timestamp);
        }
       success("ok");
    }

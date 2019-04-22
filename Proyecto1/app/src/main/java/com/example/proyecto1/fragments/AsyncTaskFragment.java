@@ -211,6 +211,9 @@ public class AsyncTaskFragment extends Fragment {
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);// Limpiar pila de actividades
                 startActivity(i);
                 getActivity().finish();
+            }else if(action == "downloadimage" && success){
+                // si se ha querido únicamente descargar una imagen
+                mCallbacks.addSelfNoteToRecycler(null, image, date);
             }
         }
 
@@ -515,6 +518,26 @@ public class AsyncTaskFragment extends Fragment {
 
                     currentProgress = 1;
                     publishProgress(currentProgress); // avisar
+                }else if(action == "downloadimage"){
+                    // descargar una imagen
+
+                    String imageUrl = strings[0];
+                    date = strings[1];
+
+                    // la nota es una imagen, se descarga y se guarda
+                    String imageLocalPath = downloadAndSaveImage(imageUrl);
+                    if (imageLocalPath.equals("")) {
+                        // se ha producido un error al descargar/guardar la imagen
+                        message = getResources().getString(R.string.imageError);
+                    }
+
+                    success = true;
+                    message = null;
+                    image = imageLocalPath;
+
+                    currentProgress = 1;
+                    publishProgress(currentProgress); // actualizar la ventana para mostrar
+                                                      // progreso
                 }
             } catch (Exception e) {
                 // error

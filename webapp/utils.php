@@ -79,14 +79,16 @@ function remove_device_from_group($accessToken, $firebaseToken, $groupId)
   }
 }
 
-function send_message_to_group($groupId, $elemento){
+function send_message_to_group($groupId, $elemento, $type, $content, $timestamp){
   // mandar mensaje a un usuario en todas las aplicaciones en las que haya iniciado sesión
   // que tiene una nota corta nueva, es decir, la ha mandado desde alguna de sus aplicaciones
   try {
       $msg = array(
         'to' => $groupId,
         'data' => array(
-          'action' => 'newselfnote',
+          'type' => $type,
+          'content' => $content,
+          'timestamp' => $timestamp
         ),
         'notification' => array (
             'body' => $elemento,
