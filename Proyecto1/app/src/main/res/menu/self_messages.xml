@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menuRefreshSelfMessages"
+        android:icon="@drawable/ic_refresh"
+        android:title="@string/menuRefreshSelfMessages"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menuCamera"
         android:icon="@drawable/ic_camera"
         android:title="@string/menuCamera"

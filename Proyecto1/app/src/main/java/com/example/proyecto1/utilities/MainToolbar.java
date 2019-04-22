@@ -52,6 +52,7 @@ import com.google.api.client.http.FileContent;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -148,6 +149,9 @@ public class MainToolbar extends Common {
         }else if(id == R.id.menuCamera){
             // Take photo and upload it
             tryTakingPhotoWithTheCamera();
+        }else if(id == R.id.menuRefreshSelfMessages){
+            // el usuario quiere actualizar los self messages
+            refreshSelfNotes();
         }
 
         return super.onOptionsItemSelected(item);
@@ -593,22 +597,26 @@ public class MainToolbar extends Common {
     private void logOut(){
         // remove active
         // user
-        Data.getMyData().setActiveUsername(null); // remove active user
+        FirebaseInstanceId.getInstance().getInstanceId()
+        .addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                showToast(false, R.string.serverError);
+                Log.w("aqui", "getInstanceId failed", task.getException());
+                return;
+            }
 
-        // borrarlo de las preferencias
-        SharedPreferences prefs_especiales= getSharedPreferences(
-                "preferencias_especiales",
-                Context.MODE_PRIVATE);
-
-        SharedPreferences.Editor editor2= prefs_especiales.edit();
-        editor2.remove("activeUsername");
-        editor2.apply();
-
-        // start login screen
-        Intent i = new Intent(this, LogInActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);// Limpiar pila de actividades
-        startActivity(i);
-        finish();
+            // Get new Instance ID token
+            String firebaseToken = task.getResult().getToken();
+            Log.i("aqui_firebasetoken", firebaseToken);
+            String username = Data.getMyData().getActiveUsername();
+            String[] params = {username, firebaseToken};
+            getmTaskFragment().setAction("logout");
+            getmTaskFragment().start(params);
+        })
+        .addOnFailureListener(exception -> {
+            Log.i("aqui", "9");
+            showToast(false, R.string.serverError);
+        });
     }
 
     @Override
@@ -627,4 +635,13 @@ public class MainToolbar extends Common {
      * The user wants to take a photo with the camera
      */
     public void tryTakingPhotoWithTheCamera(){}
+
+
+    /**
+     * The user has decided to refresh the self notes
+     */
+    public void refreshSelfNotes() {
+        getmTaskFragment().setAction("refreshselfnotes");
+        getmTaskFragment().start(null);
+    }
 }

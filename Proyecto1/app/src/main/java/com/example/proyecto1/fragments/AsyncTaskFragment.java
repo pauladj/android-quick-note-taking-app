@@ -186,13 +186,37 @@ public class AsyncTaskFragment extends Fragment {
                     startActivity(i);
                     getActivity().finish();
                 }
-            }else if(action.equals("fetchselfnotes")){
+            }else if(action.equals("fetchselfnotes")) {
                 // cargar página noteToSelf
                 Intent i = new Intent(getActivity(), NotesToSelf.class);
                 startActivity(i);
+            }else if(action.equals("refreshselfnotes")){
+                // refrescar actividad con las notas
+                getActivity().recreate();
             }else if((action.equals("sendselfnotes") || action.equals("sendphoto")) && success){
                 // la nota de solo texto se ha enviado correctamente
                 mCallbacks.addSelfNoteToRecycler(message, image, date);
+            }else if(action.equals("logout") && success){
+                // el usuario quiere salir de la cuenta
+                Data.getMyData().setActiveUsername(null); // remove active user
+
+                // borrarlo de las preferencias
+                SharedPreferences prefs_especiales= getActivity().getSharedPreferences(
+                        "preferencias_especiales",
+                        Context.MODE_PRIVATE);
+
+                SharedPreferences.Editor editor2= prefs_especiales.edit();
+                editor2.remove("activeUsername");
+                editor2.apply();
+
+                // start login screen
+                Intent i = new Intent(getActivity(), LogInActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);// Limpiar pila de actividades
+                startActivity(i);
+                getActivity().finish();
+            }else if(action == "downloadimage" && success){
+                // si se ha querido únicamente descargar una imagen
+                mCallbacks.addSelfNoteToRecycler(null, image, date);
             }
         }
 
@@ -249,6 +273,7 @@ public class AsyncTaskFragment extends Fragment {
                     // El usuario quiere registrarse
                     parametrosJSON.put("username", strings[0]);
                     parametrosJSON.put("password", strings[1]);
+                    parametrosJSON.put("firebaseToken", strings[2]);
 
                     PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
                     out.print(parametrosJSON.toString());
@@ -257,14 +282,14 @@ public class AsyncTaskFragment extends Fragment {
                     JSONObject json = getJsonFromResponse(urlConnection);
 
                     // if ok
-                    if (json.containsKey("success")){
+                    if (json.containsKey("success")) {
                         // toast
                         // set the active username
                         Data.getMyData().setActiveUsername(json.get("success").toString());
 
                         // guardar el usuario activo en las preferencias
-                        LogInActivity activity = (LogInActivity)getActivity();
-                        if (activity != null){
+                        LogInActivity activity = (LogInActivity) getActivity();
+                        if (activity != null) {
                             activity.setActiveUsername(json.get("success").toString());
                         }
 
@@ -273,16 +298,32 @@ public class AsyncTaskFragment extends Fragment {
 
                         currentProgress = 1;
                         publishProgress(currentProgress); // avisar
-                    }else {
+                    } else {
                         String error = json.get("error").toString();
-                        if (error.equals("wrong_credentials")){
+                        if (error.equals("wrong_credentials")) {
                             // show toast
                             return Pair.create(true, R.string.incorrectPassword);
-                        }else{
+                        } else {
                             throw new Exception("connection_error");
                         }
                     }
-                }else if(action == "fetchselfnotes"){
+                }else if(action == "logout"){
+                    // El usuario quiere salir de su cuenta
+                    parametrosJSON.put("username", strings[0]);
+                    parametrosJSON.put("firebaseToken", strings[1]);
+
+                    PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
+                    out.print(parametrosJSON.toString());
+                    out.close();
+
+                    JSONObject json = getJsonFromResponse(urlConnection);
+
+                    // if not ok
+                    if (!json.containsKey("success")){
+                        throw new Exception("connection_error");
+                    }
+                    success = true;
+                }else if(action == "fetchselfnotes" || action == "refreshselfnotes"){
                     // se obtienen notas nuevas, es decir, si el usuario no tiene datos de
                     // aplicación se obtendrán todas, pero si ha realizado esta acción hace 5
                     // minutos se obtendrán las nuevas
@@ -480,6 +521,26 @@ public class AsyncTaskFragment extends Fragment {
 
                     currentProgress = 1;
                     publishProgress(currentProgress); // avisar
+                }else if(action == "downloadimage"){
+                    // descargar una imagen
+
+                    String imageUrl = strings[0];
+                    date = strings[1];
+
+                    // la nota es una imagen, se descarga y se guarda
+                    String imageLocalPath = downloadAndSaveImage(imageUrl);
+                    if (imageLocalPath.equals("")) {
+                        // se ha producido un error al descargar/guardar la imagen
+                        message = getResources().getString(R.string.imageError);
+                    }
+
+                    success = true;
+                    message = null;
+                    image = imageLocalPath;
+
+                    currentProgress = 1;
+                    publishProgress(currentProgress); // actualizar la ventana para mostrar
+                                                      // progreso
                 }
             } catch (Exception e) {
                 // error

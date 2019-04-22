@@ -98,5 +98,7 @@
     <string name="errorSendingMessage">There was an error trying to send the message</string>
     <string name="menuCamera">Add photo</string>
     <string name="errorTakingPicture">There was an error taking the picture</string>
+    <string name="fcmNotAvailable">You won\'t be notified of new short messages because of background tasks are disabled</string>
+    <string name="menuRefreshSelfMessages">Refresh</string>
 
 </resources>

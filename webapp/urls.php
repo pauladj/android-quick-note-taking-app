@@ -8,7 +8,7 @@ require_once('utils.php');
 
 function success($message){
   $json = array(
-    'success' => $message
+    'success' => $message,
   );
   echo(json_encode($json));
 }
@@ -55,22 +55,48 @@ try {
    }elseif ($action == "login") {
      /*---- Log In ----*/
      $resultado = execute($con, "SELECT password, accessToken FROM Users WHERE username='".$parametros["username"]."'");
-     if (!select_is_empty($resultado)) {
-       // the user exists, check password
-       $row = mysqli_fetch_assoc($resultado);
-       $hashedPassword = $row["password"];
 
-       if (password_verify($parametros["password"], $hashedPassword)) {
-          // good credentials
-          $accessToken = $row["accessToken"];
-          success($accessToken);
-       }else{
-         throw new Exception('wrong_credentials');
-       }
+     if (!select_is_empty($resultado)) {
+         // the user exists, check password
+         $row = mysqli_fetch_assoc($resultado);
+
+         $hashedPassword = $row["password"];
+         $accessToken = $row["accessToken"];
+         $firebaseToken = $parametros["firebaseToken"];
+
+         if (password_verify($parametros["password"], $hashedPassword)) {
+            // good credentials
+         }else{
+           // bad credentials
+           throw new Exception('wrong_credentials');
+         }
+
+         $groupId = get_user_group($accessToken);
+
+         if ($groupId == NULL) {
+           // se crea el grupo para el usuario
+           create_user_group($accessToken, $firebaseToken);
+         }else{
+           // el grupo de usuario ya existe, añadir dispositivo
+           add_device_to_group($accessToken, $firebaseToken, $groupId);
+         }
+         success($accessToken);
      }else{
        throw new Exception('wrong_credentials');
      }
-   }elseif ($action == "fetchselfnotes") {
+   }elseif ($action == "logout") {
+     /*---- Log out ----*/
+     $accessToken = $parametros["username"];
+     $firebaseToken = $parametros["firebaseToken"];
+     $groupId = get_user_group($accessToken);
+
+     if ($groupId != NULL) {
+       // el grupo de usuario existe, quitar dispositivo
+       remove_device_from_group($accessToken, $firebaseToken, $groupId);
+     }
+     success("ok");
+
+   }elseif ($action == "fetchselfnotes" || $action == "refreshselfnotes") {
       //se obtienen las nuevas selfnotes desde la última vez que se miraron
       $username = $parametros["username"];
       $date = $parametros["date"];
@@ -105,6 +131,13 @@ try {
 
      execute($con, "INSERT INTO SelfNotes(accessToken, message, creationDate)
               VALUES ('".$parametros["username"]."', '".$parametros["message"]."', '".$timestamp."')");
+
+      // avisar a sus otros dispositivos de android
+      $groupId = get_user_group($parametros["username"]);
+      if ($groupId != NULL) {
+        send_message_to_group($groupId, $parametros["message"], 'message', $parametros["message"], $timestamp);
+      }
+
      success("ok");
    }else if($action == "sendphoto"){
      // a user creates a new self note with a photo
@@ -120,6 +153,12 @@ try {
 
       execute($con, "INSERT INTO SelfNotes(accessToken, imagePath, creationDate)
                VALUES ('".$_POST["username"]."', '".$actual_link."', '".$timestamp."')");
+
+       // avisar a sus otros dispositivos de android
+       $groupId = get_user_group($_POST["username"]);
+       if ($groupId != NULL) {
+         send_message_to_group($groupId, "📷", "image", $actual_link, $timestamp);
+       }
       success("ok");
    }
 } catch (Exception $e) {

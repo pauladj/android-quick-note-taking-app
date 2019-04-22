@@ -1,11 +1,16 @@
 package com.example.proyecto1;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -13,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
@@ -47,6 +53,28 @@ public class NotesToSelf extends MainToolbar {
     private ArrayList<String> messagesText; // array of the text of the self messages
     private ArrayList<String> messagesImages; // array of the path of the images of the self messages
     private ArrayList<String> messagesDates; // array of the dates of the self messages
+
+    // el método que se ejecutará cuando se reciba un broadcast
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String messageType = intent.getStringExtra("type");
+            String content = intent.getStringExtra("content");
+            String timestamp = intent.getStringExtra("timestamp");
+            Log.i("aqui", messageType);
+            if (messageType.contains("message")){
+                // es un mensaje
+                addSelfNoteToRecycler(content, null, timestamp);
+            }else if(messageType.equals("image")){
+                // es una imagen
+                // iniar tarea asíncrona, mandar url y fecha
+                String[] params = {content, timestamp};
+                getmTaskFragment().setAction("downloadimage");
+                getmTaskFragment().start(params);
+            }
+        }
+    };
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -135,7 +163,30 @@ public class NotesToSelf extends MainToolbar {
             layoutRecycler.setLayoutManager(elLayoutLineal);
             layoutRecycler.smoothScrollToPosition(messagesDates.size());
             eladaptador.notifyDataSetChanged();
+
+
+            // si el usuario ha deshabilitado el modo background para la aplicación, no recibirá los
+            // mensajes FCM
+            ActivityManager am= (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                if (am.isBackgroundRestricted()==true){
+                    showToast(true, R.string.fcmNotAvailable);
+                }
+            }
+
+            // se registra el "broadcast" para cuando se reciban mensajes cortos
+            LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                    new IntentFilter("receivedmessage"));
         }
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        // Unregister the broadcast
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 
     /**
@@ -295,12 +346,16 @@ public class NotesToSelf extends MainToolbar {
      * @param date - the date of the message
      */
     public void addSelfNoteToRecycler(String message, String imagePath, String date){
-        messagesText.add(message);
-        messagesDates.add(date);
-        messagesImages.add(imagePath);
-        RecyclerView recycler = findViewById(R.id.notesToSelf);
-        recycler.getAdapter().notifyItemInserted(messagesDates.size()-1);
-        recycler.smoothScrollToPosition(messagesDates.size());
+        if (!messagesDates.contains(date)){
+            // si no es un duplicado, es decir, si se intenta añadir un mensaje de firebase y
+            // este usuario ha sido el dueño no añadir
+            messagesText.add(message);
+            messagesDates.add(date);
+            messagesImages.add(imagePath);
+            RecyclerView recycler = findViewById(R.id.notesToSelf);
+            recycler.getAdapter().notifyItemInserted(messagesDates.size()-1);
+            recycler.smoothScrollToPosition(messagesDates.size());
+        }
 
     }
 }
