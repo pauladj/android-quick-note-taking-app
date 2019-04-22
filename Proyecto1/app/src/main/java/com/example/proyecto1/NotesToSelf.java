@@ -346,12 +346,16 @@ public class NotesToSelf extends MainToolbar {
      * @param date - the date of the message
      */
     public void addSelfNoteToRecycler(String message, String imagePath, String date){
-        messagesText.add(message);
-        messagesDates.add(date);
-        messagesImages.add(imagePath);
-        RecyclerView recycler = findViewById(R.id.notesToSelf);
-        recycler.getAdapter().notifyItemInserted(messagesDates.size()-1);
-        recycler.smoothScrollToPosition(messagesDates.size());
+        if (!messagesDates.contains(date)){
+            // si no es un duplicado, es decir, si se intenta añadir un mensaje de firebase y
+            // este usuario ha sido el dueño no añadir
+            messagesText.add(message);
+            messagesDates.add(date);
+            messagesImages.add(imagePath);
+            RecyclerView recycler = findViewById(R.id.notesToSelf);
+            recycler.getAdapter().notifyItemInserted(messagesDates.size()-1);
+            recycler.smoothScrollToPosition(messagesDates.size());
+        }
 
     }
 }
