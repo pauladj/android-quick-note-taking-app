@@ -1,19 +1,22 @@
 package com.example.proyecto1.utilities;
 
+import android.Manifest;
 import android.app.ActivityManager;
-import android.app.IntentService;
-import android.app.ProgressDialog;
+import android.bluetooth.le.AdvertiseData;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
+import android.provider.CalendarContract;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.util.Pair;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spanned;
@@ -24,17 +27,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.proyecto1.Common;
-import com.example.proyecto1.LanguageActivity;
-import com.example.proyecto1.LogInActivity;
 import com.example.proyecto1.MainActivity;
 import com.example.proyecto1.NoteEditorActivity;
 import com.example.proyecto1.PreferencesActivity;
 import com.example.proyecto1.R;
-import com.example.proyecto1.SingleNoteActivity;
+import com.example.proyecto1.dialogs.DateDialog;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.dialogs.NewTag;
-import com.example.proyecto1.fragments.NotesFragment;
-import com.example.proyecto1.fragments.PreferencesFragment;
+import com.example.proyecto1.dialogs.TimeDialog;
 import com.example.proyecto1.fragments.SingleNoteFragment;
 import com.example.proyecto1.services.UploadToDriveService;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -46,27 +46,29 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.FileContent;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class MainToolbar extends Common {
 
     Menu menu;
     int noteId = -1; //selected noteid for singleNoteActivity and MainActivity (the one selected in the landscape mode)
+
+    private int year; // si se quiere añadir un evento a un calendario, se utilizarán dos
+    // dialogs, guardar los datos, porque también hay que pedir permiso
+    private int month;
+    private int day;
+    private int hour;
+    private int minute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +154,9 @@ public class MainToolbar extends Common {
         }else if(id == R.id.menuRefreshSelfMessages){
             // el usuario quiere actualizar los self messages
             refreshSelfNotes();
+        }else if(id == R.id.menuCalendar){
+            // el usuario quiere añadir una nota al calendario
+            addNoteToCalendar();
         }
 
         return super.onOptionsItemSelected(item);
@@ -170,6 +175,141 @@ public class MainToolbar extends Common {
      */
     public int getNoteId(){
         return noteId;
+    }
+
+
+    /**
+     * -----------añadir nota a calendario
+     */
+    /**
+     * The user wants to add the note the calendar
+     */
+    public void addNoteToCalendar(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)!=
+                PackageManager.PERMISSION_GRANTED) {
+            //EL PERMISO NO ESTÁ CONCEDIDO, PEDIRLO
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CALENDAR)){
+                // MOSTRAR AL USUARIO UNA EXPLICACIÓN DE POR QUÉ ES NECESARIO EL PERMISO
+
+            }
+            else{
+                //EL PERMISO NO ESTÁ CONCEDIDO TODAVÍA O EL USUARIO HA INDICADO
+                //QUE NO QUIERE QUE SE LE VUELVA A SOLICITAR
+
+            }
+            //PEDIR EL PERMISO
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_CALENDAR, Manifest.permission.READ_CALENDAR},
+                    201);
+        }
+        else {
+            //EL PERMISO ESTÁ CONCEDIDO, EJECUTAR LA FUNCIONALIDAD
+
+            // show dialog of date
+            DialogFragment confirmationDialog = new DateDialog();
+            confirmationDialog.show(getSupportFragmentManager(), "dateDialog");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case 201:{
+                // Si la petición se cancela, granResults estará vacío
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // PERMISO CONCEDIDO, EJECUTAR LA FUNCIONALIDAD
+                    // show dialog of date
+                    DialogFragment confirmationDialog = new DateDialog();
+                    confirmationDialog.show(getSupportFragmentManager(), "dateDialog");
+                }
+                else {
+                    // PERMISO DENEGADO, DESHABILITAR LA FUNCIONALIDAD O EJECUTAR ALTERNATIVA
+
+                }
+                return;
+            }
+        }
+    }
+
+    /**
+     * The user has selected a date for the calendar event
+     * @param year - the year selected
+     * @param month - the month selected
+     * @param day - the day selected
+     */
+    public void dateSelectedForCalendar(int year, int month, int day){
+        this.year = year;
+        this.month = month;
+        this.day = day;
+
+        // show dialog for hour
+        DialogFragment confirmationDialog = new TimeDialog();
+        confirmationDialog.show(getSupportFragmentManager(), "timeDialog");
+    }
+
+    /**
+     * The user has selected a time, check permissions
+     * @param hour - the selected hour
+     * @param minute - the selected minute
+     */
+    public void timeSelectedForCalendar(int hour, int minute) {
+        this.minute = minute;
+        this.hour = hour;
+
+        try {
+            // add the time and date to the calendar using content providers
+            MyDB gestorDB = new MyDB(this, "Notes", null, 1);
+            String[] noteData = gestorDB.getNoteData(noteId);
+            if (noteData == null) {
+                showToast(false, R.string.databaseError);
+            } else {
+                long startMillis = 0;
+                long endMillis = 0;
+                Calendar beginTime = Calendar.getInstance();
+                beginTime.set(year, month, day, hour, minute);
+                startMillis = beginTime.getTimeInMillis();
+                Calendar endTime = Calendar.getInstance();
+                endTime.set(year, month, day, hour + 2, minute);
+                endMillis = endTime.getTimeInMillis();
+
+                ContentResolver cr = getContentResolver();
+                ContentValues values = new ContentValues();
+                values.put(CalendarContract.Events.DTSTART, startMillis);
+                values.put(CalendarContract.Events.DTEND, endMillis);
+                values.put(CalendarContract.Events.TITLE, noteData[0]); // el título de la nota
+                values.put(CalendarContract.Events.DESCRIPTION, "");
+
+                // obtener calendario por defecto
+                // aqui https://stackoverflow.com/a/41424455/11002531
+                String projection[] = {"_id"};
+                Cursor calCursor = getContentResolver().query(CalendarContract.Calendars.CONTENT_URI, projection, CalendarContract.Calendars.VISIBLE + " = 1 AND "  + CalendarContract.Calendars.IS_PRIMARY + "=1", null, CalendarContract.Calendars._ID + " ASC");
+                if(calCursor.getCount() <= 0){
+                    calCursor = getContentResolver().query(CalendarContract.Calendars.CONTENT_URI, projection, CalendarContract.Calendars.VISIBLE + " = 1", null, CalendarContract.Calendars._ID + " ASC");
+                }
+                int calID = 0;
+                if (calCursor.moveToFirst()){
+                    int idCol = calCursor.getColumnIndex(projection[0]);
+                    calID = Integer.valueOf(calCursor.getString(idCol));
+                    calCursor.close();
+                }
+
+                values.put(CalendarContract.Events.CALENDAR_ID, calID); // calendario por defecto
+                TimeZone timeZone = TimeZone.getDefault();
+                values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
+
+                // insertar
+                Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+                long eventID = Long.parseLong(uri.getLastPathSegment());
+
+                // show toast
+                showToast(false, R.string.noteAddedToCalendar);
+            }
+        }catch (Exception e){
+            // Error
+            showToast(false, R.string.noteAddedToCalendarError);
+        }
     }
 
 
@@ -309,7 +449,6 @@ public class MainToolbar extends Common {
      * @return true if the service is running, false if not
      */
     private boolean noteIsBeingUploaded(Class<?> serviceName){
-        // FIXME https://gist.github.com/kevinmcmahon/2988931
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceName.getName().equals(service.service.getClassName())) {
@@ -623,12 +762,23 @@ public class MainToolbar extends Common {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("noteId", noteId);
+        outState.putInt("year", year);
+        outState.putInt("month", month);
+        outState.putInt("day", day);
+        outState.putInt("hour", hour);
+        outState.putInt("minute", minute);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         noteId = savedInstanceState.getInt("noteId", -1);
+        // restore year, month and day
+        year = savedInstanceState.getInt("year", -1);
+        month = savedInstanceState.getInt("month", -1);
+        day = savedInstanceState.getInt("day", -1);
+        hour = savedInstanceState.getInt("hour", -1);
+        minute = savedInstanceState.getInt("minute", -1);
     }
 
     /**
@@ -644,4 +794,6 @@ public class MainToolbar extends Common {
         getmTaskFragment().setAction("refreshselfnotes");
         getmTaskFragment().start(null);
     }
+
+
 }

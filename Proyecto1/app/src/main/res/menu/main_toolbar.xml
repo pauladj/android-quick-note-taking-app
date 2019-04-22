@@ -10,6 +10,13 @@
 
     <!-- Only show in landscape mode -->
     <item
+        android:id="@+id/menuCalendar"
+        android:icon="@drawable/ic_calendar"
+        android:title="@string/menuCalendar"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menuEdit"
         android:icon="@drawable/ic_edit"
         android:title="@string/menuEdit"

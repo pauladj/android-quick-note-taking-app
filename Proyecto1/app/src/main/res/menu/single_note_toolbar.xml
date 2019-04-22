@@ -9,6 +9,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/menuCalendar"
+        android:icon="@drawable/ic_calendar"
+        android:title="@string/menuCalendar"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menuDelete"
         android:icon="@drawable/ic_delete"
         android:title="@string/menuDelete"

@@ -100,4 +100,7 @@
     <string name="errorTakingPicture">Se ha producido un error al capturar la imagen</string>
     <string name="fcmNotAvailable">No se te notificará de nuevos mensajes cortos porque la aplicación está deshabilitada en modo background</string>
     <string name="menuRefreshSelfMessages">Actualizar</string>
+    <string name="menuCalendar">Añadir al calendario</string>
+    <string name="noteAddedToCalendar">Nota añadida al calendario</string>
+    <string name="noteAddedToCalendarError">Se ha producido un problema al añadir la nota al calendario</string>
 </resources>

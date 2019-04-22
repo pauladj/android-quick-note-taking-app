@@ -1,36 +1,28 @@
 package com.example.proyecto1;
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.proyecto1.dialogs.AddRemoveTag;
+import com.example.proyecto1.dialogs.DateDialog;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.dialogs.NewNoteType;
 import com.example.proyecto1.dialogs.NewTag;
-import com.example.proyecto1.fragments.AsyncTaskFragment;
+import com.example.proyecto1.dialogs.TimeDialog;
 import com.example.proyecto1.fragments.NotesFragment;
 import com.example.proyecto1.fragments.SingleNoteFragment;
 import com.example.proyecto1.utilities.MainToolbar;
 import com.example.proyecto1.utilities.MyDB;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
 public class MainActivity extends MainToolbar implements NotesFragment.listenerDelFragment,
         DeleteNoteDialog.ListenerDelDialogo, AddRemoveTag.ListenerDelDialogo,
-        NewTag.ListenerDelDialogo, NewNoteType.ListenerNewNoteType {
+        NewTag.ListenerDelDialogo, NewNoteType.ListenerNewNoteType, DateDialog.ListenerDate, TimeDialog.ListenerTime {
 
 
     @Override
@@ -67,6 +59,7 @@ public class MainActivity extends MainToolbar implements NotesFragment.listenerD
             showMenuOption(R.id.menuEdit);
             showMenuOption(R.id.menuSendEmail);
             showMenuOption(R.id.menuUploadToDrive);
+            showMenuOption(R.id.menuCalendar);
 
             SingleNoteFragment elotro = (SingleNoteFragment) getSupportFragmentManager().
                     findFragmentById(R.id.singleNoteFragment);
