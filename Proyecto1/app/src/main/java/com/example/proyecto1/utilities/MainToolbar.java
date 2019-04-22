@@ -149,6 +149,9 @@ public class MainToolbar extends Common {
         }else if(id == R.id.menuCamera){
             // Take photo and upload it
             tryTakingPhotoWithTheCamera();
+        }else if(id == R.id.menuRefreshSelfMessages){
+            // el usuario quiere actualizar los self messages
+            refreshSelfNotes();
         }
 
         return super.onOptionsItemSelected(item);
@@ -632,4 +635,13 @@ public class MainToolbar extends Common {
      * The user wants to take a photo with the camera
      */
     public void tryTakingPhotoWithTheCamera(){}
+
+
+    /**
+     * The user has decided to refresh the self notes
+     */
+    public void refreshSelfNotes() {
+        getmTaskFragment().setAction("refreshselfnotes");
+        getmTaskFragment().start(null);
+    }
 }

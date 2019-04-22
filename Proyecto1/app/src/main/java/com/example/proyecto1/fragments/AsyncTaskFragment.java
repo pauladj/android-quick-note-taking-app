@@ -186,10 +186,13 @@ public class AsyncTaskFragment extends Fragment {
                     startActivity(i);
                     getActivity().finish();
                 }
-            }else if(action.equals("fetchselfnotes")){
+            }else if(action.equals("fetchselfnotes")) {
                 // cargar página noteToSelf
                 Intent i = new Intent(getActivity(), NotesToSelf.class);
                 startActivity(i);
+            }else if(action.equals("refreshselfnotes")){
+                // refrescar actividad con las notas
+                getActivity().recreate();
             }else if((action.equals("sendselfnotes") || action.equals("sendphoto")) && success){
                 // la nota de solo texto se ha enviado correctamente
                 mCallbacks.addSelfNoteToRecycler(message, image, date);
@@ -320,7 +323,7 @@ public class AsyncTaskFragment extends Fragment {
                         throw new Exception("connection_error");
                     }
                     success = true;
-                }else if(action == "fetchselfnotes"){
+                }else if(action == "fetchselfnotes" || action == "refreshselfnotes"){
                     // se obtienen notas nuevas, es decir, si el usuario no tiene datos de
                     // aplicación se obtendrán todas, pero si ha realizado esta acción hace 5
                     // minutos se obtendrán las nuevas

@@ -96,7 +96,7 @@ try {
      }
      success("ok");
 
-   }elseif ($action == "fetchselfnotes") {
+   }elseif ($action == "fetchselfnotes" || $action == "refreshselfnotes") {
       //se obtienen las nuevas selfnotes desde la última vez que se miraron
       $username = $parametros["username"];
       $date = $parametros["date"];
