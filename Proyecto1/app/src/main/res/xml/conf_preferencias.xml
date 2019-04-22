@@ -11,6 +11,11 @@
             android:defaultValue="false"
             android:title="@string/preferences_ordenTitle"
             android:summary="@string/preferences_ordenSummary" />
+        <CheckBoxPreference
+            android:key="maps"
+            android:defaultValue="false"
+            android:title="@string/preferences_mapsTitle"
+            android:summary="@string/preferences_mapsSummary" />
         <ListPreference
             android:dialogTitle="@string/preferences_LanguageTitle"
             android:entries="@array/languages"

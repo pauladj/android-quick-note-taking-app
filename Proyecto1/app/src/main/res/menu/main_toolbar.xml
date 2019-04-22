@@ -8,6 +8,12 @@
         android:title="@string/menuTag"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/menuMaps"
+        android:icon="@drawable/ic_maps"
+        android:title="@string/menuMaps"
+        app:showAsAction="ifRoom" />
+
     <!-- Only show in landscape mode -->
     <item
         android:id="@+id/menuCalendar"

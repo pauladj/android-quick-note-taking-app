@@ -33,7 +33,7 @@ public class MyDB extends SQLiteOpenHelper {
                 "'title' CHAR(255) NOT NULL, 'fileContent' CHAR(255) NOT NULL UNIQUE, 'date' " +
                 "DATETIME " +
                 "NOT NULL DEFAULT (datetime('now','localtime')), 'labelId' INTEGER, 'username' CHAR(255)" +
-                ", " +
+                ", 'lat' CHAR(255), 'lg' CHAR(255)," +
                 "FOREIGN KEY('labelId') REFERENCES Tags('id') ON DELETE SET NULL)");
 
         // Create table SelfNotes
@@ -125,6 +125,53 @@ public class MyDB extends SQLiteOpenHelper {
             notesData.add(notesTitles);
             notesData.add(notesDates);
             notesData.add(notesTagsNames);
+        }catch (SQLException e){
+            //
+        }finally {
+            if (c != null) {
+                c.close();
+            }
+            if (db != null){
+                db.close();
+            }
+        }
+        return notesData;
+    }
+
+    /**
+     * Get notes data to show on the main screen
+     * @param username - of which we have to get the notes
+     * @return ids, titles, dates and tags of the notes
+     */
+    public ArrayList<ArrayList<String>> getMapPositionsByUser(String username){
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        ArrayList<ArrayList<String>> notesData = null;
+
+        try {
+            db = this.getReadableDatabase();
+            c = db.rawQuery("SELECT title, lat, lg FROM Notes WHERE username='" + username + "' " +
+                            "AND lat IS NOT NULL",
+                    null);
+
+            ArrayList<String> notesLat = new ArrayList<>();
+            ArrayList<String> notesLg = new ArrayList<>();
+            ArrayList<String> notesTitles = new ArrayList<>();
+
+            while (c.moveToNext()) {
+                // there is a note with these data
+                String title = c.getString(0);
+                String lat = c.getString(1);
+                String lg = c.getString(2);
+
+                notesLat.add(lat);
+                notesTitles.add(title);
+                notesLg.add(lg);
+            }
+            notesData = new ArrayList<>();
+            notesData.add(notesTitles);
+            notesData.add(notesLat);
+            notesData.add(notesLg);
         }catch (SQLException e){
             //
         }finally {
@@ -291,6 +338,34 @@ public class MyDB extends SQLiteOpenHelper {
         }
         return changed;
     }
+
+    /**
+     * Update latitude and longitude fields of a note
+     * @param lat - latitud
+     * @param lg - longitud
+     * @return true if the note has been updated
+     */
+    public boolean updateLatitudeLongitude(int noteId, String lat,
+                                           String lg){
+        SQLiteDatabase db = null;
+        boolean changed;
+        try {
+            db = this.getWritableDatabase();
+            ContentValues modification = new ContentValues();
+            modification.put("lat", lat);
+            modification.put("lg", lg);
+            db.update("Notes", modification, "id=" + noteId, null);
+            changed = true;
+        }catch (SQLException e){
+            changed = false;
+        }finally {
+            if (db != null){
+                db.close();
+            }
+        }
+        return changed;
+    }
+
 
     /**
      * Get a note data so the user can see it on the editor

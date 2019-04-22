@@ -103,4 +103,8 @@
     <string name="menuCalendar">Añadir al calendario</string>
     <string name="noteAddedToCalendar">Nota añadida al calendario</string>
     <string name="noteAddedToCalendarError">Se ha producido un problema al añadir la nota al calendario</string>
+    <string name="preferences_mapsTitle">Guardar posición de notas</string>
+    <string name="preferences_mapsSummary">Guardar la posición donde se creó la nota</string>
+    <string name="menuMaps">Ver mapa de notas</string>
+    <string name="errorMaps">Hubo un erro al intentar obtener la última localización</string>
 </resources>

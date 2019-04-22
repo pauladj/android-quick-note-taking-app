@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <dist:module dist:instant="true" />
 
@@ -27,6 +28,8 @@
         android:supportsRtl="true"
         android:theme="@style/NotesTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".MapsActivity"></activity>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_launcher_background" />
@@ -36,6 +39,10 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="canal por defecto" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAcPdKta2BJAaKyjRxm0Pavq1hRdrDuH3Q" />
+
         <service
             android:name=".services.ServicioFirebase"
             android:enabled="true"

@@ -1,5 +1,6 @@
 package com.example.proyecto1;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -7,13 +8,18 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.text.Html;
 import android.text.SpannableString;
@@ -40,6 +46,11 @@ import com.example.proyecto1.utilities.Data;
 import com.example.proyecto1.utilities.MainToolbar;
 import com.example.proyecto1.utilities.MyDB;
 import com.example.proyecto1.utilities.SpanStyleHelper;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,9 +63,12 @@ import java.util.EventListener;
 
 public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.ListenerDelDialogo, InsertLinkEditor.ListenerDelDialogo, SelectTagEditor.ListenerDelDialogo, NewTag.ListenerDelDialogo {
 
-    int noteId = -1; // If we are editing an existing note
+    private int noteId = -1; // If we are editing an existing note
+    private int lastAddedNoteId = -1; // if we save the note and it was new, save here its id
+    private String fileName; // the filename of the new note
 
-    int chosenTagId = -1; // the selected tag by the user
+    private int chosenTagId = -1; // the selected tag by the user
+    private FusedLocationProviderClient fusedLocationPClient; // cliente con la posición
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -119,7 +133,13 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                 loadExistingNoteContent();
             }
         }
+    }
 
+    @Override
+    protected void onResume() {
+        fusedLocationPClient =
+                LocationServices.getFusedLocationProviderClient(NoteEditorActivity.this);
+        super.onResume();
     }
 
     /**
@@ -456,11 +476,20 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
                     elManager.notify(id, elBuilder.build()); // start notification
                 }
 
-                // return
-                Intent intent = new Intent();
-                intent.putExtra("fileName", fileName);
-                setResult(RESULT_OK, intent);
-                finish();
+                this.fileName = fileName;
+
+                prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                boolean maps = prefs.getBoolean("maps", false);
+                if (maps && userHasPlayServices()){
+                    lastAddedNoteId = idNote;
+                    savePositionToNotePermission();
+                }else{
+                    // return
+                    Intent intent = new Intent();
+                    intent.putExtra("fileName", fileName);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
             }else{
                 // editing existing note
                 MyDB gestorDB = new MyDB(getApplicationContext(), "Notes", null, 1);
@@ -508,6 +537,95 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         }
     }
 
+    /**
+     * Save last known position to the last saved new note
+     */
+    private void savePositionToNotePermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!=
+                PackageManager.PERMISSION_GRANTED) {
+            //EL PERMISO NO ESTÁ CONCEDIDO, PEDIRLO
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)){
+                // MOSTRAR AL USUARIO UNA EXPLICACIÓN DE POR QUÉ ES NECESARIO EL PERMISO
+            }
+            else{
+                //EL PERMISO NO ESTÁ CONCEDIDO TODAVÍA O EL USUARIO HA INDICADO
+                //QUE NO QUIERE QUE SE LE VUELVA A SOLICITAR
+            }
+            //PEDIR EL PERMISO
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    202);
+        }
+        else {
+            //EL PERMISO ESTÁ CONCEDIDO, EJECUTAR LA FUNCIONALIDAD
+            savePositionToNote();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case 202:{
+                // Si la petición se cancela, granResults estará vacío
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // PERMISO CONCEDIDO, EJECUTAR LA FUNCIONALIDAD
+                    savePositionToNote();
+                }
+                else {
+                    // PERMISO DENEGADO, DESHABILITAR LA FUNCIONALIDAD O EJECUTAR ALTERNATIVA
+                }
+                return;
+            }
+        }
+    }
+
+    /**
+     * Save last position to a note by its id
+     */
+    private void savePositionToNote(){
+
+        if (ActivityCompat.checkSelfPermission(NoteEditorActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        fusedLocationPClient.getLastLocation()
+                .addOnSuccessListener(NoteEditorActivity.this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null){
+                            double latitude = location.getLatitude();
+                            double longitude = location.getLongitude();
+
+                            if (latitude != 0 && longitude != 0){
+                                String lat = String.valueOf(latitude);
+                                String lg = String.valueOf(longitude);
+
+                                MyDB gestorDB = new MyDB(getApplication(), "Notes", null, 1);
+                                gestorDB.updateLatitudeLongitude(lastAddedNoteId, lat, lg);
+                            }
+                        }
+                        // return
+                        Intent intent = new Intent();
+                        intent.putExtra("fileName", fileName);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                })
+                .addOnFailureListener(NoteEditorActivity.this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // return
+                        showToast(true, R.string.errorMaps);
+                        Intent intent = new Intent();
+                        intent.putExtra("fileName", fileName);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                });
+    }
 
     @Override
     public void onBackPressed() {
@@ -521,6 +639,8 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         chosenTagId = savedInstanceState.getInt("chosenTagId");
+        lastAddedNoteId = savedInstanceState.getInt("lastAddedNoteId", -1);
+        fileName = savedInstanceState.getString("fileName");
     }
 
     @Override
@@ -528,5 +648,7 @@ public class NoteEditorActivity extends MainToolbar implements DeleteTextStyles.
         super.onSaveInstanceState(outState);
         outState.putInt("chosenTagId", chosenTagId);
         outState.putInt("noteId", noteId);
+        outState.putInt("lastAddedNoteId", lastAddedNoteId);
+        outState.putString("fileName", fileName);
     }
 }

@@ -28,9 +28,11 @@ import android.widget.Toast;
 
 import com.example.proyecto1.Common;
 import com.example.proyecto1.MainActivity;
+import com.example.proyecto1.MapsActivity;
 import com.example.proyecto1.NoteEditorActivity;
 import com.example.proyecto1.PreferencesActivity;
 import com.example.proyecto1.R;
+import com.example.proyecto1.SignUpActivity;
 import com.example.proyecto1.dialogs.DateDialog;
 import com.example.proyecto1.dialogs.DeleteNoteDialog;
 import com.example.proyecto1.dialogs.NewTag;
@@ -157,6 +159,10 @@ public class MainToolbar extends Common {
         }else if(id == R.id.menuCalendar){
             // el usuario quiere añadir una nota al calendario
             addNoteToCalendar();
+        }else if(id == R.id.menuMaps){
+            // ver el mapa de las notas
+            Intent i = new Intent(this, MapsActivity.class);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
@@ -462,7 +468,7 @@ public class MainToolbar extends Common {
      * If the user does not have the Play services installed it returns false
      * @return true or false
      */
-    private boolean userHasPlayServices(){
+    public boolean userHasPlayServices(){
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int code = api.isGooglePlayServicesAvailable(this);
         if (code == ConnectionResult.SUCCESS) {

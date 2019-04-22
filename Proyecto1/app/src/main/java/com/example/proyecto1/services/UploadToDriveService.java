@@ -146,9 +146,6 @@ public class UploadToDriveService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 
-        // py comprobar si tiene la play store antes de
-        // drive
-
         // se obtienen los datos asociados al intent
         fileName = intent.getStringExtra("fileName");
         fileContent = intent.getStringExtra("fileContent");
