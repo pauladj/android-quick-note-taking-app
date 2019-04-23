@@ -192,7 +192,9 @@ public class AsyncTaskFragment extends Fragment {
                 startActivity(i);
             }else if(action.equals("refreshselfnotes")){
                 // refrescar actividad con las notas
-                getActivity().recreate();
+                Intent i = new Intent(getActivity(), NotesToSelf.class);
+                startActivity(i);
+                getActivity().finish();
             }else if((action.equals("sendselfnotes") || action.equals("sendphoto")) && success){
                 // la nota de solo texto se ha enviado correctamente
                 mCallbacks.addSelfNoteToRecycler(message, image, date);
