@@ -22,7 +22,6 @@ public class WidgetTema18 extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_tema18);
 
@@ -46,6 +45,13 @@ public class WidgetTema18 extends AppWidgetProvider {
                 }
             }
         }
+
+        // aqui https://stackoverflow.com/a/26568544/11002531
+        Intent intentSync = new Intent(context, WidgetTema18.class);
+        intentSync.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intentSync.putExtra( AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] { appWidgetId } );
+        PendingIntent pendingSync = PendingIntent.getBroadcast(context,0, intentSync, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.loadButton,pendingSync);
 
         views.setTextViewText(R.id.appwidget_text, valor);
 

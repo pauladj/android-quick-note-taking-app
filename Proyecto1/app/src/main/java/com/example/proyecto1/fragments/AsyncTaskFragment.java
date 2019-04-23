@@ -328,8 +328,6 @@ public class AsyncTaskFragment extends Fragment {
                     // aplicación se obtendrán todas, pero si ha realizado esta acción hace 5
                     // minutos se obtendrán las nuevas
 
-                    // se obtiene el json
-
                     // obtener la fecha de la última vez que se realizó esta acción
                     String pattern = "yyyy-MM-dd HH:mm:ss";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -435,8 +433,7 @@ public class AsyncTaskFragment extends Fragment {
                     MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
                     gestorDB.addSelfNote(activeUser, strings[0], null, currentDate, null);
 
-                    // se cambia la hora del último fetch, porque si algún otro dispositivo envía
-                    // un mensaje se captura con firebase y se añade manualmente
+                    // se cambia la hora del último fetch
                     SharedPreferences prefs_especiales= getActivity().getSharedPreferences(
                             "preferencias_especiales",
                             Context.MODE_PRIVATE);
@@ -503,8 +500,7 @@ public class AsyncTaskFragment extends Fragment {
                     MyDB gestorDB = new MyDB(getActivity(), "Notes", null, 1);
                     gestorDB.addSelfNote(activeUser, null, uri, currentDate, null);
 
-                    // se cambia la hora del último fetch, porque si algún otro dispositivo envía
-                    // un mensaje se captura con firebase y se añade manualmente
+                    // se cambia la hora del último fetch
                     SharedPreferences prefs_especiales= getActivity().getSharedPreferences(
                             "preferencias_especiales",
                             Context.MODE_PRIVATE);
