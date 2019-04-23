@@ -107,4 +107,6 @@
     <string name="preferences_mapsSummary">Save the last known location</string>
     <string name="menuMaps">See map with notes</string>
     <string name="errorMaps">There was an error trying to get the last location</string>
+    <string name="loadButton">Reload</string>
+
 </resources>
