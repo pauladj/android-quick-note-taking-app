@@ -1,6 +1,12 @@
 package com.example.proyecto1.utilities;
 
 /**
+ * Basado en el código extraído de Github
+ * https://github.com/gsuitedevs/android-samples/blob/master/drive/deprecation/app/src/main/java/com/google/android/gms/drive/sample/driveapimigration/DriveServiceHelper.java
+ * Modificado por Paula de Jaime para añadir una función
+ */
+
+/**
  * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +54,6 @@ import java.util.concurrent.Executors;
  * A utility for performing read/write operations on Drive files via the REST API and opening a
  * file picker UI via Storage Access Framework.
  */
-//MODIFICADO, MIRAR LICENCIA
 public class DriveServiceHelper {
     private static DriveServiceHelper miDriveServiceHelper;
     private final Executor mExecutor = Executors.newSingleThreadExecutor();
@@ -148,14 +153,12 @@ public class DriveServiceHelper {
      */
     public Task<String> folderExists(String folderName) {
         return Tasks.call(mExecutor, () -> {
-            Log.i("aqui2", "1");
             String query = "name = '" + folderName + "' and mimeType = 'application/vnd" +
                     ".google-apps.folder' and trashed = false";
             FileList result = mDriveService.files().list()
                     .setQ(query)
                     .setSpaces("drive")
                     .execute();
-            Log.i("aqui2", "2");
             for (File file : result.getFiles()) {
                 // se ha encontrado la carpeta
                 return file.getId();

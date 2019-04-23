@@ -229,7 +229,6 @@ public class MyDB extends SQLiteOpenHelper {
             notesData.add(noteImages);
         }catch (SQLException e){
             //
-            Log.i("aqui", e.toString());
         }finally {
             if (c != null) {
                 c.close();

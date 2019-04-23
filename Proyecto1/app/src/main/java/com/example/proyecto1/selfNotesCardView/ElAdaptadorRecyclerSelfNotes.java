@@ -61,7 +61,6 @@ public class ElAdaptadorRecyclerSelfNotes extends RecyclerView.Adapter <ElViewHo
         if (elViewHolder.getItemViewType() == 0){
             // message
             // solo texto
-            Log.i("aquias--", noteMessages.get(i));
             elViewHolder.noteMessage.setText(noteMessages.get(i));
         }else{
             // solo imagen

@@ -62,7 +62,6 @@ public class NotesToSelf extends MainToolbar {
             String messageType = intent.getStringExtra("type");
             String content = intent.getStringExtra("content");
             String timestamp = intent.getStringExtra("timestamp");
-            Log.i("aqui", messageType);
             if (messageType.contains("message")){
                 // es un mensaje
                 addSelfNoteToRecycler(content, null, timestamp);
@@ -269,13 +268,12 @@ public class NotesToSelf extends MainToolbar {
             elIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriimagen);
             startActivityForResult(elIntent, 100);
         } catch (Exception e) {
-            Log.i("aqui", e.getMessage());
             showToast(false, R.string.errorTakingPicture);
         }
     }
 
     /**
-     * Response
+     * Respuesta después de sacar la foto
      * @param requestCode - to specify this is the callback of capturing an image
      * @param resultCode - the result code of capturing an image
      * @param data - the data

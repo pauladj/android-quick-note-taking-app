@@ -17,10 +17,7 @@ public class ServicioFirebase extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d("aqui", "From: " + remoteMessage.getFrom());
-
         /*
-        aqui
         * En algunos móviles por su configuración, las notificaciones de firebase no aparecen si
         * la aplicación está cerrada. Si la aplicación no está en el foreground entonces, se
         * reciba o no una notificación, el contenido no se actualiza. Hay que salir y volver a

@@ -161,8 +161,15 @@ public class MainToolbar extends Common {
             addNoteToCalendar();
         }else if(id == R.id.menuMaps){
             // ver el mapa de las notas
-            Intent i = new Intent(this, MapsActivity.class);
-            startActivity(i);
+            if(userHasPlayServices()) {
+                Intent i = new Intent(this, MapsActivity.class);
+                startActivity(i);
+            }else{
+                int tiempo = Toast.LENGTH_SHORT;
+                Toast aviso = Toast.makeText(this, R.string.googlePlayNeeded, tiempo);
+                aviso.setGravity(Gravity.BOTTOM| Gravity.CENTER, 0, 100);
+                aviso.show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -288,7 +295,13 @@ public class MainToolbar extends Common {
                 values.put(CalendarContract.Events.DESCRIPTION, "");
 
                 // obtener calendario por defecto
-                // aqui https://stackoverflow.com/a/41424455/11002531
+                /**
+                 * Extraído de Stack Overflow
+                 * Pregunta: https://stackoverflow.com/q/16242472/11002531
+                 * Autor: https://stackoverflow.com/users/43907/gold
+                 * Modificado por Paula de Jaime para conseguir únicamente el id del
+                 * calendario por defecto
+                 */
                 String projection[] = {"_id"};
                 Cursor calCursor = getContentResolver().query(CalendarContract.Calendars.CONTENT_URI, projection, CalendarContract.Calendars.VISIBLE + " = 1 AND "  + CalendarContract.Calendars.IS_PRIMARY + "=1", null, CalendarContract.Calendars._ID + " ASC");
                 if(calCursor.getCount() <= 0){
@@ -488,7 +501,6 @@ public class MainToolbar extends Common {
     public void logInToDrive(){
         GoogleSignInAccount cuenta = GoogleSignIn.getLastSignedInAccount(this);
         if (cuenta == null){
-            Log.i("aqui", "No identified");
             // no está identificado
             GoogleSignInOptions gso = new
                     GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -499,8 +511,6 @@ public class MainToolbar extends Common {
             Intent intentIdentif = cliente.getSignInIntent();
             startActivityForResult(intentIdentif, 666);
         }else{
-            Log.i("aqui", "identified");
-
             requestPermissionsToDrive();
         }
     }
@@ -511,12 +521,9 @@ public class MainToolbar extends Common {
     public void requestPermissionsToDrive(){
         Scope permiso = new Scope(DriveScopes.DRIVE);
         if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this), permiso)) {
-            Log.i("aqui", "No permission");
-
             GoogleSignIn.requestPermissions(this, 667,
                     GoogleSignIn.getLastSignedInAccount(this), permiso);
         }else{
-            Log.i("aqui", "permission");
             uploadNoteToDrive();
         }
     }
@@ -527,15 +534,12 @@ public class MainToolbar extends Common {
      */
     public void uploadNoteToDrive(){
         //sklfdj
-        Log.i("aqui", "yay");
         // Use the authenticated account to sign in to the Drive service.
         // datos de la nota
         // obtener la información de la nota y su contenido
         String[] dataOfNoteToUpload = getNoteContent(noteId);
 
         if (dataOfNoteToUpload == null) {
-            Log.i("aqui", "4");
-
             // error fetching the note data
             uploadNoteToDriveFailureToast();
         }
@@ -746,20 +750,17 @@ public class MainToolbar extends Common {
         .addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 showToast(false, R.string.serverError);
-                Log.w("aqui", "getInstanceId failed", task.getException());
                 return;
             }
 
             // Get new Instance ID token
             String firebaseToken = task.getResult().getToken();
-            Log.i("aqui_firebasetoken", firebaseToken);
             String username = Data.getMyData().getActiveUsername();
             String[] params = {username, firebaseToken};
             getmTaskFragment().setAction("logout");
             getmTaskFragment().start(params);
         })
         .addOnFailureListener(exception -> {
-            Log.i("aqui", "9");
             showToast(false, R.string.serverError);
         });
     }

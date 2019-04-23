@@ -46,7 +46,12 @@ public class WidgetTema18 extends AppWidgetProvider {
             }
         }
 
-        // aqui https://stackoverflow.com/a/26568544/11002531
+        /**
+         * Extraído de Stack Overflow
+         * Pregunta: https://stackoverflow.com/q/26567215/11002531
+         * Autor: https://stackoverflow.com/users/4181607/iitum-studant
+         */
+        // actualizar cuando se haga click en el botón
         Intent intentSync = new Intent(context, WidgetTema18.class);
         intentSync.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         intentSync.putExtra( AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] { appWidgetId } );

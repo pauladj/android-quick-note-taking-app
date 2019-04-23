@@ -88,7 +88,6 @@ public class UploadToDriveService extends Service {
 
         // the initial value is 3 if it's the first time, but we have to add one to this
         idNotification = prefs_especiales.getInt("id", 2) + 1;
-        Log.i("aquiid_notf", String.valueOf(idNotification) );
         SharedPreferences.Editor editor2= prefs_especiales.edit();
         // the initial value is 3
         editor2.putInt("id",idNotification);
@@ -173,7 +172,6 @@ public class UploadToDriveService extends Service {
                     progress += 25;
                     updateNotification();
                     if (existingFolderId == null){
-                        Log.i("aqui", "2");
                         //Folder does not exist, create it
                         DriveServiceHelper.getMiDriveServiceHelper().createFile("notes_android_app",
                                 "application/vnd.google-apps.folder", "root")
@@ -181,51 +179,38 @@ public class UploadToDriveService extends Service {
                                 // Folder created
                                 progress += 25;
                                 updateNotification();
-                                Log.i("aqui", "5");
 
                                 // primero crear el fichero
                                 DriveServiceHelper.getMiDriveServiceHelper().createFile(fileName,
                                         "text/html", newFolderId)
                                         .addOnSuccessListener(fileId -> {
-                                            Log.i("aqui", "6");
                                             progress += 25;
                                             updateNotification();
                                             // y luego actualizar sus datos
                                             DriveServiceHelper.getMiDriveServiceHelper().saveFile(fileId, fileName, "text/html", fileContent)
                                                     .addOnSuccessListener((k) -> {
-                                                        Log.i("aqui", "7");
                                                         progress += 25;
                                                         updateNotification();
                                                     })
                                                     .addOnFailureListener(exception -> {
-                                                        Log.i("aqui", "8");
 
                                                         uploadFailedNotification();
                                                     });
                                         })
                                         .addOnFailureListener(exception -> {
-                                            Log.i("aqui", "9");
-
                                             uploadFailedNotification();
                                         });
                             })
                             .addOnFailureListener(exception -> {
-                                Log.i("aqui", "10");
-
                                 uploadFailedNotification();
                             });
                     }else{
                         // Folder exists
-                        Log.i("aqui", "11");
-
                         // upload the note
-                        Log.i("aqui", "13");
 
-                        // primero crear el fichero
                         DriveServiceHelper.getMiDriveServiceHelper().createFile(fileName,
                                 "text/html", existingFolderId)
                                 .addOnSuccessListener(fileId -> {
-                                    Log.i("aqui", "6");
                                     progress += 35;
                                     updateNotification();
                                     // y luego actualizar sus datos
@@ -233,18 +218,12 @@ public class UploadToDriveService extends Service {
                                             .addOnSuccessListener((k) -> {
                                                 progress += 40;
                                                 updateNotification();
-                                                Log.i("aqui", "7");
-
                                             })
                                             .addOnFailureListener(exception -> {
-                                                Log.i("aqui", "8");
-
                                                 uploadFailedNotification();
                                             });
                                 })
                                 .addOnFailureListener(exception -> {
-                                    Log.i("aqui", "9");
-
                                     uploadFailedNotification();
                                 });
 
@@ -252,8 +231,6 @@ public class UploadToDriveService extends Service {
                 })
                 .addOnFailureListener(exception -> {
                     uploadFailedNotification();
-                    Log.i("aqui", "17");
-                    Log.i("aqui17", exception.toString());
                 });
 
         return START_NOT_STICKY;

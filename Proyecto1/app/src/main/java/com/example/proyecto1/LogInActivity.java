@@ -53,19 +53,16 @@ public class LogInActivity extends Common {
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         showToast(false, R.string.serverError);
-                        Log.w("aqui", "getInstanceId failed", task.getException());
                         return;
                     }
 
                     // Get new Instance ID token
                     String firebaseToken = task.getResult().getToken();
-                    Log.i("aqui_firebasetoken", firebaseToken);
                     String[] params = {username, password, firebaseToken};
                     getmTaskFragment().setAction("login");
                     getmTaskFragment().start(params);
                 })
                 .addOnFailureListener(exception -> {
-                    Log.i("aqui", "9");
                     showToast(false, R.string.serverError);
                 });
         }

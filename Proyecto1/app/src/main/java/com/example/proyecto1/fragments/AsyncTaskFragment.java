@@ -122,7 +122,6 @@ public class AsyncTaskFragment extends Fragment {
     public void start(String[] params){
         // Create and execute the background task.
         mTask = new DummyTask();
-        Log.i("aquiw", "asdf22222222222");
         mTask.execute(params);
     }
 
@@ -149,7 +148,6 @@ public class AsyncTaskFragment extends Fragment {
         @Override
         public void onPreExecute() {
             isTaskRunning = true;
-            Log.i("aquiw", "333");
 
             // configurar y enseñar el diálogo
             progressDialog = new ProgressDialog(getActivity());
@@ -225,8 +223,6 @@ public class AsyncTaskFragment extends Fragment {
 
         @Override
         protected Pair<Boolean, Integer> doInBackground(String... strings) {
-            Log.i("aqui", "backgro");
-            Log.i("aqui", action);
             try {
                 // se forma la url con sus opciones para pedir datos al servidor
                 String direccion = "https://134.209.235.115/pdejaime001/WEB/urls.php";
@@ -295,7 +291,6 @@ public class AsyncTaskFragment extends Fragment {
                             activity.setActiveUsername(json.get("success").toString());
                         }
 
-                        Log.i("aqui_active", Data.getMyData().getActiveUsername());
                         success = true;
 
                         currentProgress = 1;
@@ -335,7 +330,6 @@ public class AsyncTaskFragment extends Fragment {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
                     String currentDate = simpleDateFormat.format(new Date());
-                    Log.i("aqui_currentdate", currentDate);
 
                     SharedPreferences prefs_especiales= getActivity().getSharedPreferences(
                             "preferencias_especiales",
@@ -347,7 +341,7 @@ public class AsyncTaskFragment extends Fragment {
                     parametrosJSON.put("username", Data.getMyData().getActiveUsername());
                     parametrosJSON.put("date", lastFetchedDate);
                     parametrosJSON.put("now", currentDate);
-                    Log.i("aqui_envia", parametrosJSON.toJSONString() );
+
                     PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
                     out.print(parametrosJSON.toString());
                     out.close();
@@ -370,8 +364,6 @@ public class AsyncTaskFragment extends Fragment {
                                                       // completar la tarea asíncrona
                     for (int i = 0; i < selfNotes.size(); i++) {
                         JSONObject row = (JSONObject) selfNotes.get(i);
-
-                        Log.i("aqui_iteracion", row.toJSONString());
 
                         String imagePath = (String) row.get("imagePath");
                         String imageLocalPath = "";
@@ -412,13 +404,12 @@ public class AsyncTaskFragment extends Fragment {
                     String pattern = "yyyy-MM-dd HH:mm:ss";
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                     String currentDate = simpleDateFormat.format(new Date());
-                    Log.i("aqui_currentdate", currentDate);
 
                     // añadir parámetros
                     parametrosJSON.put("username", Data.getMyData().getActiveUsername());
                     parametrosJSON.put("date", currentDate);
                     parametrosJSON.put("message", strings[0]);
-                    Log.i("aqui_envia", parametrosJSON.toJSONString() );
+
                     PrintWriter out = new PrintWriter(urlConnection.getOutputStream());
                     out.print(parametrosJSON.toString());
                     out.close();
@@ -488,8 +479,6 @@ public class AsyncTaskFragment extends Fragment {
                     out.print(parametrosURL);
                     out.close();
 
-                    Log.i("aquiee", parametrosJSON.toString());
-
                     JSONObject json = getJsonFromResponse(urlConnection);
 
                     // si se ha producido un problema
@@ -543,7 +532,6 @@ public class AsyncTaskFragment extends Fragment {
             } catch (Exception e) {
                 // error
                 // toast of error
-                Log.i("aquidf", e.getMessage());
                 return Pair.create(true, R.string.serverError);
             }
             return null;
@@ -568,8 +556,6 @@ public class AsyncTaskFragment extends Fragment {
          */
         private String downloadAndSaveImage(String url){
             try {
-                Log.i("aqui_downloadaimage", "start");
-
                 HttpsURLConnection conn =
                         GeneradorConexionesSeguras.getInstance().crearConexionSegura(getActivity(), url);
 
@@ -612,9 +598,6 @@ public class AsyncTaskFragment extends Fragment {
                     mediaScanIntent.setData(contentUri);
                     getActivity().sendBroadcast(mediaScanIntent);
 
-
-                    Log.i("aqui_downloadaimage", "end");
-                    Log.i("aquiu_path", imagenFich.getPath());
                     return imagenFich.getPath(); // devolver el path local de la imagen
 
                 }else{
@@ -622,7 +605,6 @@ public class AsyncTaskFragment extends Fragment {
                 }
             } catch (Exception e) {
                 // error downloading image
-                Log.i("aquinoooo", e.getMessage());
                 return "";
             }
         }
@@ -645,15 +627,13 @@ public class AsyncTaskFragment extends Fragment {
                         result += line;
                     }
                     inputStream.close();
-                    Log.i("aqui", result);
 
                     // get the json of the response
                     JSONParser parser = new JSONParser();
                     JSONObject json = (JSONObject) parser.parse(result);
-                    Log.i("aquijson", json.toString());
+
                     return json;
                 }else{
-                    Log.i("aqui", String.valueOf(statusCode));
                     throw new Exception("connection_error");
                 }
             }catch (Exception e){
