@@ -6,17 +6,6 @@ define("DB_USER", "Xpdejaime001"); #el usuario para esa base de datos
 define("DB_PASS", "8WwMyYf4jz"); #la clave para ese usuario
 define("DB_DATABASE", "Xpdejaime001_"); #la base de datos a la que hay que conectarse
 
-/*// Webcindario
-define("DB_SERVER", "mysql.webcindario.com"); #la dirección del servidor
-define("DB_USER", "dawepauladj"); #el usuario para esa base de datos
-define("DB_PASS", "92749274"); #la clave para ese usuario
-define("DB_DATABASE", "dawepauladj");*/
-/*
-define("DB_SERVER", "localhost"); #la dirección del servidor
-define("DB_USER", "root"); #el usuario para esa base de datos
-define("DB_PASS", ""); #la clave para ese usuario
-define("DB_DATABASE", "das");*/
-
 
 function connect(){
   # Se establece la conexión:
