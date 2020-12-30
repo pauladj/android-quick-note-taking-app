@@ -34,7 +34,7 @@ La aplicación Notes permite a los usuarios escribir, guardar y editar sus propi
 - Controlar que la aplicación se comporte correctamente y no se pierda información, aunque en medio de la ejecución recibamos una llamada telefónica, giremos el móvil, etc. No se impide que la aplicación se gire. Se controla la pila de actividades para evitar incoherencias.
 
 ### Capturas de pantalla
-<div align="center"><img src="img\lista-notas.png"  width="250" style="margin-right: 10px;" /><img src="img\nota.jpg" width="250"/></div>
+<div align="center" style="display: flex; justify-content: space-evenly;"><img src="img\lista-notas.png"  width="250" /><img src="img\nota.jpg" width="250"/></div>
 
 ### Índice de funcionalidades
 
