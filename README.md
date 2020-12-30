@@ -6,6 +6,7 @@
     <img src="https://img.shields.io/badge/Android-≥5.0-green?logo=android" />
     <img src="https://img.shields.io/badge/Java-v1.8-orange?logo=java" />
 </div>
+
 ### Descripción
 
 La aplicación Notes permite a los usuarios escribir, guardar y editar sus propias notas, evitando así que se les olvide cualquier información que deseen recordar.
@@ -29,9 +30,9 @@ La aplicación Notes permite a los usuarios escribir, guardar y editar sus propi
 - Uso de **Preferencias**, para guardar las preferencias del usuario en cuanto a mostrar/esconder cierta información, elegir colores para la aplicación, o cualquier otra cosa relacionada con la visualización de la aplicación. 
 - Crear **estilos y temas propios**, para personalizar fondos, botones, etc. 
 - Pantalla de **login** (y registro), para guardar credenciales de usuario (nombre de usuario – contraseña) en la base de datos local
-
 - Captar **imágenes** desde la cámara, guardarlas en el servidor y mostrarlas en la aplicación. 
 - Controlar que la aplicación se comporte correctamente y no se pierda información, aunque en medio de la ejecución recibamos una llamada telefónica, giremos el móvil, etc. No se impide que la aplicación se gire. Se controla la pila de actividades para evitar incoherencias.
+
 ### Capturas de pantalla
 <div align="center"><img src="img\lista-notas.png"  width="250" /><img src="img\nota.jpg" width="250"/></div>
 
