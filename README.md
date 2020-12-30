@@ -51,8 +51,8 @@ La aplicación Notes permite a los usuarios escribir, guardar y editar sus propi
 - Guardar posición de notas en el mapa
 - Ver mapa
 - Añadir nota al calendario
-- Subir notas a Google Drive:
-- Crear notas cortas o rápidas.
+- Subir notas a Google Drive
+- Crear notas cortas o rápidas
 
 ### Archivos del código fuente
 
