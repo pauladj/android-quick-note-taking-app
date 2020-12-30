@@ -11,9 +11,9 @@
 
 La aplicación Notes permite a los usuarios escribir, guardar y editar sus propias notas, evitando así que se les olvide cualquier información que deseen recordar.
 
-[Documentación app versión 1](https://github.com/pauladj/easy-note-taking-app/blob/master/Documentaci%C3%B3n%20v1.0.pdf)
+[Documentación app versión 1](https://github.com/pauladj/quick-note-taking-app/blob/master/Documentaci%C3%B3n%20v1.0.pdf)
 
-[Documentación app versión 2](https://github.com/pauladj/easy-note-taking-app/blob/master/Documentaci%C3%B3n%20v2.0.pdf)
+[Documentación app versión 2](https://github.com/pauladj/quick-note-taking-app/blob/master/Documentaci%C3%B3n%20v2.0.pdf)
 
 ### Herramientas y conceptos utilizados
 
