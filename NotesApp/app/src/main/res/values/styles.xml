@@ -1,0 +1,34 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="NotesTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+
+    <style name="logoIntro" parent="NotesTheme">
+        <item name="android:fontFamily">@font/roboto_slab_bold</item>
+        <item name="android:textSize">60sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="mainNotesTitle" parent="NotesTheme">
+        <item name="android:fontFamily">@font/roboto_slab_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="mainNotesSubtitle" parent="NotesTheme">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/darkGrey</item>
+    </style>
+
+    <style name="tag" parent="mainNotesSubtitle">
+        <item name="android:background">@color/tag</item>
+    </style>
+
+
+</resources>
